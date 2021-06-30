@@ -1,0 +1,66 @@
+body, html {
+  height: 100%;
+  background: transparent;
+}
+
+#root {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  flex-direction: row;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  background-color: #EBEBF7;
+  height: auto;
+  min-height: 100%;
+  overflow: hidden;
+}
+
+#root .App {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 90vw;
+  min-height: 80vh;
+  padding: 30px;
+  margin-bottom: 30px;
+  margin-top: 80px;
+  background-color: #FBFCFE;
+  -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
+          box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
+  border-radius: 50px;
+  -webkit-border-radius: 50px;
+  -moz-border-radius: 50px;
+  -ms-border-radius: 50px;
+  -o-border-radius: 50px;
+}
+
+#root .App .content {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-line-pack: start;
+      align-content: flex-start;
+  padding: 10px 20px;
+  position: relative;
+}
+
+@media only screen and (min-width: 1300px) {
+  .App {
+    width: 60vw !important;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  .App {
+    width: 90vw !important;
+  }
+}
+/*# sourceMappingURL=styles.css.map */
