@@ -1,5 +1,5 @@
 const { app,BrowserWindow,ipcMain } = require('electron');
-const { exec } = require('child_process');
+const exec = require('child_process').exec;
 
 const path = require('path');
 const server = require('./app/index');
@@ -19,9 +19,8 @@ const createWindow = ()=>{
         height : 800,        
         webPreferences : {
             nodeIntegration : true,
-            devTools : true,
             contextIsolation : false,
-            preload : server
+            plugins : true
         },
         autoHideMenuBar : true,
         resizable : false,
@@ -29,6 +28,7 @@ const createWindow = ()=>{
     });
 
     win.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+    win.webContents.openDevTools();
 
     win.on('closed',()=>{
         win = null;

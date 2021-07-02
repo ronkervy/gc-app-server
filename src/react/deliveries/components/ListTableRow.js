@@ -74,7 +74,6 @@ function ListTableRow(props) {
             pdfMake.vfs = pdfFonts.pdfMake.vfs;          
             const { doc,logo } = resPDF.payload;
             let pdf = JSON.parse(doc);
-            console.log(window.btoa(logo));
 
             const docDef = DocumentDef(pdf,logo);
 

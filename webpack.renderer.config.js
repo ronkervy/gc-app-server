@@ -12,7 +12,8 @@ module.exports = {
   // Put your normal webpack config below here
   resolve : {
       alias : {
-        'Public' : path.resolve(__dirname,'src','public')
+        'Public' : path.resolve(__dirname,'src','public'),
+        'Root' : path.resolve(__dirname,'src')
       }
   },
   plugins : [

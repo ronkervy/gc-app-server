@@ -12,17 +12,34 @@ import {
     getProducts
 } from '../products/store/ProdServices';
 import { useHistory } from 'react-router-dom';
+import Loader from '../shared/Loader';
 
 function Home(props) {
 
     const { classes } = props;
     const dispatch = useDispatch();
-    const products = useSelector(state=>state.products.entities);
+    const { entities : products,loading } = useSelector(state=>state.products);
     const history = useHistory();
 
     useEffect(()=>{
         dispatch( getProducts('/products') );
     },[]);
+
+    const filterLowCounts = (prods)=>{
+        const lowArr = [];
+        prods.map(prod=>{
+            if(prod.item_qty <= 10){
+                lowArr.push(prod);
+            }
+        });
+        return lowArr.length;
+    }
+
+    if( loading ){
+        return(
+            <Loader />
+        )
+    }
 
     return (
         <motion.div
@@ -79,7 +96,7 @@ function Home(props) {
                         lg={4}
                         sm={4}
                     >
-                        <h2 style={{margin: "0px",textAlign : "left"}}>3400</h2>
+                        <h2 style={{margin: "0px",textAlign : "left"}}>{filterLowCounts(products)}</h2>
                         <p style={{margin: "0px"}}>Running Low</p>
                     </Grid>
                     <Grid

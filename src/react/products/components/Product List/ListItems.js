@@ -11,8 +11,8 @@ import {
     TableCell,
     IconButton
 } from '@material-ui/core';
-import Styles from './Styles';
-import ProductBarcodeModal from './ProductBarcodeModal';
+import Styles from '../Styles';
+import ProductBarcodeModal from '../ProductBarcodeModal';
 import { useHistory } from 'react-router';
 
 function ListItems({item,index}) {

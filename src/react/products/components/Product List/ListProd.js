@@ -12,7 +12,7 @@ import {
   TableRow,
   Paper
 } from '@material-ui/core';
-import Styles from './Styles';
+import Styles from '../Styles';
 import ListItems from './ListItems';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -22,11 +22,11 @@ import {
     faWrench
 } from '@fortawesome/free-solid-svg-icons';
 
-import { findProduct, getProducts } from '../store/ProdServices';
+import { findProduct, getProducts } from '../../store/ProdServices';
 
 import { useSelector,useDispatch } from 'react-redux';
-import Loader from '../../shared/Loader';
-import { getAllSuppliers } from '../../suppliers/store/SupplierServices';
+import Loader from '../../../shared/Loader';
+import { getAllSuppliers } from '../../../suppliers/store/SupplierServices';
 import { useHistory } from 'react-router-dom';
 
 function ListProd(props) {

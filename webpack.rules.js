@@ -23,13 +23,6 @@ module.exports = [
             presets : ['@babel/preset-react']
         }
     }
-  },
-  {
-    test: /\.(png|jpe?g|gif)$/i,
-    type: 'asset/resource',
-    generator: {
-      filename: '[path][name][ext]',
-    },
   }
   // Put your webpack loader rules in this array.  This is where you would put
   // your ts-loader configuration for instance:

@@ -11,7 +11,7 @@ import {
     Close
 } from '@material-ui/icons';
 import { useHistory, useParams } from 'react-router';
-import ListProd from '../products/components/ListProd';
+import ListProd from '../products/components/Product List/ListProd';
 
 const Transition = forwardRef(function Transition(props,ref){
     return <Slide

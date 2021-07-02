@@ -15,17 +15,17 @@ import {
 import NumberFormat from 'react-number-format';
 import React, { useEffect, useState, forwardRef } from 'react';
 import { Close } from '@material-ui/icons';
-import Styles from './Styles';
-import AddEditProd from './AddEditProd';
+import Styles from '../Styles';
+import AddEditProd from '../AddEdit/AddEditProd';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBoxes, faCalendar, faEdit, faMoneyCheck, faMoneyCheckAlt, faUserTie } from '@fortawesome/free-solid-svg-icons';
-import ProductHistory from './ProductHistory';
+import ProductHistory from '../ProductHistory';
 // import jsbarcode from 'jsbarcode';
 import { useHistory, useParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProduct } from '../store/ProdServices';
-import { getSingleSupplier } from '../../suppliers/store/SupplierServices';
-import Loader from '../../shared/Loader';
+import { getProduct } from '../../store/ProdServices';
+import { getSingleSupplier } from '../../../suppliers/store/SupplierServices';
+import Loader from '../../../shared/Loader';
 
 const TabPanel = (props)=>{
     const {mode,children,data,value,index,...other} = props;    

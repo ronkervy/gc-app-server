@@ -1,6 +1,6 @@
 import React,{ useEffect,useState } from 'react';
 import { useFormik } from 'formik';
-import useStyles from './Styles';
+import useStyles from '../Styles';
 import { 
     Button, 
     Grid, 
@@ -22,11 +22,11 @@ import { motion } from 'framer-motion';
 import {
     createProduct,
     updateProduct
-} from '../store/ProdServices';
+} from '../../store/ProdServices';
 import io from 'socket.io-client';
 import NumberFormat from 'react-number-format';
-import { getAllSuppliers } from '../../suppliers/store/SupplierServices';
-import { OpenNotification } from '../../shared/store/NotificationSlice';
+import { getAllSuppliers } from '../../../suppliers/store/SupplierServices';
+import { OpenNotification } from '../../../shared/store/NotificationSlice';
 
 
 const  AddProd = (props)=> {    
@@ -321,7 +321,7 @@ const  AddProd = (props)=> {
                         </Grid>                        
                         <Grid item sm={12} lg={12}>
                             <TextareaAutosize className={classes.textarea}
-                                rowsMin={15}              
+                                rowsMin={8}              
                                 name="item_desc"
                                 variant="outlined"
                                 aria-label="maximum height"
