@@ -15,8 +15,6 @@ const io = require('socket.io')(http,{
 const PORT = process.env.PORT || 8081;
 const ipc = require('./config/ipc.server');
 
-console.log(path.join(__dirname,'..','/renderer/main_window/public'));
-
 app.use(express.static(path.join(__dirname,'..','/renderer/main_window/public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended : false }));

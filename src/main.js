@@ -19,8 +19,10 @@ const createWindow = ()=>{
         height : 800,        
         webPreferences : {
             nodeIntegration : true,
+            webviewTag : true,
             contextIsolation : false,
-            plugins : true
+            plugins : true,
+            preload : server
         },
         autoHideMenuBar : true,
         resizable : false,
