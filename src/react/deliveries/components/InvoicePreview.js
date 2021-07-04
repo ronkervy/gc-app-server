@@ -18,8 +18,8 @@ function InvoicePreview(props) {
     const pdf = query.get("pdf");
 
     const handleClose = ()=>{
-        setOpen(false);
         history.goBack();
+        setOpen(false);        
     }
 
     useEffect(()=>{

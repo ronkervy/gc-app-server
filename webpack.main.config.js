@@ -63,7 +63,9 @@ module.exports = {
    */
   entry: './src/main.js',
   externalsPresets: { node: true },
-  externals : [nodeExternals()],
+  externals : [nodeExternals({
+    modulesFromFile : true
+  })],
   // Put your normal webpack config below here
   resolve: {
         alias: {
