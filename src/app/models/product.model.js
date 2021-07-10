@@ -1,6 +1,7 @@
 const { Schema,Types } = require('mongoose');
 const db = require('../config/db.config');
 const { v4 : uuidv4 } = require('uuid');
+const SupplierModel = require('../models/supplier.model');
 
 const ProductSchema = new Schema({
     item_id : {
@@ -68,6 +69,5 @@ ProductSchema.pre('updateOne',{document : true}, async function( next ){
     this.set({ prod_prev_qty : docToUpdate.item_qty });
     next();
 });
-
 
 module.exports = db.model('Product',ProductSchema);

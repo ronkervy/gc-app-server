@@ -25,7 +25,8 @@ const {
     deliverySearch,
     deliveryCreate,
     deliveryUpdate,
-    deliveryDelete    
+    deliveryDelete,
+    generateReport
 } = require('../controllers/api.controller');
 
 const {
@@ -71,5 +72,8 @@ router.get('/gc-print/transactions/:id',transactionDoc);
 
 //OS INFO
 router.get('/server_info',serverInfo);
+
+//REPORST
+router.get('/reports/:model',generateReport);
 
 module.exports = router;

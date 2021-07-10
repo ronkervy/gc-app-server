@@ -7,6 +7,7 @@ const useStyle = {
         backgroundColor : "#FFFFFF",
         borderRadius : "20px",
         marginRight: "10px",
+        marginBottom : "10px",
         '& a' : {
             textDecoration : "none",
             display : "flex",
@@ -64,10 +65,12 @@ const useStyle = {
         justifyContent : "space-between",
         backgroundColor : "white",
         color : "grey",
-        zIndex : "100",
+        zIndex : 200
     },
     titleHead : {
         display : "flex",
+        alignItems : "center",
+        justifyContent : "flex-start",
         '& h3' : {
             display : "flex",
             flexDirection : "column",

@@ -36,7 +36,10 @@ module.exports = {
                 id
             } = req.params;
 
-            const resProduct = await ProductModel.findById(id);
+            const resProduct = await ProductModel.findById(id).populate({
+                path : 'suppliers',
+                select : 'supplier_name'
+            });
 
             res.status(200).json( resProduct );
 
@@ -110,38 +113,43 @@ module.exports = {
             },{
                 ...req.body
             },async (err,product)=>{
-
-                product.suppliers = [];
-                product.suppliers.push(item_supplier);
-                await product.save();
-                
-
-                //Find the supplier in the suppliers table
-                const resSupp = await SupplierModel.findById(item_supplier);
-                const resProdIndex = resSupp.products.indexOf(product._id);
-
-                if( resProdIndex === -1 ){
-                    //before push make sure that the entries in the old supplier is remove
-                    const oldSuppIndex = product.suppliers.indexOf(item_supplier);
-
-                    if( oldSuppIndex !== -1 ){
-                        const oldSupplier = await SupplierModel.findById(product.item_supplier);
-                        const oldSuppProdIndex = oldSupplier.products.indexOf(product._id);
-                        if( oldSuppProdIndex !== -1 ){
-                            oldSupplier.products.splice(oldSuppProdIndex,1);
-                            await oldSupplier.save();
+                try{
+                    product.suppliers = [];
+                    product.suppliers.push(item_supplier);
+                    await product.save();
+                    
+    
+                    //Find the supplier in the suppliers table
+                    const resSupp = await SupplierModel.findById(item_supplier);
+                    const resProdIndex = resSupp.products.indexOf(product._id);
+    
+                    if( resProdIndex === -1 ){
+                        //before push make sure that the entries in the old supplier is remove
+                        const oldSuppIndex = product.suppliers.indexOf(item_supplier);
+    
+                        if( oldSuppIndex !== -1 ){
+                            const oldSupplier = await SupplierModel.findById(product.item_supplier);
+                            const oldSuppProdIndex = oldSupplier.products.indexOf(product._id);
+                            if( oldSuppProdIndex !== -1 ){
+                                oldSupplier.products.splice(oldSuppProdIndex,1);
+                                await oldSupplier.save();
+                            }
                         }
+                        resSupp.products.push(product);
+                    }else{
+                        resSupp.products.map(prods=>{
+                            return {
+                                ...prods
+                            }
+                        });
                     }
-                    resSupp.products.push(product);
-                }else{
-                    resSupp.products.map(prods=>{
-                        return {
-                            ...prods
-                        }
+    
+                    await resSupp.save(); 
+                }catch(err){
+                    return createHttpError.Unauthorized({
+                        message : err.message
                     });
-                }
-
-                await resSupp.save();               
+                }                           
             });
 
             if( productUpdated === null ) return next( createHttpError.NotFound({
@@ -902,6 +910,141 @@ module.exports = {
 
             return res.status(202).json(deliveries);
 
+        }catch(err){
+            return next( createHttpError.Unauthorized({
+                message : err.message
+            }) );
+        }
+    },
+    //Reports
+    generateReport : async (req,res,next)=>{
+        try{
+            const { model } = req.params;
+            const { from,to,id } = req.query;
+
+            const toDate = new Date(to);            
+           
+            if( model === 'deliveries'){
+
+                const resDeliveries = await DeliveryModel.aggregate([
+                    {'$match' : 
+                        {
+                            "createdAt" : {
+                                "$gte" : new Date(from),
+                                "$lte" : new Date(toDate.setDate(toDate.getDate() + 1))
+                            }
+                        }
+                    },
+                    {'$unwind' : '$products'},                
+                    {'$unwind' : '$delivery_qty'},
+                    {'$unwind' : '$item_discount'},
+                    {'$unwind' : '$total_item_price'},
+                    {'$unwind' : '$createdAt'},
+                    {'$unwind' : '$delivery_status'},                
+                    {'$lookup' : 
+                        {
+                            from : 'products',
+                            localField : 'products',
+                            foreignField : '_id',
+                            as : 'products'
+                        }
+                    },                                
+                    {'$lookup' : 
+                        {
+                            from : 'suppliers',
+                            localField : 'products.suppliers',
+                            foreignField : '_id',
+                            as : 'suppliers'
+                        }
+                    },
+                    {'$unwind' : '$products'},
+                    {'$unwind' : '$suppliers'},                    
+                    {'$group' : 
+                        { 
+                            '_id' : '$delivery_id',                        
+                            'count' : { '$sum' : 1 },
+                            'products' : {
+                                '$push' : { 
+                                    'id'  : '$products._id',
+                                    'item' : '$products.item_name',
+                                    'qty' : '$delivery_qty',
+                                    'total' : '$total_item_price',
+                                }
+                            },
+                            'date' : { '$first' : '$createdAt' },
+                            'total' : { '$sum' : '$total_item_price' },
+                            'status' : { '$first' : '$delivery_status' }
+                        }
+                    },
+                    {'$sort' : 
+                        { 'date' : 1 }
+                    },
+                ]);
+
+                return res.status(200).json(resDeliveries);
+
+            }else if( model === 'transactions' ){
+                const resTransaction = await TransactionModel.aggregate([
+                    { '$match' :
+                        {
+                            "createdAt" : {
+                                "$gte" : new Date(from),
+                                "$lte" : new Date(toDate.setDate(toDate.getDate() + 1))
+                            }
+                        }
+                    },
+                    { '$lookup' :
+                        {
+                            from : 'products',
+                            localField : 'product',
+                            foreignField : '_id',
+                            as : 'products'
+                        }
+                    },
+                    {'$unwind' : '$products'},
+                    {
+                        '$lookup' : 
+                        {
+                            from : 'suppliers',
+                            localField : 'products.suppliers',
+                            foreignField : '_id',
+                            as : 'suppliers'
+                        }
+                    },
+                    {'$unwind' : '$suppliers'},
+                    { "$group" :
+                        {
+                            '_id' : '$transact_id',
+                            'customer_name' : { '$first' : '$customer_name' },
+                            'cart_count' : { '$sum' : 1 },
+                            'cart' : {
+                                '$push' : {
+                                    'id' : '$products._id',
+                                    'item' : '$products.item_name',
+                                    'unit_price' : '$products.item_price',
+                                    'purchased_qty' : '$qty',
+                                    'inventory_qty' : '$products.item_qty',
+                                    'discount' : '$discount',
+                                    'supplier' : '$suppliers.supplier_name'
+                                }
+                            },                        
+                            'transaction_date' : { '$first' : '$createdAt' },
+                            'payment_type' : { '$first' : '$transact_payment_type' },
+                            'cash_amount' : { '$first' : '$cash_amount' },
+                            'total_price' : { '$first' : '$total_amount' },
+                            'change_amount' : { '$first' : '$change_amount' }
+                        }  
+                    },
+                    { "$sort" : 
+                        {
+                            'transaction_date' : -1
+                        }
+                    }
+                ]);
+
+                return res.status(200).json(resTransaction);
+            }
+            
         }catch(err){
             return next( createHttpError.Unauthorized({
                 message : err.message

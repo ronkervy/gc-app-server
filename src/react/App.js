@@ -22,6 +22,7 @@ import Toast from "./shared/Toast";
 import { useDispatch } from "react-redux";
 import { CloseNotification } from "./shared/store/NotificationSlice";
 import InvoicePreview from './deliveries/components/InvoicePreview';
+import Reports from "./reports/components/Reports";
 
 function App(props) {
 
@@ -86,6 +87,9 @@ function App(props) {
                   </Route>
                   <Route exact path="/products/search/:search" >
                         <SearchResDialog />
+                  </Route>
+                  <Route exact path="/reports" >
+                        <Reports />
                   </Route>
                   <Route exact path="/products/del/:id" >
                         <ProdDeleteModal />

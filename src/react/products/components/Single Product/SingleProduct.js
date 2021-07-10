@@ -1,280 +1,259 @@
+import React,{forwardRef, useEffect,useState} from 'react';
 import { 
-    AppBar, 
-    Dialog, 
-    Grid, 
-    IconButton, 
-    Tab, 
-    Tabs, 
-    Toolbar, 
+    Dialog,
+    Slide,
+    Toolbar,
+    Button,
+    TextField,
     withStyles,
-    Box,
-    Typography,
-    Divider,
-    Slide
+    Grid,
+    MenuItem,
+    AppBar,
+    IconButton,
+    Table,
+    TableContainer,
+    TableHead,
+    TableRow,
+    TableCell,
+    TableBody,
+    TextareaAutosize
 } from '@material-ui/core';
-import NumberFormat from 'react-number-format';
-import React, { useEffect, useState, forwardRef } from 'react';
 import { Close } from '@material-ui/icons';
-import Styles from '../Styles';
-import AddEditProd from '../AddEdit/AddEditProd';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBoxes, faCalendar, faEdit, faMoneyCheck, faMoneyCheckAlt, faUserTie } from '@fortawesome/free-solid-svg-icons';
-import ProductHistory from '../ProductHistory';
-// import jsbarcode from 'jsbarcode';
-import { useHistory, useParams } from 'react-router';
+import { useHistory } from 'react-router';
+import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { getProduct } from '../../store/ProdServices';
-import { getSingleSupplier } from '../../../suppliers/store/SupplierServices';
+import { getProduct, updateProduct } from '../../store/ProdServices';
 import Loader from '../../../shared/Loader';
+import { useFormik } from 'formik';
+import Styles from '../Styles';
+import { OpenNotification } from '../../../shared/store/NotificationSlice';
 
-const TabPanel = (props)=>{
-    const {mode,children,data,value,index,...other} = props;    
-    
-    useEffect(()=>{
-        if( value === 0 ){
-            // jsbarcode("#barcode",data.item_code,{
-            //     textPosition : "bottom",
-            //     textMargin : 3,
-            //     fontSize : 15,
-            //     fontOptions : "bold",
-            //     height : 80,
-            //     width : 1,
-            //     displayValue : false,
-            //     text : data.item_name
-            // });
-        }
-    },[children,value]);
-
-    return (
-        <div
-          role="tabpanel"
-          hidden={value !== index}
-          id={`simple-tabpanel-${index}`}
-          aria-labelledby={`simple-tab-${index}`}
-          {...other}
-        >
-          {value === index && (
-            <Box p={3}>
-              {children}
-            </Box>
-          )}
-        </div>
-    );
-}
-
-function a11yProps(index) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
-
-const Transition = forwardRef((props,ref)=>{
-    return <Slide
-        direction="up" ref={ref} {...props}
-    />
-});
-
-function SingleProduct(props) {
-
-    const { 
-        classes
-    } = props;
+const EditForm = ({product})=>{
 
     const dispatch = useDispatch();
-    const { loading : prodLoading } = useSelector(state=>state.products);
-    const { loading : suppLoading } = useSelector(state=>state.suppliers);
-    const { selectedProd : data } = useSelector(state=>state.products);
-    const { entities : supp } = useSelector(state=>state.suppliers);
-
-    const [openDialog,setOpenDialog] = useState(false);
-    const [value,setValue] = useState(0);
-    const dnow = new Date(data.createdAt).toLocaleDateString('en-US',{month : 'short',year : 'numeric',day : '2-digit'});
-    const dupdated = new Date(data.updatedAt).toLocaleDateString('en-US',{month : 'short',year : 'numeric',day : '2-digit'});
     const history = useHistory();
-    const { id } = useParams();
+    const { entities : suppliers, loading } = useSelector(state=>state.suppliers);
 
-    const handleClose = ()=>{
-        history.goBack();
-        setOpenDialog(false);
+    const validate = (values)=>{
+        const errors = {};
+
+        if( values.item_name === '' ){
+            errors.item_name = true;
+        }
+
+        if( values.item_price === '' ){
+            errors.item_price = true;
+        }
+
+        if( values.item_qty === '' ){
+            errors.item_qty = true
+        }
     }
 
-    const handleChange = (e,newVal)=>{
-        setValue(newVal);
-    }
+    const formik = useFormik({
+        initialValues : {
+            item_code : product.item_code,
+            item_name : product.item_name,
+            item_qty : product.item_qty,
+            item_price : product.item_price,
+            item_supplier : product.item_supplier
+        },
+        validate,
+        onSubmit : async(values)=>{
+            const resUpdate = await dispatch( updateProduct({
+                opt : {
+                    url : '/products/' + product.item_id
+                },
+                values
+            }) );
 
-    useEffect(()=>{
-        dispatch( getProduct({
-            opt : {
-                url : '/products/' + id
+            if( updateProduct.fulfilled.match(resUpdate) ){
+                dispatch( OpenNotification({
+                    message : 'Product has been updated.',
+                    severity : 'success'
+                }) );
+                history.goBack();
+            }else{
+                dispatch( OpenNotification({
+                    message : 'Product not updated.',
+                    severity : 'error'
+                }) );
             }
-        }));
-    },[id]);
+        }
+    });
 
-    useEffect(() => {
-        setOpenDialog(true)
-        dispatch( getSingleSupplier({
-            opt : {
-                url : '/suppliers'
-            }
-        }) );  
-    }, [])
-
-    if( prodLoading || suppLoading ){
+    if( loading ){
         return(
             <Loader />
         )
     }
 
-    return (
-            <Dialog
-                fullScreen
-                open={openDialog}
-                onClose={handleClose}
-                TransitionComponent={Transition}  
-                onKeyPress={(e)=>{
-                    if(e.key === 'Esc'){
-                        handleClose();
-                    }
-                }}     
-            >
-                <AppBar color="inherit" style={{position : "relative"}}>
-                    <Toolbar variant="dense">
-                        <Grid container spacing={2}>
-                            <Grid item lg={10} sm={10}>
-                                <Tabs
-                                    value={value}
-                                    indicatorColor="primary"
-                                    textColor="primary"
-                                    onChange={handleChange}
-                                    style={{WebkitAppRegion: "no-drag"}}                            
-                                >
-                                    <Tab icon={<FontAwesomeIcon icon={faEdit} />} label="Edit Product" {...a11yProps} />
-                                    <Tab icon={<FontAwesomeIcon icon={faMoneyCheck} />} label="Product Purchase History" {...a11yProps} />                                
-                                </Tabs>
-                            </Grid>
-                            <Grid item lg={2} sm={2} style={{
-                                WebkitAppRegion: "no-drag",
-                                display: "flex",
-                                justifyContent : "flex-end",
-                                alignItems : "center",
-                                flexDirection : "row"                            
-                            }}>
-                                <IconButton
-                                    disableRipple={true}
-                                    size="small"
-                                    edge="start"
-                                    color="inherit"
-                                    onClick={handleClose}
-                                    aria-label="close"
-                                >
-                                    <Close style={{ color : "red" }} />
-                                </IconButton>                                                
-                            </Grid>                        
-                        </Grid>                                  
-                    </Toolbar>
-                </AppBar>
-                <TabPanel data={data} value={value} index={0} >
-                    <Grid container spacing={1}>
-                        <Grid 
-                            item
-                            lg={3} 
-                            sm={3}
-                            style={{marginTop : "7px"}}          
-                            className={classes.SingleProdTabWrap}              
-                        >
-                            <Grid 
-                                item 
-                                lg={12} 
-                                sm={12}                         
-                                className={classes.SingleProdBarcodeBottom}                                
-                            >
-                                <h2 style={{ marginTop : "0px", textAlign : "center" }}>ITEM QTY</h2>
-                                <Divider variant="inset" />
-                                <Grid item lg={12} sm={12}>
-                                    <FontAwesomeIcon color="blue" icon={faBoxes} />&nbsp;
-                                    <small>                                    
-                                        On Stock : {data.item_qty}
-                                    </small>
-                                </Grid>                                                                                
-                            </Grid>
-                            <Divider variant="inset" />
-                            <Grid 
-                                item 
-                                lg={12} 
-                                sm={12} 
-                                className={classes.SingleProdBarcodeTop}
-                            >
-                                <canvas id="barcode"></canvas>
-                            </Grid>
-                            <Grid 
-                                item 
-                                lg={12} 
-                                sm={12}                         
-                                className={classes.SingleProdBarcodeBottom}                                
-                            >
-                                <h2 style={{ margin : "5px" }}>ITEM INFO</h2>
-                                <Divider variant="inset" />
-                                <Grid item lg={12} sm={12}>
-                                    <FontAwesomeIcon color="grey" icon={faUserTie} />&nbsp;
-                                    <small style={{textAlign : "center", color: "green"}}>                                    
-                                        Supplier ID : {data.item_supplier}
-                                    </small>
-                                </Grid> 
-                                <Grid item lg={12} sm={12}>
-                                    <FontAwesomeIcon color="maroon" icon={faCalendar} />&nbsp;
-                                    <small>Date Created : {dnow}</small>
-                                </Grid>
-                                <Grid item lg={12} sm={12}>
-                                    <FontAwesomeIcon color="maroon" icon={faCalendar} />&nbsp;
-                                    <small>Last Updated : {dupdated}</small>
-                                </Grid>                           
-                                <Grid item lg={12} sm={12}>
-                                    <FontAwesomeIcon color="green" icon={faMoneyCheckAlt} />&nbsp;                                
-                                    <small>                                   
-                                        <NumberFormat 
-                                            displayType="text" 
-                                            value={data.item_price} 
-                                            thousandSeparator={true} 
-                                            prefix={'Current Price : Php '} 
-                                            decimalScale={2} 
-                                            decimalSeparator={'.'}
-                                            fixedDecimalScale={true}
-                                        />                                     
-                                    </small>
-                                </Grid>
-                                <Grid item lg={12} sm={12}>
-                                    <FontAwesomeIcon color="green" icon={faMoneyCheckAlt} />&nbsp;                                 
-                                    <small>                                    
-                                        <NumberFormat 
-                                            displayType="text" 
-                                            value={data.item_selling_price} 
-                                            thousandSeparator={true} 
-                                            prefix={'Current SRP : Php '} 
-                                            decimalScale={2} 
-                                            decimalSeparator={'.'}
-                                            fixedDecimalScale={true}
-                                        />                                     
-                                    </small>
-                                </Grid>                                                    
-                            </Grid>                                               
-                        </Grid>
-                        <Grid item lg={9} sm={9}>
-                            <AddEditProd 
-                                key={id}
-                                supp={supp} 
-                                mode="edit" 
-                                data={data} 
-                                handleClose={handleClose} 
-                            />
-                        </Grid>                    
-                    </Grid>
-                </TabPanel>
-                <TabPanel data={data} value={value} index={1}>
-                    <ProductHistory />
-                </TabPanel>
-            </Dialog>
-        )
+    return(
+        <form onSubmit={formik.handleSubmit}>
+            <Grid container spacing={2}>
+                <Grid item lg={6} sm={6}>
+                    <TextField
+                        size="small"
+                        fullWidth
+                        onBlur={formik.handleBlur}
+                        error={formik.errors.item_name}
+                        label="Product Name"
+                        variant="outlined"
+                        id="item_name"
+                        name="item_name"
+                        onChange={formik.handleChange}
+                        value={formik.values.item_name}
+                    />
+                </Grid>
+                <Grid item lg={6} sm={6}>
+                    <TextField
+                        size="small"
+                        fullWidth
+                        onBlur={formik.handleBlur}
+                        error={formik.errors.item_code}
+                        label="Product Code"
+                        variant="outlined"
+                        id="item_code"
+                        name="item_code"
+                        onChange={formik.handleChange}
+                        value={formik.values.item_code}
+                    />
+                </Grid>
+                <Grid item lg={6} sm={6}>
+                    <TextField
+                        size="small"
+                        fullWidth
+                        onBlur={formik.handleBlur}
+                        error={formik.errors.item_price}
+                        label="Item Price"
+                        variant="outlined" 
+                        id="item_price"
+                        name="item_price"
+                        onChange={formik.handleChange}
+                        value={formik.values.item_price}
+                    />
+                </Grid>
+                <Grid item lg={6} sm={6}>
+                    <TextField
+                        size="small"
+                        fullWidth
+                        onBlur={formik.handleBlur}
+                        error={formik.errors.item_qty} 
+                        label="QTY"
+                        variant="outlined"
+                        id="item_qty"
+                        name="item_qty"
+                        onChange={formik.handleChange}
+                        value={formik.values.item_qty}
+                    />
+                </Grid>
+                <Grid item lg={8} sm={8}>
+                    <TextField
+                        select
+                        size="small"
+                        fullWidth
+                        onBlur={formik.handleBlur}
+                        error={formik.errors.item_name}
+                        label="Supplier"
+                        variant="outlined"
+                        id="item_supplier"
+                        name="item_supplier"
+                        onChange={formik.handleChange}
+                        value={formik.values.item_supplier}
+                    >
+                        {suppliers.map((supplier,index)=>(
+                           <MenuItem
+                            key={index}
+                            value={supplier._id}
+                           >{supplier.supplier_name}</MenuItem> 
+                        ))}                        
+                    </TextField>
+                </Grid>
+                <Grid item lg={4} sm={4}>
+                    <Button 
+                        fullWidth
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                    >Update</Button>
+                </Grid>                
+            </Grid>
+        </form>
+    )
 }
 
-export default withStyles(Styles)(SingleProduct)
+const TransitionComp = forwardRef((props,ref)=>{
+    return <Slide direction="up" ref={ref} {...props} />
+});
+
+const SingleProduct = (props)=>{
+
+    const { ProductModal,SingleProdAppBar,SingleProdTable } = props.classes;
+    const { id } = useParams();
+    const dispatch = useDispatch();
+    const { selectedProd, loading } = useSelector(state=>state.products);    
+
+    const [open,setOpen] = useState(false);
+    const history = useHistory();
+
+    const handleClose = ()=>{
+        history.goBack();
+        setOpen(false);
+    }
+
+    useEffect(()=>{
+        setOpen(true);
+        dispatch( getProduct({
+            opt : {
+                url : '/products/' + id
+            }
+        }) );
+    },[id]);
+
+    if( loading ){
+        return(
+            <Loader />
+        )
+    }
+
+    return(
+        <Dialog
+            open={open}
+            onClose={handleClose}
+            fullScreen  
+            TransitionComponent={TransitionComp}
+            style={{
+                padding : "50px"
+            }}
+        >
+            <AppBar className={SingleProdAppBar} style={{ position : "relative", WebkitAppRegion : 'no-drag' }}>
+                <Toolbar variant="dense">
+                    <IconButton size="small"  edge="start" color="inherit" onClick={handleClose}>
+                        <Close />
+                    </IconButton>
+                </Toolbar>
+            </AppBar>
+            <div className={ProductModal}>
+                {console.log(selectedProd)}
+                <EditForm product={selectedProd} />
+                <Grid container spacing={2}>
+                    <Grid item lg={12} sm={12}>
+                        <TableContainer elevation={3} className={SingleProdTable}>
+                            <Table size="small" stickyHeader aria-label="sticky table" >
+                                <TableHead>
+                                    <TableRow>
+                                        <TableCell>Name</TableCell>
+                                        <TableCell>Item Price</TableCell>
+                                        <TableCell>Item QTY</TableCell>                                </TableRow>
+                                </TableHead>
+                                <TableBody></TableBody>
+                            </Table>
+                        </TableContainer>
+                    </Grid>
+                </Grid>
+            </div>
+        </Dialog>
+    )
+}
+
+export default withStyles(Styles)(SingleProduct);

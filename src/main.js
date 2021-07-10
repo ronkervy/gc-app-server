@@ -1,5 +1,6 @@
 const { app,BrowserWindow,ipcMain } = require('electron');
 const exec = require('child_process').exec;
+const { default : installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
 
 const path = require('path');
 const server = require('./app/index');
@@ -19,9 +20,7 @@ const createWindow = ()=>{
         height : 800,        
         webPreferences : {
             nodeIntegration : true,
-            webviewTag : true,
             contextIsolation : false,
-            plugins : true,
             preload : server
         },
         autoHideMenuBar : true,
@@ -29,8 +28,8 @@ const createWindow = ()=>{
         frame : false,
     });
 
-    win.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
     win.webContents.openDevTools();
+    win.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
     win.on('closed',()=>{
         win = null;
@@ -61,9 +60,12 @@ app.whenReady().then(()=>{
     
     execute(`setx REACT_APP_HOST "${ipaddr}"`,(result)=>{
         console.log(result);
+        createWindow();
     });
-
-    createWindow();
+    
+    installExtension(REDUX_DEVTOOLS)
+    .then((name) => console.log(`Added Extension:  ${name}`))
+    .catch((err) => console.log('An error occurred: ', err));    
 });
 
 app.on('window-all-closed',()=>{

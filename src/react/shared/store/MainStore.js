@@ -5,6 +5,8 @@ import DeliveriesReducer from '../../deliveries/store/DeliveriesSlice';
 import NotificationReducer from './NotificationSlice';
 import InvoiceReducer from './InvoiceSlice';
 import PrinterReducer from './PrinterSlice';
+import TransactionReducer from '../../transactions/store/TransactionSlice';
+import ReportReducer from '../../reports/store/ReportSlice';
 
 export default configureStore({
     reducer : {
@@ -13,7 +15,9 @@ export default configureStore({
         deliveries : DeliveriesReducer,
         notifications : NotificationReducer,
         invoice : InvoiceReducer,
-        printers : PrinterReducer
+        printers : PrinterReducer,
+        transactions : TransactionReducer,
+        report : ReportReducer
     },    
     middleware : getDefaultMiddleware({
         serializableCheck : false

@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { createTransaction, deleteTransaction, getAllTransaction,updateTransaction } from './TransactionServices';
 
-const transactionSlice = createSlice({
+const TransactionSlice = createSlice({
     name : 'transactions',
     initialState : {
         entities : [],
@@ -61,4 +61,4 @@ const transactionSlice = createSlice({
     }
 });
 
-export default transactionSlice.reducer;
+export default TransactionSlice.reducer;

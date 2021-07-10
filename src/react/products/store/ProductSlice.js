@@ -72,7 +72,6 @@ const ProductSlice = createSlice({
         })
         .addCase(updateProduct.fulfilled,(state,{payload})=>{
             state.loading = false;
-            state.entities[payload.item_id] = payload;
             state.selectedProd = payload;          
         })
         .addCase(updateProduct.rejected,(state,{payload})=>{

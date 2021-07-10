@@ -86,7 +86,7 @@ function AddDeliveries(props) {
                 }
             }}
         >
-            <AppBar color="inherit" position="relative">
+            <AppBar position="relative">
                 <Toolbar variant="dense">
                     <Grid container spacing={2}>
                         <Grid item lg={2} sm={2} style={{WebkitAppRegion: "no-drag"}}>

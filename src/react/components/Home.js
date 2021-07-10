@@ -11,18 +11,26 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
     getProducts
 } from '../products/store/ProdServices';
+
 import { useHistory } from 'react-router-dom';
 import Loader from '../shared/Loader';
+import { getAllTransaction } from '../transactions/store/TransactionServices';
 
 function Home(props) {
 
     const { classes } = props;
     const dispatch = useDispatch();
     const { entities : products,loading } = useSelector(state=>state.products);
+    const { entities : transactions } = useSelector( state=>state.transactions );
     const history = useHistory();
 
     useEffect(()=>{
         dispatch( getProducts('/products') );
+        dispatch( getAllTransaction({
+            opt : {
+                url : '/transactions'
+            }
+        }) );
     },[]);
 
     const filterLowCounts = (prods)=>{
@@ -33,6 +41,14 @@ function Home(props) {
             }
         });
         return lowArr.length;
+    }
+
+    const filterCountCurrentSales = (prods)=>{
+        const currSales = [];
+        transactions.map(transaction=>{
+            currSales.push(transaction.transaction_date);
+        });
+        return currSales.length;
     }
 
     if( loading ){
@@ -122,8 +138,10 @@ function Home(props) {
                         lg={4}
                         sm={4}
                     >
-                        <h2 style={{margin: "0px",textAlign : "left"}}>2400</h2>
-                        <p style={{margin: "0px"}}>Test</p>
+                        <h2 style={{margin: "0px",textAlign : "left"}}>
+                            {filterCountCurrentSales(products)}
+                        </h2>
+                        <p style={{margin: "0px"}}>Total Sales</p>
                     </Grid>
                     <Grid
                         item

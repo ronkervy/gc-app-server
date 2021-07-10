@@ -58,7 +58,7 @@ function SuppliersList(props) {
                 sm={12}
             >
                 <TableContainer elevation={3} component={Paper} className={classes.Table} >
-                    <Table stickyHeader aria-label="sticky table" size="medium"  >
+                    <Table stickyHeader aria-label="sticky table" size="small"  >
                         <TableHead>
                             <TableRow>
                                 <TableCell><FontAwesomeIcon icon={faIdCard} /> ID</TableCell>

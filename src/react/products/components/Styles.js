@@ -4,6 +4,15 @@ const useStyles = {
         marginTop : "10px",
         borderRadius : "10px"
     },  
+    SingleProdAppBar : {
+        
+    },
+    SingleProdTable : {
+        marginTop : "20px",
+        overflowY : "scroll",
+        minHeight : "350px",
+        height : "100%"
+    },
     textarea : {
         width : "100%",
         height : '200px',
@@ -30,9 +39,8 @@ const useStyles = {
         background : "#ffffff",
         position : "absolute",
         flexDirection : "column",
-        top : "50%",
-        left : "50%",
-        transform : "translate(-50%,-50%)",
+        padding : "50px",
+        marginTop : "50px"
     },
     DeleteModal : {
         background : "#ffffff",
@@ -55,9 +63,6 @@ const useStyles = {
                 marginTop : "0px"
             }
         }
-    },
-    SingleProduct : {
-        
     },
     SingleProdBarcodeTop : {       
         height: "150px",                         

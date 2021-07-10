@@ -13,10 +13,8 @@ const NotificationSlice = createSlice({
             state.severity = payload.severity;
             state.message = payload.message;
         },
-        CloseNotification : (state,{payload})=>{
+        CloseNotification : state=>{
             state.open = false;
-            state.severity = '';
-            state.message = '';
         }
     }
 });

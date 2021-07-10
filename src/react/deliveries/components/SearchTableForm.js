@@ -165,9 +165,6 @@ function SearchTable(props) {
                     </TextField>
                 </FormControl>
             </Grid>
-            <Grid item lg={12} sm={12}>
-                <Box borderRadius={3} padding={2} boxShadow={2}>Test</Box>
-            </Grid>
             <Grid item lg={6} sm={6}>                    
                     <TableContainer component={Paper}>
                         <Table size="small">

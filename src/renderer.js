@@ -26,3 +26,4 @@
  * ```
  */
 import './react/index.js';
+import './index.css';

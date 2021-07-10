@@ -98,8 +98,9 @@ function AddSupplier(props) {
                     handleCloseDialog();
                 }
             }}         
+            style={{ padding : "50px" }}
         >
-            <AppBar color="inherit" position="relative">
+            <AppBar position="relative">
                 <Toolbar variant="dense">
                     <Grid container spacing={2}>
                         <Grid item lg={2} sm={2} style={{WebkitAppRegion: "no-drag"}}>
@@ -111,7 +112,7 @@ function AddSupplier(props) {
                                 onClick={handleCloseDialog}
                                 aria-label="close"
                             >
-                                <Close style={{ color : "red" }} />
+                                <Close />
                             </IconButton>                                                
                         </Grid>
                         <Grid item lg={10} sm={10}>                            
