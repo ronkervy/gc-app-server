@@ -25,13 +25,13 @@ const {
     deliverySearch,
     deliveryCreate,
     deliveryUpdate,
-    deliveryDelete,
-    generateReport
+    deliveryDelete
 } = require('../controllers/api.controller');
 
 const {
     generatePdf,
-    transactionDoc
+    transactionDoc,
+    generateReportDoc
 } = require('../controllers/printer.controller');
 
 //PRODUCTS ROUTES
@@ -74,6 +74,6 @@ router.get('/gc-print/transactions/:id',transactionDoc);
 router.get('/server_info',serverInfo);
 
 //REPORST
-router.get('/reports/:model',generateReport);
+router.get('/reports/:model',generateReportDoc);
 
 module.exports = router;

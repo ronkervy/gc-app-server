@@ -118,5 +118,139 @@ module.exports = {
                 message : err.message
             }) );
         }
+    },
+    generateReportDoc : async(req,res,next)=>{
+        try{
+            const { model } = req.params;
+            const { from,to,id } = req.query;
+
+            const toDate = new Date(to);            
+           
+            if( model === 'deliveries'){
+
+                const resDeliveries = await DeliveryModel.aggregate([
+                    {'$match' : 
+                        {
+                            "createdAt" : {
+                                "$gte" : new Date(from),
+                                "$lte" : new Date(toDate.setDate(toDate.getDate() + 1))
+                            }
+                        }
+                    },
+                    {'$unwind' : '$products'},                
+                    {'$unwind' : '$delivery_qty'},
+                    {'$unwind' : '$item_discount'},
+                    {'$unwind' : '$total_item_price'},
+                    {'$unwind' : '$createdAt'},
+                    {'$unwind' : '$delivery_status'},                
+                    {'$lookup' : 
+                        {
+                            from : 'products',
+                            localField : 'products',
+                            foreignField : '_id',
+                            as : 'products'
+                        }
+                    },                                
+                    {'$lookup' : 
+                        {
+                            from : 'suppliers',
+                            localField : 'products.suppliers',
+                            foreignField : '_id',
+                            as : 'suppliers'
+                        }
+                    },
+                    {'$unwind' : '$products'},
+                    {'$unwind' : '$suppliers'},                    
+                    {'$group' : 
+                        { 
+                            '_id' : '$delivery_id',                        
+                            'count' : { '$sum' : 1 },
+                            'products' : {
+                                '$push' : { 
+                                    'id'  : '$products._id',
+                                    'item' : '$products.item_name',
+                                    'qty' : '$delivery_qty',
+                                    'total' : '$total_item_price',
+                                }
+                            },
+                            'date' : { '$first' : '$createdAt' },
+                            'total' : { '$sum' : '$total_item_price' },
+                            'status' : { '$first' : '$delivery_status' }
+                        }
+                    },
+                    {'$sort' : 
+                        { 'date' : 1 }
+                    },
+                ]);
+
+                return res.status(200).json(resDeliveries);
+
+            }else if( model === 'transactions' ){
+                const resTransaction = await TransactionModel.aggregate([
+                    { '$match' :
+                        {
+                            "createdAt" : {
+                                "$gte" : new Date(from),
+                                "$lte" : new Date(toDate.setDate(toDate.getDate() + 1))
+                            }
+                        }
+                    },
+                    { '$lookup' :
+                        {
+                            from : 'products',
+                            localField : 'product',
+                            foreignField : '_id',
+                            as : 'products'
+                        }
+                    },
+                    {'$unwind' : '$products'},
+                    {
+                        '$lookup' : 
+                        {
+                            from : 'suppliers',
+                            localField : 'products.suppliers',
+                            foreignField : '_id',
+                            as : 'suppliers'
+                        }
+                    },
+                    {'$unwind' : '$suppliers'},
+                    { "$group" :
+                        {
+                            '_id' : '$transact_id',
+                            'customer_name' : { '$first' : '$customer_name' },
+                            'cart_count' : { '$sum' : 1 },
+                            'cart' : {
+                                '$push' : {
+                                    'id' : '$products._id',
+                                    'item' : '$products.item_name',
+                                    'unit_price' : '$products.item_price',
+                                    'purchased_qty' : '$qty',
+                                    'inventory_qty' : '$products.item_qty',
+                                    'discount' : '$discount',
+                                    'supplier' : '$suppliers.supplier_name'
+                                }
+                            },                        
+                            'transaction_date' : { '$first' : '$createdAt' },
+                            'payment_type' : { '$first' : '$transact_payment_type' },
+                            'cash_amount' : { '$first' : '$cash_amount' },
+                            'total_price' : { '$first' : '$total_amount' },
+                            'change_amount' : { '$first' : '$change_amount' }
+                        }  
+                    },
+                    { "$sort" : 
+                        {
+                            'transaction_date' : -1
+                        }
+                    }
+                ]);
+
+                return res.status(200).json(resTransaction);
+            }
+            
+        }catch(err){
+            return next( createHttpError.Unauthorized({
+                message : err.message
+            }) );
+        }
     }
 }

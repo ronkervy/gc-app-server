@@ -19,7 +19,7 @@ const TransitionPage = forwardRef((props,ref)=>{
     return <Slide direction="up" ref={ref} {...props} />
 });
 
-const DatePicker = ()=>{
+const DatePicker = ({report})=>{
     const [selectedFromDate, setSelectedFromDate] = React.useState(new Date(Date.now()));
     const [selectedToDate, setSelectedToDate] = React.useState(new Date(Date.now()));
     const [filterModel,setFilterModel] = useState('deliveries');
@@ -137,6 +137,14 @@ const DatePicker = ()=>{
                     borderColor : "white",
                     backgroundColor : "orange"            
                 }}
+                onClick={()=>{
+                    console.log(selectedFromDate.toISOString().split('T')[0],selectedToDate.toISOString().split('T')[0]);
+                    report({
+                        from : selectedFromDate.toISOString().split('T')[0],
+                        to : selectedToDate.toISOString().split('T')[0],
+                        model : filterModel
+                    });
+                }}
             >Generate Report</Button>
           </Grid>
         </MuiPickersUtilsProvider>
@@ -155,12 +163,30 @@ function Reports() {
         setOpen(false);        
     }
 
+    const requestReport = async (args)=>{
+
+        const { from,to,model } = args;
+        const resReport = await dispatch(generateReport({
+            url : `/${model}?from=${from}&to=${to}`
+        }));
+
+        if( generateReport.fulfilled.match(resReport) ){
+            console.log(resReport.payload);
+        }else{
+            dispatch( OpenNotification({
+                message : 'Error generating report.',
+                severity : 'error'
+            }));
+        }
+        return resReport;
+    }
+
     useEffect(()=>{
         const defaultDate = new Date(Date.now());
 
         const reportDefault = async ()=>{
             const resReport = await dispatch(generateReport({
-                url : `/transactions?from=${defaultDate.toLocaleDateString()}&to=${defaultDate.toLocaleDateString()}`
+                url : `/transactions?from=2021-06-01&to=2021-06-20`
             }));
 
             if( generateReport.fulfilled.match(resReport) ){
@@ -202,7 +228,7 @@ function Reports() {
                     >
                         <Close />
                     </IconButton>
-                    <DatePicker />
+                    <DatePicker report={requestReport} />
                 </Toolbar>
             </AppBar>
             <Grid container style={{ padding: "20px" }}>
