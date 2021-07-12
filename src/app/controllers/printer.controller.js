@@ -10,6 +10,8 @@ const transactionDocDef = require('../config/PrintDocDef');
 const path = require('path');
 const fs = require('fs');
 
+const logoPath = path.resolve(__dirname,'../','renderer/main_window/public/img/logo.png');
+
 module.exports = {
     generatePdf : async ( req,res,next )=>{
         try{
@@ -44,8 +46,6 @@ module.exports = {
                 return arr;
             });
 
-            const docDef = DocumentDef(prodArr);   
-            const logoPath = path.resolve(__dirname,'../','renderer/main_window/public/img/logo.png');  
             let pngimage = fs.readFileSync(logoPath);
 
             return res.json({
@@ -183,7 +183,22 @@ module.exports = {
                     },
                 ]);
 
-                return res.status(200).json(resDeliveries);
+                let pngimage = fs.readFileSync(logoPath);
+
+                const delArr = resDeliveries.map(delivery=>{
+                    let arr = [];
+
+                    
+
+                    return arr;
+                });
+
+                return res.status(200).json({
+                    doc : JSON.stringify(delArr),
+                    logo : new Buffer.from(pngimage).toString('base64')
+                });
+
+                // return res.status(200).json(resDeliveries);
 
             }else if( model === 'transactions' ){
                 const resTransaction = await TransactionModel.aggregate([
