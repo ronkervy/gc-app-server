@@ -6,7 +6,8 @@ const ReportSlice = createSlice({
     initialState : {
         entities : [],
         loading : true,
-        error : ''
+        error : '',
+        doc : ''
     },
     reducers : {},
     extraReducers : builder=>{
@@ -15,7 +16,7 @@ const ReportSlice = createSlice({
         })
         .addCase(generateReport.fulfilled,(state,{payload})=>{
             state.loading = false;
-            state.entities = payload;
+            state.doc = payload;
         })
         .addCase( generateReport.rejected,(state,{payload})=>{
             state.loading = false;

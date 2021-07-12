@@ -156,7 +156,7 @@ function Reports() {
     const [open,setOpen] = useState(false);
     const history = useHistory();
     const dispatch = useDispatch();
-    const { entities : report, loading } = useSelector( state=>state.report );
+    const { doc, loading } = useSelector( state=>state.report );
 
     const handleClose = ()=>{        
         history.goBack();

@@ -915,10 +915,5 @@ module.exports = {
                 message : err.message
             }) );
         }
-    },
-    //Reports
-    generateReport : async (req,res,next)=>{
-        
     }
-
 }

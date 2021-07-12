@@ -185,16 +185,22 @@ module.exports = {
 
                 let pngimage = fs.readFileSync(logoPath);
 
-                const delArr = resDeliveries.map(delivery=>{
+                const deliveryArr = resDeliveries.map(delivery=>{
                     let arr = [];
 
-                    
+                    arr.push(
+                        {text : delivery._id},
+                        {text : delivery.count},
+                        {text : delivery.date},
+                        {text : delivery.total},
+                        {text : delivery.status}
+                    );
 
                     return arr;
                 });
 
                 return res.status(200).json({
-                    doc : JSON.stringify(delArr),
+                    doc : JSON.stringify(deliveryArr),
                     logo : new Buffer.from(pngimage).toString('base64')
                 });
 
@@ -259,7 +265,25 @@ module.exports = {
                     }
                 ]);
 
-                return res.status(200).json(resTransaction);
+                let pngimage = fs.readFileSync(logoPath);
+
+                const transArr = resTransaction.map(transaction=>{
+                    let arr = [];
+
+                    arr.push(
+                        {text : transaction.customer_name},
+                        {text : transaction.cart_count},
+                        {text : transaction.transaction_date},
+                        {text : transaction.total_price}
+                    );
+
+                    return arr;
+                });
+
+                return res.status(200).json({
+                    doc : JSON.stringify(transArr),
+                    logo : new Buffer.from(pngimage).toString('base64')
+                });
             }
             
         }catch(err){
