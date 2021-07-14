@@ -2,6 +2,10 @@ const ProductModel = require('../models/product.model');
 const SupplierModel = require('../models/supplier.model');
 const DeliveryModel = require('../models/delivery.model');
 const TransactionModel = require('../models/transaction.model');
+const formatter = new Intl.NumberFormat('en-PH',{
+    style : 'currency',
+    currency : 'Php'
+});
 
 const createHttpError = require('http-errors');
 const {createPdf} = require('../config/create.pdf');
@@ -270,11 +274,20 @@ module.exports = {
                 const transArr = resTransaction.map(transaction=>{
                     let arr = [];
 
+                    const tdate = new Date(transaction.transaction_date).toISOString().split("T")[0];
+
                     arr.push(
-                        {text : transaction.customer_name},
-                        {text : transaction.cart_count},
-                        {text : transaction.transaction_date},
-                        {text : transaction.total_price}
+                        {text : transaction.customer_name,style : 'tableItems'},
+                        {text : transaction.cart_count,style : 'tableItems'},
+                        {text : tdate,style : 'tableItems'},
+                        {text : transaction.payment_type,style : 'tableItems'},
+                        {
+                            text : formatter.format(transaction.total_price),
+                            style : 'tableItems',
+                            price : transaction.total_price,
+                            from,
+                            to
+                        }
                     );
 
                     return arr;

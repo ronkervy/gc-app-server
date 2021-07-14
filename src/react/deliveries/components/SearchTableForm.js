@@ -240,8 +240,8 @@ function SearchTable(props) {
                                             count={products.length}
                                             rowsPerPage={rowsPerPage}
                                             page={page}
-                                            onChangePage={handleChangePage}
-                                            onChangeRowsPerPage={handleChangeRowsPerPage}
+                                            onPageChange={handleChangePage}
+                                            onRowsPerPageChange={handleChangeRowsPerPage}
                                         />
                                     </TableCell>
                                 </TableRow>
@@ -347,8 +347,8 @@ function SearchTable(props) {
                                             count={cart.length}
                                             rowsPerPage={cartRowsPerPage}
                                             page={cartPage}
-                                            onChangePage={handleChangeCartPage}
-                                            onChangeRowsPerPage={handleChangeCartRowsPerPage}
+                                            onPageChange={handleChangeCartPage}
+                                            onRowsPerPageChange={handleChangeCartRowsPerPage}
                                         />
                                     </TableCell>
                                 </TableRow>

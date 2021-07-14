@@ -14,6 +14,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { generateReport } from '../store/ReportServices';
 import { OpenNotification } from '../../shared/store/NotificationSlice';
 import Loader from '../../shared/Loader';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from "pdfmake/build/vfs_fonts";
+import ReportDocDefDel from './ReportDeliveriesDocDef';
+import ReportTransactionDocDef from './ReportTransactionDocDef';
 
 const TransitionPage = forwardRef((props,ref)=>{
     return <Slide direction="up" ref={ref} {...props} />
@@ -74,7 +78,6 @@ const DatePicker = ({report})=>{
                 <MenuItem
                     key={1} 
                     value="deliveries"
-
                 >Deliveries</MenuItem>
                 <MenuItem key={2} value="transactions">Transactions</MenuItem>
             </TextField>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -156,6 +159,7 @@ function Reports() {
     const [open,setOpen] = useState(false);
     const history = useHistory();
     const dispatch = useDispatch();
+    const [url,setUrl] = useState('');
     const { doc, loading } = useSelector( state=>state.report );
 
     const handleClose = ()=>{        
@@ -171,7 +175,26 @@ function Reports() {
         }));
 
         if( generateReport.fulfilled.match(resReport) ){
-            console.log(resReport.payload);
+
+            const { doc,logo } = resReport.payload;
+            let pdf = JSON.parse(doc);
+            
+            if( pdf.length > 0 ){
+                pdfMake.vfs = pdfFonts.pdfMake.vfs;
+                
+                const docDef = model === 'transactions' ? ReportTransactionDocDef(pdf,logo) : ReportDocDefDel(pdf,logo);
+                const docGenerator = pdfMake.createPdf(docDef);
+    
+                docGenerator.getBlob(blob=>{
+                    setUrl(window.URL.createObjectURL(blob));
+                });
+            }else{
+                dispatch( OpenNotification({
+                    message : 'No Entry on Current Date.',
+                    severity : 'success'
+                }));
+            }
+
         }else{
             dispatch( OpenNotification({
                 message : 'Error generating report.',
@@ -182,15 +205,37 @@ function Reports() {
     }
 
     useEffect(()=>{
-        const defaultDate = new Date(Date.now());
 
-        const reportDefault = async ()=>{
+        const reportDefault = async (args)=>{
+
+            let defaultDate = new Date(Date.now()).toISOString().split('T')[0];
+            let defaultToDate = new Date( Date.now() );
+
             const resReport = await dispatch(generateReport({
-                url : `/transactions?from=2021-06-01&to=2021-06-20`
+                url : `/transactions?from=${'2021-06-01'}&to=${'2021-06-17'}`
             }));
-
-            if( generateReport.fulfilled.match(resReport) ){
-                console.log(resReport.payload);
+    
+            if( generateReport.fulfilled.match(resReport) ){                
+    
+                const { doc,logo } = resReport.payload;
+                let pdf = JSON.parse(doc);
+                
+                if( pdf.length > 0 ){
+                    pdfMake.vfs = pdfFonts.pdfMake.vfs;
+                    
+                    const docDef = ReportTransactionDocDef(pdf,logo);
+                    const docGenerator = pdfMake.createPdf(docDef);
+        
+                    docGenerator.getBlob(blob=>{
+                        setUrl(window.URL.createObjectURL(blob));
+                    });
+                }else{
+                    dispatch( OpenNotification({
+                        message : 'No entry on transactions on current date.',
+                        severity : 'success'
+                    }));
+                }
+    
             }else{
                 dispatch( OpenNotification({
                     message : 'Error generating report.',
@@ -231,11 +276,11 @@ function Reports() {
                     <DatePicker report={requestReport} />
                 </Toolbar>
             </AppBar>
-            <Grid container style={{ padding: "20px" }}>
+            <Grid container style={{ padding: "20px", height : "100%" }}>
                 <iframe
                     title="Report"
-                    src={``}
-                    style={{ margin : "50px 0px", height : "100%", width : "100%" }}
+                    src={url}
+                    style={{ border : "none", display:"block", marginTop : "50px", height : "100% !important", width : "100%" }}
                 ></iframe>
             </Grid>
         </Dialog>

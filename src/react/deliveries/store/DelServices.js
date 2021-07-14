@@ -5,10 +5,8 @@ const sleep = (ms)=>{
     return new Promise(resolve=>setTimeout(resolve,ms));
 }
 
-const host = process.env.REACT_APP_HOST ? process.env.REACT_APP_HOST : 'localhost';
-
 const DeliverService = axios.create({
-    baseURL : `http://${host}:8081/api/v1`,
+    baseURL : `http://localhost:8081/api/v1`,
 });
 
 export const GetAllDeliveries = createAsyncThunk(

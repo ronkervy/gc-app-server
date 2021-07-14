@@ -46,13 +46,17 @@ export default (docs,logoURL)=>{
                 }
             }
         },
-        footer : {
-            columns : [
-                {
-                    text : "Footer",
-                    alignment : 'center'
+        footer : ( currentPage, pageCount )=>{
+            if( currentPage === pageCount ){
+                return {
+                    columns : [
+                        {
+                            text : "Footer",
+                            alignment : 'center'
+                        }
+                    ]
                 }
-            ]
+            }
         },
         content: [
             {
@@ -81,31 +85,27 @@ export default (docs,logoURL)=>{
                     // headers are automatically repeated if the table spans over multiple pages
                     // you can declare how many rows should be treated as headers
                     headerRows: 1,
-                    widths: [ '*', 40, '*', '*','*', '*'],
+                    widths: [ '*', 40, '*', 120,'*'],
                     body: [
                         [
                             {
-                                text : 'Name',
+                                text : 'Customer Name',
                                 style : 'tableHeader'
                             }, 
                             {
-                                text : 'QTY',
+                                text : 'Cart Count',
                                 style : 'tableHeader'
                             },
                             {
-                                text : 'Unit Price',
+                                text : 'Transaction Date',
                                 style : 'tableHeader'
                             },
                             {
-                                text : 'Discount',
+                                text : 'Payment Type',
                                 style : 'tableHeader'
                             },
                             {
-                                text : 'Supplier',
-                                style : 'tableHeader'
-                            },
-                            {
-                                text : 'Total',
+                                text : 'Total Price',
                                 style : 'tableHeader'
                             }
                         ],

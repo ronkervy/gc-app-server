@@ -1,8 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
-const host = process.env.REACT_APP_HOST ? process.env.REACT_APP_HOST : 'localhost';
-const urlHost = `http://${host}:8081/api/v1/reports`;
+const urlHost = `http://localhost:8081/api/v1/reports`;
 
 const sleep = (t)=>{
     return new Promise((resolve)=>setTimeout(resolve,t));

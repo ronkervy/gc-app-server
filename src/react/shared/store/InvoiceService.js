@@ -8,7 +8,7 @@ const sleep = (ms)=>{
 }
 
 const InvoiceService = axios.create({
-    baseURL : `http://${host}:8081/api/v1/gc-print`
+    baseURL : `http://localhost:8081/api/v1/gc-print`
 });
 
 export const CreateInvoice = createAsyncThunk(

@@ -9,17 +9,17 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http,{
     cors : {
         methods : ['POST','PATCH','PUT','DELETE'],
-        origin : '*'
+        origin : "*"
     }
 });
 const PORT = process.env.PORT || 8081;
 const ipc = require('./config/ipc.server');
 
+app.use(helmet());
+app.use(cors("*"));
 app.use(express.static(path.join(__dirname,'..','/renderer/main_window/public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended : false }));
-app.use(helmet());
-app.use(cors());
 
 app.use('/api/v1',apiRoutes);
 app.use('/',(req,res)=>{

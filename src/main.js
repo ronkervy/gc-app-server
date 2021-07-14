@@ -2,9 +2,6 @@ const { app,BrowserWindow,ipcMain } = require('electron');
 const exec = require('child_process').exec;
 const { default : installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
 
-const path = require('path');
-const server = require('./app/index');
-const ip = require('ip');
 const { networkInterfaces } = require('os');
 const net_interface = networkInterfaces();
 
@@ -20,16 +17,20 @@ const createWindow = ()=>{
         height : 800,        
         webPreferences : {
             nodeIntegration : true,
-            contextIsolation : false,
-            preload : server
+            contextIsolation : false
         },
         autoHideMenuBar : true,
         resizable : false,
         frame : false,
+        center : true,
     });
-
-    win.webContents.openDevTools();
-    win.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
+    
+    win.loadURL(MAIN_WINDOW_WEBPACK_ENTRY).then(()=>{
+        require('./app/index');
+        win.webContents.openDevTools();
+    }).catch(err=>{
+        console.log(err);
+    });
 
     win.on('closed',()=>{
         win = null;
@@ -37,7 +38,7 @@ const createWindow = ()=>{
 }
 
 app.whenReady().then(()=>{
-
+    
     let ipaddr;
     
     for( let key in net_interface ){ 
@@ -59,13 +60,14 @@ app.whenReady().then(()=>{
     }
     
     execute(`setx REACT_APP_HOST "${ipaddr}"`,(result)=>{
-        console.log(result);
+        console.log(result);     
         createWindow();
     });
-    
+
     installExtension(REDUX_DEVTOOLS)
     .then((name) => console.log(`Added Extension:  ${name}`))
-    .catch((err) => console.log('An error occurred: ', err));    
+    .catch((err) => console.log('An error occurred: ', err));
+    
 });
 
 app.on('window-all-closed',()=>{

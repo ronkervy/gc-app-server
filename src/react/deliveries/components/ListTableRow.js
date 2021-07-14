@@ -234,8 +234,8 @@ function ListTableRow(props) {
                                                 count={delivery.products.length}
                                                 rowsPerPage={rowsPerPage}
                                                 page={page}
-                                                onChangePage={handleChangePage}
-                                                onChangeRowsPerPage={handleChangeRowsPerPage}
+                                                onPageChange={handleChangePage}
+                                                onRowsPerPageChange={handleChangeRowsPerPage}
                                             />
                                         </TableCell>
                                         <TableCell colSpan={1}>
