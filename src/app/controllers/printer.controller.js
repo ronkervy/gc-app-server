@@ -258,8 +258,9 @@ module.exports = {
                             'transaction_date' : { '$first' : '$createdAt' },
                             'payment_type' : { '$first' : '$transact_payment_type' },
                             'cash_amount' : { '$first' : '$cash_amount' },
-                            'total_price' : { '$first' : '$total_amount' },
-                            'change_amount' : { '$first' : '$change_amount' }
+                            'total_amount' : { '$first' : '$total_amount' },
+                            'change_amount' : { '$first' : '$change_amount' },
+                            'balance' : { "$first" : "$partial_payments" }
                         }  
                     },
                     { "$sort" : 
@@ -276,15 +277,22 @@ module.exports = {
 
                     const tdate = new Date(transaction.transaction_date).toISOString().split("T")[0];
 
+                    const balance = transaction.balance.reduce((a,b)=>a+b,0);
+                    
+                    const remainBalance = transaction.payment_type === 'partial' && balance !== transaction.total_amount ? transaction.total_amount - balance : 0;
+
+                    console.log(balance !== transaction.total_amount);
+
                     arr.push(
                         {text : transaction.customer_name,style : 'tableItems'},
-                        {text : transaction.cart_count,style : 'tableItems'},
+                        {text : transaction._id,style : ['tableItems','trans_id']},
                         {text : tdate,style : 'tableItems'},
                         {text : transaction.payment_type,style : 'tableItems'},
+                        {text : formatter.format(remainBalance), style : 'tableItems' },
                         {
-                            text : formatter.format(transaction.total_price),
+                            text : formatter.format(transaction.total_amount),
                             style : 'tableItems',
-                            price : transaction.total_price,
+                            price : transaction.total_amount,
                             from,
                             to
                         }

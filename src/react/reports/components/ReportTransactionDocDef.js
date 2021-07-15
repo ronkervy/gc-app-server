@@ -9,9 +9,9 @@ export default (docs,logoURL)=>{
     let to;
 
     docs.map(itms=>{
-        priceArr.push(itms[4].price);
-        from = itms[4].from;
-        to = itms[4].to;
+        priceArr.push(itms[5].price);
+        from = itms[5].from;
+        to = itms[5].to;
     });    
 
     let totalPriceArr = priceArr.reduce((a,b)=>a+b,0);
@@ -34,11 +34,11 @@ export default (docs,logoURL)=>{
                             {
                                 stack : [
                                     {
-                                        text : 'Glorious Cocolumber \n',
+                                        text : 'Gloriocity \n',
                                         style : 'header'
                                     },
                                     {
-                                        text : 'and Construction Supply',
+                                        text : 'Construction Supply',
                                         style : 'subheader'
                                     }
                                 ],
@@ -220,19 +220,19 @@ export default (docs,logoURL)=>{
                     // headers are automatically repeated if the table spans over multiple pages
                     // you can declare how many rows should be treated as headers
                     headerRows: 1,
-                    widths: [ '*', '*', '*', 120,'*'],
+                    widths: [ '*', 100, '*', '*','*','*'],
                     body: [                        
                         [
                             {
-                                text : 'Customer Name',
+                                text : 'Name',
                                 style : 'tableHeader'
                             }, 
                             {
-                                text : 'Cart Count',
+                                text : 'Receipt Number',
                                 style : 'tableHeader'
                             },
                             {
-                                text : 'Transaction Date',
+                                text : 'Date',
                                 style : 'tableHeader'
                             },
                             {
@@ -240,7 +240,11 @@ export default (docs,logoURL)=>{
                                 style : 'tableHeader'
                             },
                             {
-                                text : 'Total Price',
+                                text : 'Balance',
+                                style : 'tableHeader'
+                            },
+                            {
+                                text : 'Total amount',
                                 style : 'tableHeader'
                             }
                         ],
@@ -322,6 +326,10 @@ export default (docs,logoURL)=>{
                 alignment : 'center',
                 margin : [0,5],
                 fontSize : 9
+            },
+            trans_id : {
+                fontSize : 6,
+                color : "green"
             }
         },
         defaultStyle : {
