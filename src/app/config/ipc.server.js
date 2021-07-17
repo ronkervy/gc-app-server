@@ -25,7 +25,7 @@ ipc.serveNet(
     ()=>{
 
         ipc.server.on(
-            'find-server',
+            'FindServer',
             function(data,socket){
                 ipc.log('Server Replied : ', data.id ,' : ', data.message);                
                 ipc.server.emit(
@@ -43,7 +43,7 @@ ipc.serveNet(
             address : 'localhost',
             port : ipc.config.networkPort
         },
-        'server-broadcast',
+        'ServerBroadcast',
         {
             ipadd : ipaddr,
             id : ipc.config.id,

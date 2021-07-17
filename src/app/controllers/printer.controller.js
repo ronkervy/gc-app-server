@@ -281,8 +281,6 @@ module.exports = {
                     
                     const remainBalance = transaction.payment_type === 'partial' && balance !== transaction.total_amount ? transaction.total_amount - balance : 0;
 
-                    console.log(balance !== transaction.total_amount);
-
                     arr.push(
                         {text : transaction.customer_name,style : 'tableItems'},
                         {text : transaction._id,style : ['tableItems','trans_id']},

@@ -23,6 +23,7 @@ import { useDispatch } from "react-redux";
 import { CloseNotification } from "./shared/store/NotificationSlice";
 import InvoicePreview from './deliveries/components/InvoicePreview';
 import Reports from "./reports/components/Reports";
+import TransactionsFilterModal from "./reports/components/filters/TransactionsFilterModal";
 
 function App(props) {
 
@@ -91,6 +92,10 @@ function App(props) {
                   <Route exact path="/reports" >
                         <Reports />
                   </Route>
+                  <Route exact path="/report/transactions">
+                        <TransactionsFilterModal />
+                  </Route>
+                  
                   <Route exact path="/products/del/:id" >
                         <ProdDeleteModal />
                   </Route>
