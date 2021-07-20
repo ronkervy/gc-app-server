@@ -11,10 +11,10 @@ import pdfFonts from "pdfmake/build/vfs_fonts";
 import ReportDocDefDel from './docs/ReportDeliveriesDocDef';
 import ReportTransactionDocDef from './docs/ReportTransactionDocDef';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBoxOpen, faParagraph, faTruckLoading } from '@fortawesome/free-solid-svg-icons';
+import { faBoxOpen, faReceipt, faTruckLoading } from '@fortawesome/free-solid-svg-icons';
+import { clearDate } from '../store/ReportSlice';
 
 const TransitionPage = forwardRef((props,ref)=>{
-    console.log(props);
     return <Slide direction="up" ref={ref} {...props} />
 });
 
@@ -24,21 +24,20 @@ function Reports(props) {
     const history = useHistory();
     const dispatch = useDispatch();
     const [url,setUrl] = useState('');
-    const { loading } = useSelector( state=>state.report );
+    const { loading, uri } = useSelector( state=>state.report );
 
     const handleClose = ()=>{        
         history.goBack();
         setOpen(false);        
     }
 
-    const requestReport = async (args)=>{
+    const reportDefault = async (args)=>{
 
-        const { from,to,model } = args;
         const resReport = await dispatch(generateReport({
-            url : `/${model}?from=${from}&to=${to}`
+            url : uri ? uri : `/transactions?from=${'2021-06-01'}&to=${'2021-06-17'}`
         }));
 
-        if( generateReport.fulfilled.match(resReport) ){
+        if( generateReport.fulfilled.match(resReport) ){                
 
             const { doc,logo } = resReport.payload;
             let pdf = JSON.parse(doc);
@@ -46,7 +45,7 @@ function Reports(props) {
             if( pdf.length > 0 ){
                 pdfMake.vfs = pdfFonts.pdfMake.vfs;
                 
-                const docDef = model === 'transactions' ? ReportTransactionDocDef(pdf,logo) : ReportDocDefDel(pdf,logo);
+                const docDef = ReportTransactionDocDef(pdf,logo);
                 const docGenerator = pdfMake.createPdf(docDef);
     
                 docGenerator.getBlob(blob=>{
@@ -54,7 +53,7 @@ function Reports(props) {
                 });
             }else{
                 dispatch( OpenNotification({
-                    message : 'No Entry on Current Date.',
+                    message : 'No entry on transactions on current date.',
                     severity : 'success'
                 }));
             }
@@ -65,52 +64,11 @@ function Reports(props) {
                 severity : 'error'
             }));
         }
-        return resReport;
     }
 
-    useEffect(()=>{
-
-        const reportDefault = async (args)=>{
-
-            let defaultDate = new Date(Date.now()).toISOString().split('T')[0];
-            let defaultToDate = new Date( Date.now() );
-
-            const resReport = await dispatch(generateReport({
-                url : `/transactions?from=${'2021-06-01'}&to=${'2021-06-17'}`
-            }));
-    
-            if( generateReport.fulfilled.match(resReport) ){                
-    
-                const { doc,logo } = resReport.payload;
-                let pdf = JSON.parse(doc);
-                
-                if( pdf.length > 0 ){
-                    pdfMake.vfs = pdfFonts.pdfMake.vfs;
-                    
-                    const docDef = ReportTransactionDocDef(pdf,logo);
-                    const docGenerator = pdfMake.createPdf(docDef);
-        
-                    docGenerator.getBlob(blob=>{
-                        setUrl(window.URL.createObjectURL(blob));
-                    });
-                }else{
-                    dispatch( OpenNotification({
-                        message : 'No entry on transactions on current date.',
-                        severity : 'success'
-                    }));
-                }
-    
-            }else{
-                dispatch( OpenNotification({
-                    message : 'Error generating report.',
-                    severity : 'error'
-                }));
-            }
-            return resReport;
-        }
-
+    useEffect(()=>{       
+        console.log(uri);
         reportDefault();
-
         setOpen(true);
     },[]);
 
@@ -129,16 +87,16 @@ function Reports(props) {
             fullScreen
         >
             <AppBar style={{ WebkitAppRegion : "no-drag" }}>
-                <Toolbar variant="dense" style={{ justifyContent : "space-between" }}>
+                <Toolbar variant="regular" style={{ justifyContent : "space-between" }}>
                     <IconButton
-                        size="small"
+                        size="medium"
                         onClick={handleClose}
                         color="inherit"
                     >
                         <Close />
                     </IconButton>
                     <ButtonGroup
-                        variant="contained"
+                        variant="contained"                        
                         color="primary"
                         style={{
                             justifySelf : "flex-end"
@@ -153,11 +111,10 @@ function Reports(props) {
                             Products
                         </Button>
                         <Button
-                            startIcon={<FontAwesomeIcon icon={faParagraph} />}
-                            style={{
-                                background : "orange"
-                            }}
+                            startIcon={<FontAwesomeIcon icon={faReceipt} />}
+                            color="default"
                             onClick={()=>{
+                                dispatch( clearDate() );
                                 history.push('/report/transactions');
                             }}
                         >
@@ -165,9 +122,7 @@ function Reports(props) {
                         </Button>
                         <Button
                             startIcon={<FontAwesomeIcon icon={faTruckLoading} />}
-                            style={{
-                                background : "orange",
-                            }}
+                            color="secondary"
                         >
                             Deliveries
                         </Button>

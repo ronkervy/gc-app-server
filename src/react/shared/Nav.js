@@ -13,10 +13,12 @@ import {
     faBoxes
 } from '@fortawesome/free-solid-svg-icons';
 import NavStyle from './Styles';
+import { useSelector } from 'react-redux';
 
 function Nav(props) {
     
     const { classes } = props;
+    const { doc } = useSelector(state=>state.report);
 
     return (
         <Box className={classes.AppNav} boxShadow={2}>       
@@ -26,7 +28,12 @@ function Nav(props) {
             <NavLink exact to='/'><FontAwesomeIcon icon={faHome} /> Home</NavLink>
             <NavLink exact to='/deliveries'><FontAwesomeIcon icon={faTruckLoading} /> Deliveries</NavLink>
             <NavLink exact to='/suppliers'><FontAwesomeIcon icon={faUserTie} /> Suppliers</NavLink>
-            <NavLink exact to='/reports'><FontAwesomeIcon icon={faNewspaper} /> Reports</NavLink>
+            <NavLink exact to={{
+                pathname : '/reports',
+                state : {
+                    apiURL : ''
+                }
+            }}><FontAwesomeIcon icon={faNewspaper} /> Reports</NavLink>
             <Grid container>
                 <Grid item sm={12}><h3><FontAwesomeIcon icon={faBoxes} />&nbsp;&nbsp;Products</h3></Grid>
             </Grid>

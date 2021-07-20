@@ -126,11 +126,11 @@ module.exports = {
     generateReportDoc : async(req,res,next)=>{
         try{
             const { model } = req.params;
-            const { from,to,id } = req.query;
+            const { from,to,payment_type } = req.query;
 
-            const toDate = new Date(to);            
+            const toDate = new Date(to);  
            
-            if( model === 'deliveries'){
+            if( model === 'deliveries'){                
 
                 const resDeliveries = await DeliveryModel.aggregate([
                     {'$match' : 
@@ -138,7 +138,8 @@ module.exports = {
                             "createdAt" : {
                                 "$gte" : new Date(from),
                                 "$lte" : new Date(toDate.setDate(toDate.getDate() + 1))
-                            }
+                            },
+                            "transact_payment_type" : payment_type
                         }
                     },
                     {'$unwind' : '$products'},                
@@ -211,15 +212,30 @@ module.exports = {
                 // return res.status(200).json(resDeliveries);
 
             }else if( model === 'transactions' ){
-                const resTransaction = await TransactionModel.aggregate([
+                
+                const optMatch = payment_type === undefined ? (
                     { '$match' :
-                        {
+                        {                                          
                             "createdAt" : {
                                 "$gte" : new Date(from),
                                 "$lte" : new Date(toDate.setDate(toDate.getDate() + 1))
                             }
                         }
-                    },
+                    }
+                ) : (
+                    { '$match' :
+                        {                                          
+                            "createdAt" : {
+                                "$gte" : new Date(from),
+                                "$lte" : new Date(toDate.setDate(toDate.getDate() + 1))
+                            },
+                            "transact_payment_type" : payment_type
+                        }
+                    }
+                );
+                
+                const resTransaction = await TransactionModel.aggregate([
+                    optMatch,
                     { '$lookup' :
                         {
                             from : 'products',

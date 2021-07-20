@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 8081;
 const ipc = require('./config/ipc.server');
 
 app.use(helmet());
-app.use(cors("*"));
+app.use(cors());
 app.use(express.static(path.join(__dirname,'..','/renderer/main_window/public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended : false }));

@@ -4,12 +4,19 @@ import { generateReport } from './ReportServices';
 const ReportSlice = createSlice({
     name : 'report',
     initialState : {
-        entities : [],
         loading : true,
         error : '',
-        doc : ''
+        doc : '',
+        uri : ''
     },
-    reducers : {},
+    reducers : {
+        setDate : (state,{payload})=>{
+            state.uri = payload;
+        },
+        clearDate : state=>{
+            state.uri = ""
+        }
+    },
     extraReducers : builder=>{
         builder.addCase( generateReport.pending, state=>{
             state.loading = true;
@@ -25,4 +32,5 @@ const ReportSlice = createSlice({
     }
 });
 
+export const { setDate,clearDate } = ReportSlice.actions;
 export default ReportSlice.reducer;

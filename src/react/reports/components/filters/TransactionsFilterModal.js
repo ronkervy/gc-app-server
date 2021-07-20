@@ -8,11 +8,16 @@ import { Modal,Backdrop,Fade, Grid, TextField, MenuItem, Button } from '@materia
 import React,{ useEffect,useState } from 'react'
 import { useHistory } from 'react-router-dom';
 import useStyles from './Styles';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { generateReport } from '../../store/ReportServices';
+import ReportTransactionDocDef from '../docs/ReportTransactionDocDef';
+import Loader from '../../../shared/Loader';
+import { OpenNotification } from '../../../shared/store/NotificationSlice';
+import { setDate } from '../../store/ReportSlice';
 
 const DatePicker = ({report})=>{
     const [selectedFromDate, setSelectedFromDate] = React.useState(new Date(Date.now()));
@@ -66,8 +71,7 @@ const DatePicker = ({report})=>{
                 value={selectedFromDate}
                 onChange={handleFromDateChange}
                 KeyboardButtonProps={{
-                    'aria-label': 'change date',
-                    style : {color : "#ffffff",borderBottomColor : "white"}       
+                    'aria-label': 'change date',     
                 }}
                 />
             </Grid>
@@ -81,8 +85,7 @@ const DatePicker = ({report})=>{
                     value={selectedToDate}
                     onChange={handleToDateChange}
                     KeyboardButtonProps={{
-                        'aria-label': 'change date',
-                        style : {color : "#ffffff"}       
+                        'aria-label': 'change date',      
                     }}
                 />
             </Grid>
@@ -97,11 +100,10 @@ const DatePicker = ({report})=>{
                         borderColor : "white",
                         backgroundColor : "orange"            
                     }}
-                    onClick={()=>{                    
+                    onClick={()=>{          
                         report({
                             from : selectedFromDate.toISOString().split('T')[0],
                             to : selectedToDate.toISOString().split('T')[0],
-                            model : filterModel,
                             payment_type : filterPayment
                         });
                     }}
@@ -119,53 +121,31 @@ function TransactionsFilterModal(props) {
     const [open,setOpen] = useState(false);
     const history = useHistory();
     const dispatch = useDispatch();
+    const [url,setUrl] = useState('');
+    const { loading } = useSelector(state=>state.report);
 
     const handleClose = ()=>{
-        setOpen(false);
         history.goBack();
+        setOpen(false);        
     }
 
-    const requestReport = async (args)=>{
+    const requestReport = (args)=>{
 
-        const { from,to,model,payment_type } = args;
-        
-        const resReport = await dispatch(generateReport({
-            url : payment_type !== 'all' ? `/transactions?payment_type=${payment_type}&from=${from}&to=${to}` : `/transactions?from=${from}&to=${to}`
-        }));
-
-        if( generateReport.fulfilled.match(resReport) ){
-
-            const { doc,logo } = resReport.payload;
-            let pdf = JSON.parse(doc);
-            
-            if( pdf.length > 0 ){
-                pdfMake.vfs = pdfFonts.pdfMake.vfs;
-                
-                const docDef = model === 'transactions' ? ReportTransactionDocDef(pdf,logo) : ReportDocDefDel(pdf,logo);
-                const docGenerator = pdfMake.createPdf(docDef);
-    
-                docGenerator.getBlob(blob=>{
-                    setUrl(window.URL.createObjectURL(blob));
-                });
-            }else{
-                dispatch( OpenNotification({
-                    message : 'No Entry on Current Date.',
-                    severity : 'success'
-                }));
-            }
-
-        }else{
-            dispatch( OpenNotification({
-                message : 'Error generating report.',
-                severity : 'error'
-            }));
-        }
-        return resReport;
+        const { from,to,payment_type } = args;
+        const uri = payment_type !== 'all' ? `/transactions?payment_type=${payment_type}&from=${from}&to=${to}` : `/transactions?from=${from}&to=${to}`;
+        dispatch( setDate(uri) );
+        handleClose();
     }
 
     useEffect(()=>{
         setOpen(true);
     },[]);
+
+    if( loading ){
+        return(
+            <Loader />
+        )
+    }
 
     return (
         <Modal
