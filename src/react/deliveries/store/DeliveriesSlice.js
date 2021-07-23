@@ -94,7 +94,7 @@ export const DeliveriesSlice = createSlice({
         })
         .addCase(CreateDelivery.fulfilled,(state,{payload})=>{
             state.loading = false;
-            state.entities[payload._id] = payload;
+            state.entities = payload;
         })
         .addCase(CreateDelivery.rejected,(state,{payload})=>{
             state.loading = false;

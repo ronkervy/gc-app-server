@@ -126,22 +126,41 @@ module.exports = {
     generateReportDoc : async(req,res,next)=>{
         try{
             const { model } = req.params;
-            const { from,to,payment_type } = req.query;
+            const { from,to,payment_type,status } = req.query;
 
-            const toDate = new Date(to);  
+            const toDate = new Date(to);
+
+            console.log(model);
            
-            if( model === 'deliveries'){                
+            if( model === 'deliveries'){   
+                
+                const statVal = status == "true";
 
-                const resDeliveries = await DeliveryModel.aggregate([
+                console.log(statVal);
+
+                const optMatch = status === undefined ? (
+                    {'$match' : 
+                        {
+                            "createdAt" : {
+                                "$gte" : new Date(from),
+                                "$lte" : new Date(toDate.setDate(toDate.getDate() + 1))
+                            }                            
+                        }
+                    }
+                ) : (
                     {'$match' : 
                         {
                             "createdAt" : {
                                 "$gte" : new Date(from),
                                 "$lte" : new Date(toDate.setDate(toDate.getDate() + 1))
                             },
-                            "transact_payment_type" : payment_type
+                            "delivery_status" : statVal
                         }
-                    },
+                    }
+                );
+
+                const resDeliveries = await DeliveryModel.aggregate([
+                    optMatch,
                     {'$unwind' : '$products'},                
                     {'$unwind' : '$delivery_qty'},
                     {'$unwind' : '$item_discount'},
@@ -173,32 +192,49 @@ module.exports = {
                             'products' : {
                                 '$push' : { 
                                     'id'  : '$products._id',
-                                    'item' : '$products.item_name',
+                                    'item_name' : '$products.item_name',
                                     'qty' : '$delivery_qty',
                                     'total' : '$total_item_price',
                                 }
                             },
                             'date' : { '$first' : '$createdAt' },
+                            'date_delivered' : { '$first' : '$updatedAt' },
                             'total' : { '$sum' : '$total_item_price' },
                             'status' : { '$first' : '$delivery_status' }
                         }
                     },
                     {'$sort' : 
-                        { 'date' : 1 }
+                        { 'date' : -1 }
                     },
                 ]);
 
-                let pngimage = fs.readFileSync(logoPath);
+                let pngimage = fs.readFileSync(logoPath);                                
+                const resArrProd = [];                
 
-                const deliveryArr = resDeliveries.map(delivery=>{
-                    let arr = [];
+                const deliveryArr = resDeliveries.map((delivery,ind)=>{                                   
+                    let arr = [];     
+                    const delivDate = new Date(delivery.date).toISOString().split('T')[0];
+                    const deliveredDate = new Date(delivery.date_delivered).toISOString().split('T')[0];
+                    
+                    resArrProd = delivery.products.map((product,i)=>{
+
+                        let arrProd = [];
+                        arrProd.push(
+                            { text : product.item_name, style : 'tableItems' },
+                            { text : product.qty, style : 'tableItems' },
+                            { text : formatter.format(product.total), style : 'tableItems' }
+                        );
+
+                        return arrProd;
+                    });
 
                     arr.push(
-                        {text : delivery._id},
-                        {text : delivery.count},
-                        {text : delivery.date},
-                        {text : delivery.total},
-                        {text : delivery.status}
+                        {text : delivery._id, style : ['tableItems','trans_id']},
+                        {text : delivDate, style : 'tableItems'},
+                        {text : (delivery.status ? deliveredDate : '--------'), style : 'tableItems'},
+                        {text : (delivery.status ? 'Delivered' : 'Pending'), style : 'tableItems'},                        
+                        {text : delivery.count, style : 'tableItems'},                       
+                        {text : formatter.format(delivery.total), style : 'tableItems'}
                     );
 
                     return arr;
@@ -206,7 +242,8 @@ module.exports = {
 
                 return res.status(200).json({
                     doc : JSON.stringify(deliveryArr),
-                    logo : new Buffer.from(pngimage).toString('base64')
+                    logo : new Buffer.from(pngimage).toString('base64'),
+                    prods : JSON.stringify(resArrProd)
                 });
 
                 // return res.status(200).json(resDeliveries);

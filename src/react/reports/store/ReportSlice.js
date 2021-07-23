@@ -7,13 +7,20 @@ const ReportSlice = createSlice({
         loading : true,
         error : '',
         doc : '',
-        uri : ''
+        uri : '',
+        model : ''
     },
     reducers : {
-        setDate : (state,{payload})=>{
+        setModel : (state,{payload})=>{
+            state.model = payload;
+        },
+        clearModel : state=>{
+            state.model = '';
+        },
+        setUri : (state,{payload})=>{
             state.uri = payload;
         },
-        clearDate : state=>{
+        clearUri : state=>{
             state.uri = ""
         }
     },
@@ -32,5 +39,5 @@ const ReportSlice = createSlice({
     }
 });
 
-export const { setDate,clearDate } = ReportSlice.actions;
+export const { setUri,clearUri, setModel,clearModel } = ReportSlice.actions;
 export default ReportSlice.reducer;

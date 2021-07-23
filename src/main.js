@@ -4,9 +4,10 @@ const { default : installExtension, REDUX_DEVTOOLS } = require('electron-devtool
 
 const { networkInterfaces } = require('os');
 const net_interface = networkInterfaces();
+require('./app/index');
 
 if (require('electron-squirrel-startup')){
-  app.quit();
+    app.quit();
 }
 
 let win;
@@ -25,8 +26,7 @@ const createWindow = ()=>{
         center : true,
     });
     
-    win.loadURL(MAIN_WINDOW_WEBPACK_ENTRY).then(()=>{
-        require('./app/index');
+    win.loadURL(MAIN_WINDOW_WEBPACK_ENTRY).then(()=>{        
         win.webContents.openDevTools();
     }).catch(err=>{
         console.log(err);

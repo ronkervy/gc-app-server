@@ -64,6 +64,10 @@ function SearchTable(props) {
       setCartPage(0);
     };
 
+    const handleSupplierName = (e)=>{
+        setSupplier(e.target.value);
+    }
+
     useEffect(()=>{
         if( supplier !== '' ){
             const resSuppProd = async ()=>{
@@ -79,7 +83,7 @@ function SearchTable(props) {
                 }
             }
             resSuppProd();
-        }else{
+        }else if( search !== '' ){
             dispatch( findProduct({
                 opt : {
                     url : '/products/search/' + search
@@ -153,9 +157,7 @@ function SearchTable(props) {
                                 </InputAdornment>
                             )
                         }}
-                        onChange={(e)=>{
-                            setSupplier(e.target.value);
-                        }}
+                        onChange={handleSupplierName}
                     >
                         {supp.length > 0 ? supp.map(contact=>(
                             <MenuItem value={contact._id}>{contact.supplier_name}</MenuItem>
@@ -316,8 +318,7 @@ function SearchTable(props) {
                                         </TableCell>
                                         <TableCell>
                                             <TableCell>
-                                                <IconButton 
-                                                    color="maroon" 
+                                                <IconButton                                                      
                                                     size="small"
                                                     onClick={()=>{
                                                         dispatch( RemoveFromCart(product) );

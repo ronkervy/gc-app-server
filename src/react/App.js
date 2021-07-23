@@ -24,6 +24,8 @@ import { CloseNotification } from "./shared/store/NotificationSlice";
 import InvoicePreview from './deliveries/components/InvoicePreview';
 import Reports from "./reports/components/Reports";
 import TransactionsFilterModal from "./reports/components/filters/TransactionsFilterModal";
+import DeliveriesFilterModal from "./reports/components/filters/DeliveriesFilterModal";
+import ProductsFilterModal from "./reports/components/filters/ProductsFilterModal";
 
 function App(props) {
 
@@ -95,7 +97,12 @@ function App(props) {
                   <Route exact path="/report/transactions">
                         <TransactionsFilterModal />
                   </Route>
-                  
+                  <Route exact path="/report/deliveries">
+                        <DeliveriesFilterModal />
+                  </Route>                  
+                  <Route exact path="/report/products">
+                        <ProductsFilterModal />
+                  </Route>
                   <Route exact path="/products/del/:id" >
                         <ProdDeleteModal />
                   </Route>

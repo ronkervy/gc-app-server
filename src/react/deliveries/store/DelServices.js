@@ -66,6 +66,7 @@ export const CreateDelivery = createAsyncThunk(
     async(args,{rejectWithValue})=>{
         try{
             const { opt,values } = args;
+            console.log(values);
             const res = await DeliverService({
                 ...opt,
                 method : 'POST',

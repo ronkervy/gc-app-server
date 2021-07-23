@@ -8,11 +8,11 @@ import { OpenNotification } from '../../shared/store/NotificationSlice';
 import Loader from '../../shared/Loader';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import ReportDocDefDel from './docs/ReportDeliveriesDocDef';
+import ReportDeliveriesDocDef from './docs/ReportDeliveriesDocDef';
 import ReportTransactionDocDef from './docs/ReportTransactionDocDef';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBoxOpen, faReceipt, faTruckLoading } from '@fortawesome/free-solid-svg-icons';
-import { clearDate } from '../store/ReportSlice';
+import { clearModel, clearUri } from '../store/ReportSlice';
 
 const TransitionPage = forwardRef((props,ref)=>{
     return <Slide direction="up" ref={ref} {...props} />
@@ -24,28 +24,35 @@ function Reports(props) {
     const history = useHistory();
     const dispatch = useDispatch();
     const [url,setUrl] = useState('');
-    const { loading, uri } = useSelector( state=>state.report );
+    const { loading, uri, model,error } = useSelector( state=>state.report );
 
-    const handleClose = ()=>{        
+    const handleClose = ()=>{  
+        dispatch( clearUri() );    
+        dispatch( clearModel() );  
         history.goBack();
         setOpen(false);        
     }
 
     const reportDefault = async (args)=>{
-
         const resReport = await dispatch(generateReport({
-            url : uri ? uri : `/transactions?from=${'2021-06-01'}&to=${'2021-06-17'}`
+            url : uri !== '' ? uri : `/transactions?from=${'2021-06-01'}&to=${'2021-06-17'}`
         }));
+
+        console.log(model);
 
         if( generateReport.fulfilled.match(resReport) ){                
 
-            const { doc,logo } = resReport.payload;
+            const { doc,logo,prods } = resReport.payload;
+
             let pdf = JSON.parse(doc);
-            
+            let prodParse = model === 'deliveries' && prods !== undefined ? JSON.parse(prods) : [];
+
             if( pdf.length > 0 ){
                 pdfMake.vfs = pdfFonts.pdfMake.vfs;
+
+
                 
-                const docDef = ReportTransactionDocDef(pdf,logo);
+                const docDef = model === 'deliveries' && uri !== '' ? ReportDeliveriesDocDef(pdf,logo,prodParse) : ReportTransactionDocDef(pdf,logo);
                 const docGenerator = pdfMake.createPdf(docDef);
     
                 docGenerator.getBlob(blob=>{
@@ -56,18 +63,16 @@ function Reports(props) {
                     message : 'No entry on transactions on current date.',
                     severity : 'success'
                 }));
-            }
-
+            }    
         }else{
             dispatch( OpenNotification({
-                message : 'Error generating report.',
+                message : 'Error generating report. : ' + error.message,
                 severity : 'error'
             }));
         }
     }
 
     useEffect(()=>{       
-        console.log(uri);
         reportDefault();
         setOpen(true);
     },[]);
@@ -87,7 +92,7 @@ function Reports(props) {
             fullScreen
         >
             <AppBar style={{ WebkitAppRegion : "no-drag" }}>
-                <Toolbar variant="regular" style={{ justifyContent : "space-between" }}>
+                <Toolbar variant="dense" style={{ justifyContent : "space-between" }}>
                     <IconButton
                         size="medium"
                         onClick={handleClose}
@@ -107,6 +112,10 @@ function Reports(props) {
                             style={{
                                 background : "orange"
                             }}   
+                            onClick={()=>{
+                                dispatch( clearUri() );
+                                history.push('/report/products');
+                            }}
                         >
                             Products
                         </Button>
@@ -114,7 +123,7 @@ function Reports(props) {
                             startIcon={<FontAwesomeIcon icon={faReceipt} />}
                             color="default"
                             onClick={()=>{
-                                dispatch( clearDate() );
+                                dispatch( clearUri() );
                                 history.push('/report/transactions');
                             }}
                         >
@@ -123,6 +132,10 @@ function Reports(props) {
                         <Button
                             startIcon={<FontAwesomeIcon icon={faTruckLoading} />}
                             color="secondary"
+                            onClick={()=>{
+                                dispatch( clearUri() );
+                                history.push('/report/deliveries');
+                            }}
                         >
                             Deliveries
                         </Button>

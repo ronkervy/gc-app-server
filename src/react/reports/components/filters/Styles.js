@@ -1,7 +1,7 @@
 import { makeStyles } from '@material-ui/core';
 
 const useStyles = makeStyles((theme)=>({
-    TransactionModal : {
+    Modal : {
         position : "relative",
         display : "flex",
         flexDirection : "column",

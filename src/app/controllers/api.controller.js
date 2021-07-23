@@ -585,12 +585,9 @@ module.exports = {
     },
     supplierProducts : async( req,res,next )=>{
 
-        const { name } = req.query;
-
         try{
             const supplier = await SupplierModel.findById(req.params.id).populate({
-                path : 'products',
-                match : { item_name : { $regex : name + '+' , $options : 'gi'} }
+                path : 'products'
             });
 
             if( !supplier ) return next( createHttpError.Unauthorized() );
