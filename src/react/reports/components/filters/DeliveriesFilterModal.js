@@ -20,7 +20,7 @@ function DeliveriesFilterModal() {
 
     const requestDeliveries = (args)=>{
         const {from,to,filter} = args;
-        const uri = filter !== 'all' && typeof(filter) === boolean ? `/deliveries?status=${filter}&from=${from}&to=${to}` : `/deliveries?from=${from}&to=${to}`;
+        const uri = filter !== 'all' ? `/deliveries?status=${filter}&from=${from}&to=${to}` : `/deliveries?from=${from}&to=${to}`;
         dispatch( setUri( uri ) );
         handleClose();
     }

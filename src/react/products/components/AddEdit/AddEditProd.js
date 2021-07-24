@@ -21,12 +21,15 @@ import { useDispatch, useSelector } from 'react-redux';
 import { motion } from 'framer-motion';
 import {
     createProduct,
+    getProducts,
     updateProduct
 } from '../../store/ProdServices';
 import io from 'socket.io-client';
 import NumberFormat from 'react-number-format';
 import { getAllSuppliers } from '../../../suppliers/store/SupplierServices';
 import { OpenNotification } from '../../../shared/store/NotificationSlice';
+import { useHistory } from 'react-router-dom';
+import Loader from '../../../shared/Loader';
 
 
 const  AddProd = (props)=> {    
@@ -36,7 +39,9 @@ const  AddProd = (props)=> {
     const [updatedProd,setUpdatedProd] = useState();
     const [createdProd,setCreatedProd] = useState();
     const [supplier,setSupplier] = useState('');
-    const { entities : suppliers } = useSelector(state=>state.suppliers);
+    const { entities : suppliers,loading } = useSelector(state=>state.suppliers);
+    const { loading : prodLoad } = useSelector(state=>state.products);
+    const history = useHistory();
 
     const handleSuppChange = (e)=>{
         setSupplier(e.target.value);
@@ -77,6 +82,10 @@ const  AddProd = (props)=> {
     const validate = values =>{
 
         let errors = {};
+
+        if((/^$/).test(values.item_supplier)){
+            errors.item_supplier = true;
+        }
 
         if( (/^[a-zA-Z0-9]{0,3}$/i).test(values.item_name) ){
             errors.item_name = true;
@@ -124,7 +133,6 @@ const  AddProd = (props)=> {
                 return;
             }
 
-            console.log("trigger");
             const product = await dispatch( createProduct({
                 opt : {
                     url : "/products"
@@ -134,21 +142,28 @@ const  AddProd = (props)=> {
 
             if( createProduct.fulfilled.match(product) ){
                 const newProduct = product.payload;
+
                 dispatch( OpenNotification({
                     message : "Product has been saved in the database.",
                     severity : "success"
                 }) ); 
                 setCreatedProd(newProduct);                
-                actions.resetForm();
+                actions.resetForm();                
             }else{
                 dispatch( OpenNotification({
                     message : "Product not save.",
                     severity : "error"
                 }) ); 
-            }          
+            } 
         },
         validate
     });
+
+    if( loading || prodLoad ){
+        return(
+            <Loader />
+        )
+    }
 
     return (
         <Grid 
@@ -212,6 +227,7 @@ const  AddProd = (props)=> {
                             <FormControl variant="outlined" fullWidth size="small">
                                 <TextField
                                     select
+                                    error={formik.errors.item_supplier}
                                     label="Supplier"                                                                        
                                     InputProps={{
                                         startAdornment : (
@@ -321,13 +337,13 @@ const  AddProd = (props)=> {
                         </Grid>                        
                         <Grid item sm={12} lg={12}>
                             <TextareaAutosize className={classes.textarea}
-                                rowsMin={8}              
+                                minRows={8}              
                                 name="item_desc"
                                 variant="outlined"
                                 aria-label="maximum height"
                                 value={formik.values.item_desc}
                                 onChange={formik.handleChange}
-                                style={{padding: "10px"}}
+                                style={{padding: "10px", outline : "none"}}
                             >
                             </TextareaAutosize>
                         </Grid>                        

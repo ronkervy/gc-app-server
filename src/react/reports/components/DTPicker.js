@@ -71,9 +71,9 @@ const DeliveriesFilter = ({setFn})=>{
                 <MenuItem key={0} value="all">All</MenuItem>
                 <MenuItem
                     key={1} 
-                    value={true}
+                    value={'delivered'}
                 >Delivered</MenuItem>
-                <MenuItem key={2} value={false}>Not Delivered</MenuItem>                    
+                <MenuItem key={2} value={'not delivered'}>Not Delivered</MenuItem>                    
             </TextField>
         </Grid>
     )

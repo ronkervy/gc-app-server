@@ -5,6 +5,12 @@ const formatter = new Intl.NumberFormat('en-PH',{
 
 export default (docs,logoURL,prods)=>{
 
+    docs.map(products=>{
+        products[5].prods.map(prod=>{
+            console.log(prod);
+        })
+    });
+
     return {
         pageSize : 'A4',
         pageMargins: [ 40, 80, 40, 60 ],
@@ -83,124 +89,80 @@ export default (docs,logoURL,prods)=>{
                         }
                     },
                 ], 
-            },
-            {
-                table : {
-                    headerRows : 1,
-                    widths : ['*','*','*','*'],
-                    body : [
-                        [
-                            {
-                                text : [
-                                    "Date generated : ",
-                                    { text : `${new Date(Date.now()).toLocaleDateString()}` }
-                                ],
-                                style : { fontSize : 9 },
-
-                            },
-                            {
-                                text : [
-                                    "Date generated : ",
-                                    { text : `${new Date(Date.now()).toLocaleDateString()}` }
-                                ],
-                                style : { fontSize : 9 },
-                                
-                            },
-                            {
-                                text : [
-                                    "Date generated : ",
-                                    { text : `${new Date(Date.now()).toLocaleDateString()}` }
-                                ],
-                                style : { fontSize : 9 },
-                                
-                            },
-                            {
-                                text : [
-                                    "Date generated : ",
-                                    { text : `${new Date(Date.now()).toLocaleDateString()}` }
-                                ],
-                                style : { fontSize : 9 },
-                                
-                            },
-                        ]
-                    ]
-                },
-                margin : [0,10,0,0]
-            },               
-            {
-                table: {
-                    // headers are automatically repeated if the table spans over multiple pages
-                    // you can declare how many rows should be treated as headers
-                    headerRows: 1,
-                    widths: [ '*', '*', '*', '*','*','*'],
-                    body: [                        
-                        [
-                            {
-                                text : 'Receipt Number',
-                                style : 'tableHeader'
-                            }, 
-                            {
-                                text : 'Date Ordered',
-                                style : 'tableHeader'
-                            },
-                            {
-                                text : 'Date Delivered',
-                                style : 'tableHeader'
-                            },
-                            {
-                                text : 'Delivery Status',
-                                style : 'tableHeader'
-                            },
-                            {
-                                text : 'Item number',
-                                style : 'tableHeader'
-                            },
-                            {
-                                text : 'Total amount',
-                                style : 'tableHeader'
+            },             
+            docs.map((doc,i)=>{
+                return {
+                    stack : [
+                        {
+                            layouts : 'lightHorizontalLines',
+                            table: {
+                                // headers are automatically repeated if the table spans over multiple pages
+                                // you can declare how many rows should be treated as headers
+                                headerRows: 1,
+                                widths: [ '*', '*', '*', '*','*','*'],
+                                body: [                        
+                                    [
+                                        {
+                                            text : 'Receipt Number',
+                                            style : 'tableHeader'
+                                        }, 
+                                        {
+                                            text : 'Date Ordered',
+                                            style : 'tableHeader'
+                                        },
+                                        {
+                                            text : 'Date Delivered',
+                                            style : 'tableHeader'
+                                        },
+                                        {
+                                            text : 'Delivery Status',
+                                            style : 'tableHeader'
+                                        },
+                                        {
+                                            text : 'Item number',
+                                            style : 'tableHeader'
+                                        },
+                                        {
+                                            text : 'Total amount',
+                                            style : 'tableHeader'
+                                        }
+                                    ],
+                                    doc
+                                ]
+                            }                                                                          
+                        },
+                        {
+                            layout: {
+                                hLineWidth : (i,node)=>{
+                                    return (i === 0 || i === node.table.body.length) ? 1 : 0;
+                                },
+                                hLineHeight : (i,node)=>{
+                                    return (i === 1) ? 0 : 1;
+                                }
+                            }, // optional
+                            table : {
+                                headerRows: 1,
+                                widths: ['*','*','*'],
+                                body : [
+                                    [
+                                        { text : 'Product Name', style : 'tableHeader'  },
+                                        { text : 'QTY', style : 'tableHeader'  },
+                                        { text : 'Total Amount', style : 'tableHeader'  },                            
+                                    ],
+                                    ...doc[5].prods.map(prod=>{
+                                        return [
+                                            {text : prod.item_name, style : 'tableItems'},  
+                                            {text : prod.qty, style : 'tableItems'},
+                                            {text : formatter.format(prod.total), style : 'tableItems'},
+                                        ]
+                                    })
+                                ]
                             }
-                        ],
-                        ...docs
-                    ]
-                },                                          
-                margin : [0,10,0,0]
-            },
-            {
-                layout: {
-                    hLineWidth : (i,node)=>{
-                        return (i === 0 || i === node.table.body.length) ? 1 : 0;
-                    },
-                    hLineHeight : (i,node)=>{
-                        return (i === 1) ? 0 : 1;
-                    },
-                    paddingBottom: (i, node, colIndex) => {
-                        const DEFAULT_PADDING = 2;
-                        // Calculate padding for the last element of the table.
-                        if (i === node.table.body.length - 1) {
-                            const currentPosition = node.positions[node.positions.length - 1];
-                            const totalPageHeight = currentPosition.pageInnerHeight;
-                            const currentHeight = currentPosition.top;
-                            const paddingBottom = totalPageHeight - currentHeight;
-                            return paddingBottom;
-                        } else {
-                            return DEFAULT_PADDING;
                         }
-                    },
-                },
-                table : {
-                    headerRows: 1,
-                    widths: ['*','*','*'],
-                    body : [
-                        [
-                            { text : 'Product Name', style : 'tableHeader'  },
-                            { text : 'QTY', style : 'tableHeader'  },
-                            { text : 'Total Amount', style : 'tableHeader'  },                            
-                        ],
-                        ...prods
-                    ]
-                },
-                margin : [0,10,0,0]
-            }
+                    ],                                                         
+                    margin : [0,10,0,0]
+                }
+            })           
         ],
         styles : {
             header : {

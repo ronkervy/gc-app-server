@@ -129,14 +129,10 @@ module.exports = {
             const { from,to,payment_type,status } = req.query;
 
             const toDate = new Date(to);
-
-            console.log(model);
            
             if( model === 'deliveries'){   
                 
-                const statVal = status == "true";
-
-                console.log(statVal);
+                const statVal = status == "delivered";
 
                 const optMatch = status === undefined ? (
                     {'$match' : 
@@ -209,19 +205,19 @@ module.exports = {
                 ]);
 
                 let pngimage = fs.readFileSync(logoPath);                                
-                const resArrProd = [];                
+                let resArrProd = [];                
 
-                const deliveryArr = resDeliveries.map((delivery,ind)=>{                                   
+                const deliveryArr = resDeliveries.map((delivery,i)=>{                                   
                     let arr = [];     
-                    const delivDate = new Date(delivery.date).toISOString().split('T')[0];
-                    const deliveredDate = new Date(delivery.date_delivered).toISOString().split('T')[0];
+                    let delivDate = new Date(delivery.date).toISOString().split('T')[0];
+                    let deliveredDate = new Date(delivery.date_delivered).toISOString().split('T')[0];
                     
-                    resArrProd = delivery.products.map((product,i)=>{
+                    resArrProd = delivery.products.map((product,ind)=>{
 
                         let arrProd = [];
                         arrProd.push(
-                            { text : product.item_name, style : 'tableItems' },
-                            { text : product.qty, style : 'tableItems' },
+                            { text : product.item_name, style : 'tableItems'},
+                            { text : product.qty, style : 'tableItems'},
                             { text : formatter.format(product.total), style : 'tableItems' }
                         );
 
@@ -234,9 +230,12 @@ module.exports = {
                         {text : (delivery.status ? deliveredDate : '--------'), style : 'tableItems'},
                         {text : (delivery.status ? 'Delivered' : 'Pending'), style : 'tableItems'},                        
                         {text : delivery.count, style : 'tableItems'},                       
-                        {text : formatter.format(delivery.total), style : 'tableItems'}
+                        {
+                            text : formatter.format(delivery.total), 
+                            style : 'tableItems',
+                            prods : delivery.products
+                        }
                     );
-
                     return arr;
                 });
 

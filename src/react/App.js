@@ -125,7 +125,7 @@ function App(props) {
                         <SingleSupp />
                   </Route>
                   <Route exact path="/deliveries/invoice" >
-                      <InvoicePreview />
+                        <InvoicePreview />
                   </Route>
               </Switch>    
               <Toast 

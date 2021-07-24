@@ -228,16 +228,14 @@ function ListTableRow(props) {
                                         </TableRow>
                                     ))}
                                     <TableRow>
-                                        <TableCell colSpan={2}>
-                                            <TablePagination
-                                                rowsPerPageOptions={[6, 12, 120]}
-                                                count={delivery.products.length}
-                                                rowsPerPage={rowsPerPage}
-                                                page={page}
-                                                onPageChange={handleChangePage}
-                                                onRowsPerPageChange={handleChangeRowsPerPage}
-                                            />
-                                        </TableCell>
+                                        <TablePagination
+                                            rowsPerPageOptions={[6, 12, 120]}
+                                            count={delivery.products.length}
+                                            rowsPerPage={rowsPerPage}
+                                            page={page}
+                                            onPageChange={handleChangePage}
+                                            onRowsPerPageChange={handleChangeRowsPerPage}
+                                        />
                                         <TableCell colSpan={1}>
                                             <IconButton
                                                 size="medium"

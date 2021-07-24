@@ -12,7 +12,7 @@ import ReportDeliveriesDocDef from './docs/ReportDeliveriesDocDef';
 import ReportTransactionDocDef from './docs/ReportTransactionDocDef';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBoxOpen, faReceipt, faTruckLoading } from '@fortawesome/free-solid-svg-icons';
-import { clearModel, clearUri } from '../store/ReportSlice';
+import { clearModel, clearUri, setModel } from '../store/ReportSlice';
 
 const TransitionPage = forwardRef((props,ref)=>{
     return <Slide direction="up" ref={ref} {...props} />
@@ -28,7 +28,6 @@ function Reports(props) {
 
     const handleClose = ()=>{  
         dispatch( clearUri() );    
-        dispatch( clearModel() );  
         history.goBack();
         setOpen(false);        
     }
@@ -37,8 +36,6 @@ function Reports(props) {
         const resReport = await dispatch(generateReport({
             url : uri !== '' ? uri : `/transactions?from=${'2021-06-01'}&to=${'2021-06-17'}`
         }));
-
-        console.log(model);
 
         if( generateReport.fulfilled.match(resReport) ){                
 
@@ -74,6 +71,7 @@ function Reports(props) {
 
     useEffect(()=>{       
         reportDefault();
+        dispatch( setModel('deliveries') );
         setOpen(true);
     },[]);
 

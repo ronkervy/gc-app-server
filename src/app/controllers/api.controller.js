@@ -68,30 +68,34 @@ module.exports = {
     },
     productCreate : async (req,res,next)=>{
         try{
+
             const {
                 item_name,
                 item_supplier
             } = req.body;
             
-            const productResult = await ProductModel.findOne({ item_name,item_supplier });
+            const productResult = await ProductModel.findOne({ item_name });
             
-            if( productResult ) return next( createHttpError.Conflict({
+            if( productResult !== null ) return next( createHttpError.Conflict({
                 message : "Item already existing in the database."
             }) );
 
-            await supplierModel.findById(item_supplier).then(async (supp)=>{                
+            await SupplierModel.findById(item_supplier).then(async (supp)=>{                
                 const newProduct = new ProductModel(req.body);
                 newProduct.suppliers.push(supp._id);                
                 const product = await newProduct.save().then((createdProd)=>{
                     supp.products.push(createdProd);
                     supp.save();
                 });
-                return res.status(201).json(product);
+
+                const refreshProd = await ProductModel.find();
+                
+                return res.status(201).json(refreshProd);
             });                        
 
         }catch(err){
-            return next(createHttpError.Conflict({
-                message : "Item already existing in the database."
+            return next(createHttpError.Unauthorized({
+                message : "Server Error : " + err.message
             }));
         }
     },
@@ -614,7 +618,7 @@ module.exports = {
             } = req.body;
             const supplier = await SupplierModel.findOne({supplier_name});
     
-            if( supplier ) return next(createHttpError.Conflict({
+            if( supplier !== null ) return next(createHttpError.Conflict({
                 message : "Supplier already saved in the database."
             }));
     

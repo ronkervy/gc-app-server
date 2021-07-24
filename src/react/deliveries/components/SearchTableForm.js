@@ -159,8 +159,8 @@ function SearchTable(props) {
                         }}
                         onChange={handleSupplierName}
                     >
-                        {supp.length > 0 ? supp.map(contact=>(
-                            <MenuItem value={contact._id}>{contact.supplier_name}</MenuItem>
+                        {supp.length > 0 ? supp.map((contact,i)=>(
+                            <MenuItem key={i} value={contact._id}>{contact.supplier_name}</MenuItem>
                         )) : (
                             <MenuItem>Please create a supplier first.</MenuItem>
                         )}
@@ -236,16 +236,14 @@ function SearchTable(props) {
                                     </TableRow>
                                 )}
                                 <TableRow>
-                                    <TableCell colSpan={6}>
-                                        <TablePagination
-                                            rowsPerPageOptions={[6, 12, 120]}
-                                            count={products.length}
-                                            rowsPerPage={rowsPerPage}
-                                            page={page}
-                                            onPageChange={handleChangePage}
-                                            onRowsPerPageChange={handleChangeRowsPerPage}
-                                        />
-                                    </TableCell>
+                                    <TablePagination
+                                        rowsPerPageOptions={[6, 12, 120]}
+                                        count={products.length}
+                                        rowsPerPage={rowsPerPage}
+                                        page={page}
+                                        onPageChange={handleChangePage}
+                                        onRowsPerPageChange={handleChangeRowsPerPage}
+                                    />
                                 </TableRow>
                             </TableBody>
                         </Table>
@@ -317,21 +315,19 @@ function SearchTable(props) {
                                             />
                                         </TableCell>
                                         <TableCell>
-                                            <TableCell>
-                                                <IconButton                                                      
-                                                    size="small"
-                                                    onClick={()=>{
-                                                        dispatch( RemoveFromCart(product) );
-                                                    }}
-                                                >
-                                                    <FontAwesomeIcon color="red" icon={faTrashAlt} />
-                                                </IconButton>
-                                            </TableCell>
+                                            <IconButton                                                      
+                                                size="small"
+                                                onClick={()=>{
+                                                    dispatch( RemoveFromCart(product) );
+                                                }}
+                                            >
+                                                <FontAwesomeIcon color="red" icon={faTrashAlt} />
+                                            </IconButton>
                                         </TableCell>
                                     </TableRow>
                                 )) : (
                                     <TableRow>
-                                        <TableCell colSpan={3} style={{textAlign : "center"}}>
+                                        <TableCell colSpan={4} style={{textAlign : "center"}}>
                                             <Typography 
                                                 variant="h6"
                                             >
@@ -342,16 +338,14 @@ function SearchTable(props) {
                                     </TableRow>
                                 )}
                                 <TableRow>
-                                    <TableCell colSpan={6}>
-                                        <TablePagination
-                                            rowsPerPageOptions={[6, 12, 120]}
-                                            count={cart.length}
-                                            rowsPerPage={cartRowsPerPage}
-                                            page={cartPage}
-                                            onPageChange={handleChangeCartPage}
-                                            onRowsPerPageChange={handleChangeCartRowsPerPage}
-                                        />
-                                    </TableCell>
+                                    <TablePagination
+                                        rowsPerPageOptions={[6, 12, 120]}
+                                        count={cart.length}
+                                        rowsPerPage={cartRowsPerPage}
+                                        page={cartPage}
+                                        onPageChange={handleChangeCartPage}
+                                        onRowsPerPageChange={handleChangeCartRowsPerPage}
+                                    />
                                 </TableRow>
                             </TableBody>
                         </Table>
