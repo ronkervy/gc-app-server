@@ -575,7 +575,6 @@ module.exports = {
             }) );
         }
     },
-
     //SUPPLIERS API
     supplierList : async( req,res,next )=>{
 
@@ -916,5 +915,61 @@ module.exports = {
                 message : err.message
             }) );
         }
-    }
+    },
+    deliveryCountMonthly : async(req,res,next)=>{
+        /**
+         * 
+         * 
+         * $group: {
+                _id: { $substr : ["$transaction_date", 5, 2 ] },
+                "net_revenue" : { $sum: "item_net_total_value" },
+            }
+         */
+        try{
+            
+            const resModel = await DeliveryModel.aggregate([   
+                { "$project" :
+                    {
+                        "year" : { "$year": { "date" : "$createdAt", timezone : "Asia/Manila"} },
+                        "month" : { "$month": { "date" : "$createdAt", timezone : "Asia/Manila"} },   
+                        "total_expense" : { "$sum" : "$total_item_price" }                                                                                                                       
+                    }
+                },
+                { "$unwind" : "$total_expense" },
+                { "$group" : 
+                    {
+                        "_id" :
+                        { 
+                            "year" : "$year",
+                            "month" : "$month",                         
+                        },
+                        "total_expense" :
+                        {
+                            "$sum" : "$total_expense"
+                        },
+                        "delivery_count" : { "$sum" : 1 }                                            
+                    }, 
+                },
+                {
+                    "$limit" : 12
+                },
+                {
+                    "$sort" : { "_id.month" : -1 }
+                }
+            ]);
+
+            return res.status(200).json(resModel);
+        }catch(err){
+            return createHttpError.Unauthorized({
+                message : err.message
+            });
+        }
+    },
+    deliveryCountAnnual : async()=>{
+        try{
+
+        }catch(err){
+
+        }
+    },
 }

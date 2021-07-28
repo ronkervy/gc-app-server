@@ -5,7 +5,7 @@ import { withStyles } from '@material-ui/core';
 import Styles from './Styles';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faBox
+    faBox, faBoxOpen, faDollarSign, faMoneyBill, faReceipt
 } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -15,6 +15,8 @@ import {
 import { useHistory } from 'react-router-dom';
 import Loader from '../shared/Loader';
 import { getAllTransaction } from '../transactions/store/TransactionServices';
+import ChartHome from './charts/Chart';
+import WeeklyChart from './charts/WeeklyChart';
 
 function Home(props) {
 
@@ -33,6 +35,11 @@ function Home(props) {
         }) );
     },[]);
 
+    const formatter = new Intl.NumberFormat('en-PH',{
+        style : 'currency',
+        currency : 'Php'
+    });
+
     const filterLowCounts = (prods)=>{
         const lowArr = [];
         prods.map(prod=>{
@@ -49,6 +56,11 @@ function Home(props) {
             currSales.push(transaction.transaction_date);
         });
         return currSales.length;
+    }
+
+    const filterMonthEarning = ()=>{
+        const currDate = new Date(Date.now());
+
     }
 
     if( loading ){
@@ -131,7 +143,7 @@ function Home(props) {
                     lg={4} 
                     sm={4}
                     boxShadow={2} 
-                    className={classes.boxOverview}             
+                    className={classes.boxOverview}           
                 >
                     <Grid
                         item
@@ -154,52 +166,76 @@ function Home(props) {
             </Grid>
             <Grid container spacing={4}>
                 <Grid item sm={4} lg={4}>
-                    <h3>Current Balance</h3>
+                    <h3>Income</h3>
                     <Grid container spacing={3}>
                         <Grid item sm={12} lg={12}>
-                            <Box
+                            <Box                                                                
+                                container
                                 component={motion.div}
                                 boxShadow={2} 
-                                className={classes.boxCurrentBal}                            
-                            >
-                                Earning this month
+                                className={classes.boxCurrentBal}     
+                                whileHover={{
+                                    scale : .9
+                                }}                       
+                            >                                
+                                <Grid item lg={4} sm={4}>
+                                    <h2
+                                        style={{margin: "0px"}}
+                                    >{formatter.format(10000)}</h2>
+                                    <p style={{margin: "0px"}}>Earnings this month</p>
+                                </Grid>
+                                <Grid item lg={4} sm={4} style={{ marginTop : "40px" }}>
+                                    <FontAwesomeIcon size="3x" color="#EC861C" icon={faDollarSign} />
+                                </Grid> 
                             </Box>
                         </Grid>
-                        <Grid item sm={12} lg={12}>
+                        <Grid item sm={12} lg={12}>                            
                             <Box
                                 component={motion.div}          
                                 lg={4} 
                                 sm={4}
                                 boxShadow={2}     
-                                className={classes.boxCurrentBal}                              
+                                className={classes.boxCurrentBal}    
+                                whileHover={{
+                                    scale : .9
+                                }}                            
                             >
-                                Transaction this month
+                                <Grid item lg={4} sm={4}>
+                                    <p style={{margin: "0px"}}>Transactions this month</p>
+                                    <h2
+                                        style={{margin: "0px"}}
+                                    >280</h2>                                    
+                                </Grid>
+                                <Grid item lg={4} sm={4} style={{ marginTop : "25px" }}>
+                                    <FontAwesomeIcon size="3x" color="#663394" icon={faReceipt} />
+                                </Grid> 
                             </Box>
                         </Grid>
                     </Grid>
                 </Grid>         
                 <Grid item sm={8} lg={8}>
-                    <h3>Earning Summary</h3>
+                    <h3>Monthly Sales Summary</h3>
                     <Grid container>
                         <Grid item sm={12} lg={12}>
                             <Box
                                 component={motion.div}        
-                                lg={6} 
+                                lg={12} 
+                                sm={12}
                                 boxShadow={2}      
                                 className={classes.boxSummary}                
                             >
-                                <Grid container spacing={2}>
-                                    <Grid item lg={6} sm={6}>
-                                        <Box
-                                            component={motion.div}
-                                            boxShadow={2}
-                                        >Top Selling</Box>
+                                <Grid container spacing={1}>
+                                    <Grid item lg={12} sm={12}>
+                                        <ChartHome />
                                     </Grid>
-                                    <Grid item lg={6} sm={6}>
-                                        <Box
-                                            component={motion.div}
-                                            boxShadow={2}
-                                        >Average Order</Box>
+                                    <Grid item lg={4} sm={4} >
+                                        <WeeklyChart />
+                                    </Grid>
+                                    <Grid item lg={4} sm={4} >
+                                        <WeeklyChart />
+                                    </Grid>
+                                    <Grid item lg={4} sm={4} >
+                                        <WeeklyChart />
                                     </Grid>
                                 </Grid>
                             </Box>

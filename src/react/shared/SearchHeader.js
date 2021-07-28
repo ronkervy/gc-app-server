@@ -34,7 +34,7 @@ function SearchHeader(props) {
                 disableGutters
             >
                 <FormControl variant="standard" fullWidth size="small" className={classes.AppHeader} >
-                    <TextField            
+                    <TextField       
                         placeholder="`Press Ctrl + F`"                        
                         onClick={(e)=>{
                             handleOpen();

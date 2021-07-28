@@ -16,14 +16,14 @@ const PORT = process.env.PORT || 8081;
 const ipc = require('./config/ipc.server');
 
 app.use(helmet());
-app.use(cors());
+app.use(cors('*'));
 app.use(express.static(path.join(__dirname,'..','/renderer/main_window/public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended : false }));
 
 app.use('/api/v1',apiRoutes);
 app.use('/',(req,res)=>{
-    res.redirect('http://localhost:3000/main_window');
+    res.status(302).redirect('http://localhost:3000/main_window');
 });
 
 app.use((req,res,next)=>{
@@ -41,7 +41,6 @@ app.use((err,req,res,next)=>{
 });
 
 http.listen(PORT,()=>{
-    ipc.server.start();
     io.on("connection",(socket)=>{
         const addr = socket.request.connection.remoteAddress;
 

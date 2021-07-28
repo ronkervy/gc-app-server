@@ -25,7 +25,9 @@ const {
     deliverySearch,
     deliveryCreate,
     deliveryUpdate,
-    deliveryDelete
+    deliveryDelete,
+    deliveryCountAnnual,
+    deliveryCountMonthly
 } = require('../controllers/api.controller');
 
 const {
@@ -62,6 +64,7 @@ router.delete('/suppliers/:id',supplierDelete);
 router.get('/deliveries',deliveryList);
 router.get('/deliveries/:id',deliverySingle);
 router.get('/deliveries/search/:search',deliverySearch);
+router.get('/deliveries/count/monthly',deliveryCountMonthly);
 router.post('/deliveries',deliveryCreate);
 router.patch('/deliveries/:id',deliveryUpdate);
 router.delete('/deliveries/:id',deliveryDelete);
@@ -73,7 +76,7 @@ router.get('/gc-print/transactions/:id',transactionDoc);
 //OS INFO
 router.get('/server_info',serverInfo);
 
-//REPORST
+//REPORTS
 router.get('/reports/:model',generateReportDoc);
 
 module.exports = router;

@@ -16,7 +16,8 @@ import {
     TableRow,
     TableCell,
     TableBody,
-    TextareaAutosize
+    TextareaAutosize,
+    InputAdornment
 } from '@material-ui/core';
 import { Close } from '@material-ui/icons';
 import { useHistory } from 'react-router';
@@ -27,6 +28,8 @@ import Loader from '../../../shared/Loader';
 import { useFormik } from 'formik';
 import Styles from '../Styles';
 import { OpenNotification } from '../../../shared/store/NotificationSlice';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faBoxOpen, faCodeBranch, faUserTie } from '@fortawesome/free-solid-svg-icons';
 
 const EditForm = ({product})=>{
 
@@ -103,6 +106,13 @@ const EditForm = ({product})=>{
                         name="item_name"
                         onChange={formik.handleChange}
                         value={formik.values.item_name}
+                        InputProps={{
+                            startAdornment : (
+                                <InputAdornment position="start">
+                                    <FontAwesomeIcon icon={faBoxOpen} />
+                                </InputAdornment>
+                            )
+                        }}
                     />
                 </Grid>
                 <Grid item lg={6} sm={6}>
@@ -117,6 +127,13 @@ const EditForm = ({product})=>{
                         name="item_code"
                         onChange={formik.handleChange}
                         value={formik.values.item_code}
+                        InputProps={{
+                            startAdornment : (
+                                <InputAdornment position="start">
+                                    <FontAwesomeIcon icon={faBoxOpen} />
+                                </InputAdornment>
+                            )
+                        }}
                     />
                 </Grid>
                 <Grid item lg={6} sm={6}>
@@ -160,6 +177,13 @@ const EditForm = ({product})=>{
                         name="item_supplier"
                         onChange={formik.handleChange}
                         value={formik.values.item_supplier}
+                        InputProps={{
+                            startAdornment : (
+                                <InputAdornment position="start">
+                                    <FontAwesomeIcon icon={faUserTie} />
+                                </InputAdornment>
+                            )
+                        }}
                     >
                         {suppliers.map((supplier,index)=>(
                            <MenuItem
@@ -174,7 +198,7 @@ const EditForm = ({product})=>{
                         fullWidth
                         type="submit"
                         variant="contained"
-                        color="primary"
+                        color="primary"                        
                     >Update</Button>
                 </Grid>                
             </Grid>
@@ -234,7 +258,6 @@ const SingleProduct = (props)=>{
                 </Toolbar>
             </AppBar>
             <div className={ProductModal}>
-                {console.log(selectedProd)}
                 <EditForm product={selectedProd} />
                 <Grid container spacing={2}>
                     <Grid item lg={12} sm={12}>

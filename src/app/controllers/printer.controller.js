@@ -81,10 +81,6 @@ module.exports = {
                 }
             });
 
-            function numberWithCommas(x) {
-                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            }
-
             let transArr = resTransaction.map((transaction,index)=>{
 
                 let arr = [];               
@@ -94,28 +90,31 @@ module.exports = {
                         {text : transaction.product.item_name, style : 'tableItems'},
                         {text : supp.supplier_name, style : 'tableItems'},
                         {text : transaction.qty, style : 'tableItems'},                        
-                        {text : parseFloat(transaction.item_current_price).toFixed(2), style : 'tableItems'},
-                        {text : parseFloat(transaction.total_per_unit).toFixed(2), style : 'tableItems'},
-                        {text : transaction.discount > 0 ? parseFloat(transaction.discount) * 100 + ' %' : 'Net', style : 'tableItems'}
+                        {text : formatter.format(transaction.item_current_price), style : 'tableItems'},
+                        {text : formatter.format(transaction.total_per_unit), style : 'tableItems'},
+                        {
+                            text : transaction.discount > 0 ? parseFloat(transaction.discount) * 100 + ' %' : 'Net', 
+                            style : 'tableItems',
+                            customer_name : transaction.customer_name,
+                            date : transaction.createdAt,
+                            transact_type : transaction.transact_payment_type,
+                            total_amount : formatter.format(transaction.total_amount)
+                        }
                     );
                 });
 
                 return arr;
             });
 
-            const docDef = transactionDocDef(transArr,resTransaction.map(transaction=>{
-                return {
-                    customer_name : transaction.customer_name,
-                    date : transaction.createdAt,
-                    transact_type : transaction.transact_payment_type,
-                    total_amount : transaction.total_amount
-                };
-            }));
+            let pngimage = fs.readFileSync(logoPath);
 
-            // return res.json(docDef);
+            return res.status(200).json({
+                doc : JSON.stringify(transArr),
+                logo : new Buffer.from(pngimage).toString('base64')
+            });
 
-            const binaryResult = await createPdf(docDef,id);    
-            return res.contentType('application/pdf').send(binaryResult.binary);
+            // const binaryResult = await createPdf(docDef,id);    
+            // return res.contentType('application/pdf').send(binaryResult.binary);
             
         }catch(err){
             return next( createHttpError.Unauthorized({
@@ -233,7 +232,10 @@ module.exports = {
                         {
                             text : formatter.format(delivery.total), 
                             style : 'tableItems',
-                            prods : delivery.products
+                            prods : delivery.products,
+                            from,
+                            to,
+                            total : delivery.total
                         }
                     );
                     return arr;

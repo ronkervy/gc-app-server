@@ -3,6 +3,8 @@ const db = require('../config/db.config');
 const createHttpError = require('http-errors');
 const ProductModel = require('../models/product.model');
 const SupplierModel = require('../models/supplier.model');
+const moment = require('moment-timezone');
+const phTime = moment.tz(Date.now(),"Asia/Manila");
 
 const DeliverySchema = new Schema({
     delivery_id : {
@@ -37,6 +39,11 @@ const DeliverySchema = new Schema({
         ref : 'Supplier'
     }]
 },{timestamps : true });
+
+DeliverySchema.pre('save',async function(next){
+    this.createdAt = phTime;
+    next();
+});
 
 DeliverySchema.pre('deleteMany',async function(){
     const docs = await this.model.find(this.getQuery());

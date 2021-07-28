@@ -33,6 +33,7 @@ function Reports(props) {
     }
 
     const reportDefault = async (args)=>{
+        
         const resReport = await dispatch(generateReport({
             url : uri !== '' ? uri : `/transactions?from=${'2021-06-01'}&to=${'2021-06-17'}`
         }));
@@ -140,11 +141,11 @@ function Reports(props) {
                     </ButtonGroup>                  
                 </Toolbar>
             </AppBar>
-            <Grid container style={{ padding: "20px", height : "100%" }}>
+            <Grid container style={{ padding: "20px", height : "100%", marginTop : "50px" }}>
                 <iframe
                     title="Report"
                     src={url}
-                    style={{ border : "none", display:"block", marginTop : "50px", height : "100% !important", width : "100%" }}
+                    style={{ border : "none", display:"block", height : "100% !important", width : "100%" }}
                 ></iframe>
             </Grid>
         </Dialog>

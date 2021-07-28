@@ -20,6 +20,19 @@ const useStyles = {
         justifyContent : "center",
         outline : "none",
         padding : "40px"
+    },
+    Table : {
+        marginTop : "10px",
+        '& tr td' : {
+            fontSize : ".8em",
+            '& :hover' : {
+                
+            }
+        },
+        '& th' : {
+            fontWeight : "70",
+            fontSize : ".8em"
+        }        
     }
 }
 

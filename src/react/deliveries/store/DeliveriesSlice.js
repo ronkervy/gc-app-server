@@ -3,6 +3,7 @@ import {
     CreateDelivery, 
     DeleteDelivery, 
     GetAllDeliveries, 
+    GetHomeChartRpt, 
     GetSingleDelivery, 
     UpdateDeliveryStatus 
 } from './DelServices';
@@ -13,7 +14,8 @@ export const DeliveriesSlice = createSlice({
         entities : [],
         cart : [],
         loading : true,
-        error : ''
+        error : '',
+        chartrpt : []
     },
     reducers : {
         AddToCart : (state,{payload})=>{
@@ -63,7 +65,7 @@ export const DeliveriesSlice = createSlice({
             state.cart = [];
         }
     },
-    extraReducers : (builder)=>{
+    extraReducers : (builder)=>{        
         //GET ALL DELIVERY
         builder.addCase(GetAllDeliveries.pending,state=>{
             state.loading = true;
@@ -85,6 +87,18 @@ export const DeliveriesSlice = createSlice({
             state.entities[payload._id] = payload;
         })
         .addCase(GetSingleDelivery.rejected,(state,{payload})=>{
+            state.loading = false;
+            state.error = payload;
+        })
+        //GET HOME CHART RPT
+        .addCase( GetHomeChartRpt.pending,state=>{
+            state.loading = true;
+        })
+        .addCase( GetHomeChartRpt.fulfilled,(state,{payload})=>{
+            state.loading = false;
+            state.chartrpt = payload;
+        })
+        .addCase(GetHomeChartRpt.rejected,(state,{payload})=>{
             state.loading = false;
             state.error = payload;
         })

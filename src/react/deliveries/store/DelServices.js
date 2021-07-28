@@ -96,3 +96,20 @@ export const DeleteDelivery = createAsyncThunk(
         }
     }
 );
+
+export const GetHomeChartRpt = createAsyncThunk(
+    'deliveries/GetHomeChartRpt',
+    async(args,{rejectWithValue})=>{
+        try{
+            const { opt } = args;
+            const res = await DeliverService({
+                ...opt,
+                method : 'GET'
+            });
+            await sleep(1000);
+            return res.data;
+        }catch(err){
+            return rejectWithValue(res.response.data);
+        }
+    }
+);

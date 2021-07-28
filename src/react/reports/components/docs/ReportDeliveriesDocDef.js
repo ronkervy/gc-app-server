@@ -5,11 +5,17 @@ const formatter = new Intl.NumberFormat('en-PH',{
 
 export default (docs,logoURL,prods)=>{
 
-    docs.map(products=>{
-        products[5].prods.map(prod=>{
-            console.log(prod);
-        })
+    let from = '';
+    let to = '';
+    let arrTotal = [];
+
+    docs.map(doc=>{
+        from = doc[5].from;
+        to = doc[5].to;
+        arrTotal.push(doc[5].total);
     });
+
+    const total = formatter.format(arrTotal.reduce((a,b)=>a+b,0));
 
     return {
         pageSize : 'A4',
@@ -89,7 +95,39 @@ export default (docs,logoURL,prods)=>{
                         }
                     },
                 ], 
-            },             
+                margin : [0,0,0,20]
+            },
+            {
+                table : {
+                    headerRows : 1,
+                    widths : ['*','*','*'],
+                    body : [
+                        [
+                            { 
+                                text : `From Date : ${from}`, 
+                                style : {
+                                    alignment : 'center',
+                                    fontSize : 9
+                                }
+                            },
+                            { 
+                                text : `To Date : ${to}`, 
+                                style : {
+                                    alignment : 'center',
+                                    fontSize : 9
+                                }
+                            },
+                            {
+                                text : `Total Expense : ${total}`, 
+                                style : {
+                                    alignment : 'center',
+                                    fontSize : 9
+                                }
+                            },
+                        ]
+                    ]
+                }
+            },           
             docs.map((doc,i)=>{
                 return {
                     stack : [
@@ -99,7 +137,7 @@ export default (docs,logoURL,prods)=>{
                                 // headers are automatically repeated if the table spans over multiple pages
                                 // you can declare how many rows should be treated as headers
                                 headerRows: 1,
-                                widths: [ '*', '*', '*', '*','*','*'],
+                                widths: [ 120, '*', '*', '*','*','*'],
                                 body: [                        
                                     [
                                         {
@@ -147,7 +185,7 @@ export default (docs,logoURL,prods)=>{
                                     [
                                         { text : 'Product Name', style : 'tableHeader'  },
                                         { text : 'QTY', style : 'tableHeader'  },
-                                        { text : 'Total Amount', style : 'tableHeader'  },                            
+                                        { text : 'Per unit Total Amount', style : 'tableHeader'  },                            
                                     ],
                                     ...doc[5].prods.map(prod=>{
                                         return [
@@ -162,7 +200,7 @@ export default (docs,logoURL,prods)=>{
                     ],                                                         
                     margin : [0,10,0,0]
                 }
-            })           
+            })    
         ],
         styles : {
             header : {

@@ -22,8 +22,9 @@ import { GetAllDeliveries } from '../store/DelServices';
 import ListTableRow from './ListTableRow';
 import Loader from '../../shared/Loader';
 
-function ListDeliveries() {
+function ListDeliveries(props) {
 
+    const { classes } = props;
     const history = useHistory();
     const dispatch = useDispatch();
     const { entities : deliveries,loading : deliveriesIsLoading } = useSelector(state=>state.deliveries);
@@ -66,11 +67,9 @@ function ListDeliveries() {
                 marginTop : "10px"
             }}>
                 <TableContainer component={Paper} elevation={2}>
-                    <Table size="small" stickyHeader>
+                    <Table size="small" stickyHeader className={classes.Table}>
                         <TableHead>
-                            <TableRow style={{
-                                fontSize : '.8em',
-                            }}>               
+                            <TableRow>               
                                 <TableCell />                 
                                 <TableCell>#ID</TableCell>
                                 <TableCell>Items</TableCell>

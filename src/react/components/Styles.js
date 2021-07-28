@@ -33,14 +33,21 @@ const useStyles = {
         }
     },
     boxCurrentBal : {
+        display : "flex",
+        justifyContent : "space-between",
+        alignItems : "center",
         height: "150px",
         borderRadius : "10px",
         padding: "35px"
     },
     boxSummary : {
+        display : "flex",
+        flexDirection : "column",
+        justifyContent : "space-between",
+        alignItems : "center",
         height : "330px",
         borderRadius : "10px",
-        padding: "35px"
+        padding: "25px"
     },
     barcodeWrap : {
         display : "flex",
