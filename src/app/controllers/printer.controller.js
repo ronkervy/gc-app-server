@@ -90,15 +90,17 @@ module.exports = {
                         {text : transaction.product.item_name, style : 'tableItems'},
                         {text : supp.supplier_name, style : 'tableItems'},
                         {text : transaction.qty, style : 'tableItems'},                        
-                        {text : formatter.format(transaction.item_current_price), style : 'tableItems'},
-                        {text : formatter.format(transaction.total_per_unit), style : 'tableItems'},
+                        {text : formatter.format(transaction.item_current_price), style : 'tableItemsAmount'},
+                        {text : formatter.format(transaction.total_per_unit), style : 'tableItemsAmount'},
                         {
                             text : transaction.discount > 0 ? parseFloat(transaction.discount) * 100 + ' %' : 'Net', 
                             style : 'tableItems',
+                            _id : transaction.transact_id,
                             customer_name : transaction.customer_name,
                             date : transaction.createdAt,
                             transact_type : transaction.transact_payment_type,
-                            total_amount : formatter.format(transaction.total_amount)
+                            total_amount : formatter.format(transaction.total_amount),
+                            change_amount : formatter.format(transaction.change_amount),
                         }
                     );
                 });

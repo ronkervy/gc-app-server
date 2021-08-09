@@ -47,34 +47,39 @@ const LineChart = () => {
       },
   };
 
-  useEffect(()=>{    
-      const resData = async()=>{
+  const resData = async()=>{
 
-          const res = await dispatch( GetHomeChartRpt({
-            opt : {
-                url : '/deliveries/count/monthly'
+    const res = await dispatch( GetHomeChartRpt({
+      opt : {
+          url : '/deliveries/count/monthly'
+      }
+    }));
+
+    if( GetHomeChartRpt.fulfilled.match(res) ){
+      const dataArr = [];
+      res.payload.map((rpt,index)=>{
+        const ind = rpt._id.month - 1;
+    
+        for( let i=0; i <= labels.length;i++ ){
+            if( i === ind ){
+                dataArr[i] = rpt.delivery_count;
+            }else{
+                dataArr.push(0);
             }
-          }));
+        }
+        
+      });
+      setDataDeliveries(dataArr);
+    }
+  }    
 
-          if( GetHomeChartRpt.fulfilled.match(res) ){
-            const dataArr = [];
-            res.payload.map((rpt,index)=>{
-              const ind = rpt._id.month - 1;
-          
-              for( let i=0; i <= labels.length;i++ ){
-                  if( i === ind ){
-                      dataArr[i] = rpt.delivery_count;
-                  }else{
-                      dataArr.push(0);
-                  }
-              }
-              
-            });
-            setDataDeliveries(dataArr);
-          }
-      }      
+  useEffect(()=>{      
 
       resData();
+
+      return ()=>{
+          setDataDeliveries([]);
+      }
 
   },[]);
 
