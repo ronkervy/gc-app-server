@@ -30,6 +30,7 @@ import Styles from '../Styles';
 import { OpenNotification } from '../../../shared/store/NotificationSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBoxOpen, faCodeBranch, faUserTie } from '@fortawesome/free-solid-svg-icons';
+import NumberFormat from 'react-number-format';
 
 const EditForm = ({product})=>{
 
@@ -137,7 +138,12 @@ const EditForm = ({product})=>{
                     />
                 </Grid>
                 <Grid item lg={6} sm={6}>
-                    <TextField
+                    <NumberFormat
+                        customInput={TextField} 
+                        thousandSeparator={true}
+                        decimalScale={2}
+                        decimalSeparator={'.'}
+                        fixedDecimalScale={true}
                         size="small"
                         fullWidth
                         onBlur={formik.handleBlur}

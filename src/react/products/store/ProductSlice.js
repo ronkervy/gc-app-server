@@ -84,7 +84,7 @@ const ProductSlice = createSlice({
         })
         .addCase(deleteProduct.fulfilled,(state,{payload})=>{
             state.loading = false;
-            state.entities[payload.item_id] = payload;
+            state.entities = payload;
         })
         .addCase(deleteProduct.rejected,(state,{payload})=>{
             state.loading = false;

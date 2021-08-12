@@ -42,20 +42,11 @@ const useStyles = {
         padding : "50px",
         marginTop : "50px"
     },
-    DeleteModal : {
-        background : "#ffffff",
+    DeleteModal : {        
         display : "flex",
-        padding: "50px",
         justifyContent : "center",
+        alignItems : "center",
         flexDirection : "column",
-        alignContent : "flex-start",
-        width : "350px",
-        height : "auto",
-        position : "absolute",
-        borderRadius : "30px",
-        top : "50%",
-        left : "50%",
-        transform : "translate(-50%,-50%)",      
         outline : 0,    
         '& div' : {
             textAlign : "center",
@@ -63,6 +54,17 @@ const useStyles = {
                 marginTop : "0px"
             }
         }
+    },
+    DeleteModalContent : {
+        display : "flex",
+        alignItems : "center",
+        justifyContent : "center",
+        padding : "30px",
+        background : "#ffffff",
+        outline : "none",
+        width : "350px",
+        height : "auto",
+        borderRadius : "10px"
     },
     SingleProdBarcodeTop : {       
         height: "150px",                         

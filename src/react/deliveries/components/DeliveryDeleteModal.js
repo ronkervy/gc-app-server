@@ -1,4 +1,4 @@
-import { Backdrop, Button, Fade, Modal,withStyles } from '@material-ui/core'
+import { Backdrop, Button, Fade, Modal,withStyles,Grid } from '@material-ui/core'
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux';
 import { useHistory, useParams } from 'react-router';
@@ -50,17 +50,29 @@ function DeliveryDeleteModal(props) {
             <Fade
                 in={open}
             >
-                <div className={classes.DeleteModalContent}>
-                    {id}
-                    <Button
-                        onClick={()=>{
-                            handleDelete(id);
-                        }}
-                    >Yes</Button>&nbsp;
-                    <Button
-                        onClick={handleClose}
-                    >Cancel</Button>
-                </div>
+                <Grid container spacing={2} className={classes.DeleteModalContent}>
+                    <Grid item lg={12} sm={12}>
+                        <h3 style={{ textAlign : "center" }}>Delete this item?</h3>
+                    </Grid>
+                    <Grid item lg={4} sm={4}>
+                        <Button
+                            fullWidth
+                            color="secondary"
+                            variant="contained"
+                            onClick={()=>{
+                                handleDelete(id);
+                            }}
+                        >Yes</Button>
+                    </Grid>
+                    <Grid item lg={4} sm={4}>
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            onClick={handleClose}
+                        >Cancel</Button>
+                    </Grid>                    
+                </Grid>
             </Fade>
         </Modal>
     )

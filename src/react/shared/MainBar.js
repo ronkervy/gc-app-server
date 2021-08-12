@@ -1,12 +1,11 @@
 import { AppBar, Toolbar,withStyles,IconButton, Grid,Badge, Divider } from '@material-ui/core';
 import CalendarTodayIcon from '@material-ui/icons/CalendarToday';
 import Styles from './Styles';
-import React from 'react';
+import React,{ useEffect,useState} from 'react';
 import {
     Close,
-    Image,
     Minimize,
-    Notifications,
+    SettingsRemote,
 } from '@material-ui/icons';
 import logo from 'Public/img/logo.png';
 import { motion } from 'framer-motion';
@@ -16,6 +15,7 @@ function MainBar(props) {
 
     const {classes} = props;
     const currDate = new Date(Date.now()).toDateString();
+    const [ip,setIP] = useState('');
 
     const { ipcRenderer } = window.require('electron');
 
@@ -26,6 +26,16 @@ function MainBar(props) {
     const MinWin = ()=>{
         ipcRenderer.invoke('min');
     }    
+
+    useEffect(()=>{
+        ipcRenderer.on('get-ip',(e,args)=>{
+            setIP(args);
+        });
+
+        return ()=>{
+            setIP('');
+        }
+    },[]);
 
     return (
         <AppBar position="fixed" className={classes.MainBar} style={{WebkitAppRegion: "drag"}}>
@@ -39,20 +49,12 @@ function MainBar(props) {
                         <img height="24" width="24" src={logo} />&nbsp;&nbsp;<h5>GC Application</h5>
                         <Divider style={{ margin : "0px 10px", alignSelf : "center", height: "25px"}} variant="fullWidth" orientation="vertical" flexItem />
                         <CalendarTodayIcon />&nbsp;<h5>{currDate}</h5>
-                    </Grid>
-                    <Grid item xs={2} lg={3} className={classes.MainBarRightBtns}>
-                        <IconButton
-                            disableRipple={true}     
-                            size="small"
-                            component={motion.div}
-                            whileHover={{ scale : 1.1 }}
-                        >
-                            <Badge badgeContent={4} color="secondary" style={{ WebkitAppRegion : "no-drag" }}>
-                                <Notifications />
-                            </Badge>
-                        </IconButton>   
-                    </Grid>
-                    <Grid item xs={2} lg={1} className={classes.MainBarRightBtns}>
+                        <Divider style={{ margin : "0px 10px", alignSelf : "center", height: "25px"}} variant="fullWidth" orientation="vertical" flexItem />
+                        <SettingsRemote htmlColor="#1759A3" />&nbsp;<h5>{ip}</h5>
+                        <Divider style={{ margin : "0px 10px", alignSelf : "center", height: "25px"}} variant="fullWidth" orientation="vertical" flexItem />
+                        &nbsp;<h5 style={ ip !== '' ? { color : 'green' } : { color : 'red' } }>{ip !== '' ? 'Server Broadcasting' : 'Server not initiated'}</h5>
+                    </Grid>                    
+                    <Grid item sm={4} lg={4} className={classes.MainBarRightBtns}>
                         <IconButton
                             color="primary"
                             onClick={MinWin}

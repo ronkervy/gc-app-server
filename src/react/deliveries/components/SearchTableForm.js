@@ -105,6 +105,9 @@ function SearchTable(props) {
             }
         }
         getSupp();
+        return ()=>{
+            setSupp({});
+        }
     },[]);
 
     if( prodLoading ){
@@ -168,7 +171,7 @@ function SearchTable(props) {
                 </FormControl>
             </Grid>
             <Grid item lg={6} sm={6}>                    
-                    <TableContainer component={Paper}>
+                    <TableContainer elevation={3} component={Paper} style={{ minHeight : "500px", position : "relative" }}>
                         <Table size="small">
                             <TableHead>
                                 <TableRow>
@@ -235,7 +238,7 @@ function SearchTable(props) {
                                         </TableCell>
                                     </TableRow>
                                 )}
-                                <TableRow>
+                                <TableRow style={{ position : "absolute", bottom : 0, left : 0 }} >
                                     <TablePagination
                                         rowsPerPageOptions={[6, 12, 120]}
                                         count={products.length}
@@ -243,15 +246,16 @@ function SearchTable(props) {
                                         page={page}
                                         onPageChange={handleChangePage}
                                         onRowsPerPageChange={handleChangeRowsPerPage}
+                                        labelRowsPerPage={false}
                                     />
                                 </TableRow>
                             </TableBody>
                         </Table>
                     </TableContainer>
-                </Grid>
+                </Grid>                
                 <Grid item lg={6} sm={6}>
-                    <TableContainer component={Paper}>
-                        <Table size="small" style={{height : "min-height : 400px"}}>
+                    <TableContainer elevation={3} component={Paper}  style={{minHeight : "500px", position : "relative"}}>
+                        <Table size="small">
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Product Name</TableCell>
@@ -332,12 +336,12 @@ function SearchTable(props) {
                                                 variant="h6"
                                             >
                                                 <FontAwesomeIcon color="primary" icon={faShoppingCart} />&nbsp;&nbsp;
-                                                Cart Empty
+                                                 Cart Empty
                                             </Typography>
                                         </TableCell>
                                     </TableRow>
                                 )}
-                                <TableRow>
+                                <TableRow style={{ bottom : 0, left: 0, position : "absolute" }}>
                                     <TablePagination
                                         rowsPerPageOptions={[6, 12, 120]}
                                         count={cart.length}
@@ -345,6 +349,7 @@ function SearchTable(props) {
                                         page={cartPage}
                                         onPageChange={handleChangeCartPage}
                                         onRowsPerPageChange={handleChangeCartRowsPerPage}
+                                        labelRowsPerPage={false}
                                     />
                                 </TableRow>
                             </TableBody>

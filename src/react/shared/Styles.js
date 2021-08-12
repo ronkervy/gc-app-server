@@ -93,6 +93,7 @@ const useStyle = {
         display : "flex",
         position: "fixed",
         justifyContent : "center",
+        flexDirection : "column",
         alignItems : "center",
         zIndex : 100,
         backgroundColor : "rgba(0, 0, 0, 0.9)",

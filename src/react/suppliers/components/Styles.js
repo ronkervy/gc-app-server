@@ -6,6 +6,22 @@ const useStyles = {
         padding : "20px",
         height : "100%"
     },
+    DeleteModal : {
+        display: "flex",
+        justifyContent : "center",
+        alignItems : "center",
+    },
+    DeleteModalContent : {
+        backgroundColor : "#ffffff",
+        display: "flex",
+        padding: "30px",
+        outline : "none",
+        width : "350px",
+        heigth : "auto",
+        justifyContent : "center",
+        alignItems : "center",
+        borderRadius : "10px"
+    },
     Table : {
         marginTop : "10px",
         '& tr td' : {

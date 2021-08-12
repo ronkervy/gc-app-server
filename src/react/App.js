@@ -19,13 +19,17 @@ import DeliveryDeleteModal from "./deliveries/components/DeliveryDeleteModal";
 import ProdDeleteModal from "./products/components/ProdDeleteModal";
 import SingleProduct from "./products/components/Single Product/SingleProduct";
 import Toast from "./shared/Toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { CloseNotification } from "./shared/store/NotificationSlice";
 import InvoicePreview from './deliveries/components/InvoicePreview';
 import Reports from "./reports/components/Reports";
 import TransactionsFilterModal from "./reports/components/filters/TransactionsFilterModal";
 import DeliveriesFilterModal from "./reports/components/filters/DeliveriesFilterModal";
 import ProductsFilterModal from "./reports/components/filters/ProductsFilterModal";
+import TransactionList from "./transactions/components/TransactionList";
+import { getProducts } from "./products/store/ProdServices";
+import Loader from "./shared/Loader";
+import DeleteSupplier from "./suppliers/components/DeleteSupplier";
 
 function App(props) {
 
@@ -53,8 +57,6 @@ function App(props) {
               focusSearch();
           }
       });
-
-      history.push('/');
 
       return ()=>{
         document.removeEventListener('keydown',(e)=>{          
@@ -121,11 +123,17 @@ function App(props) {
                   <Route exact path="/deliveries/del/:id">
                         <DeliveryDeleteModal />
                   </Route>
+                  <Route exact path="/supplier/del/:id">
+                        <DeleteSupplier />
+                  </Route>
                   <Route exact path="/suppliers/:id">
                         <SingleSupp />
                   </Route>
                   <Route exact path="/deliveries/invoice" >
                         <InvoicePreview />
+                  </Route>
+                  <Route exact path="/transactions">
+                        <TransactionList />
                   </Route>
               </Switch>    
               <Toast 

@@ -200,7 +200,7 @@ function AddSupplier(props) {
                         </Grid>
                         <Grid item lg={12} sm={12}>
                             <TextareaAutosize 
-                                rowsMax="6" 
+                                maxRows="6" 
                                 placeholder="Memo"
                                 style={{width : "100%",height : "150px",padding: "10px"}}
                                 id="supplier_memo"

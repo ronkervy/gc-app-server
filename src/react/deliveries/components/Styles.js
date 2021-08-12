@@ -5,11 +5,15 @@ const useStyles = {
         justifyContent: 'center',
     },
     DeleteModalContent : {
+        display : "flex",
+        alignItems : "center",
+        justifyContent : "center",
         padding : "30px",
         width : "350px",
-        heigth : "auto",
+        height : "auto",
         outline : "none",
-        backgroundColor : "#FFFFFF"
+        backgroundColor : "#FFFFFF",
+        borderRadius : "10px"
     },
     InvoiceModal : {
         position : "relative",
@@ -23,6 +27,11 @@ const useStyles = {
     },
     Table : {
         marginTop : "10px",
+        '& table' : {
+            '& tr td' : {
+                fontSize : "1em"
+            },
+        },
         '& tr td' : {
             fontSize : ".8em",
             '& :hover' : {

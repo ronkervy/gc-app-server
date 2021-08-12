@@ -10,7 +10,9 @@ import {
     faNewspaper,
     faUserTie,
     faBars,
-    faBoxes
+    faBoxes,
+    faReceipt,
+    faDollarSign
 } from '@fortawesome/free-solid-svg-icons';
 import NavStyle from './Styles';
 import { useSelector } from 'react-redux';
@@ -18,7 +20,6 @@ import { useSelector } from 'react-redux';
 function Nav(props) {
     
     const { classes } = props;
-    const { doc } = useSelector(state=>state.report);
 
     return (
         <Box className={classes.AppNav} boxShadow={2}>       
@@ -40,17 +41,9 @@ function Nav(props) {
             <NavLink exact to='/products'><FontAwesomeIcon icon={faBoxOpen} /> Products</NavLink>
             <NavLink exact to='/products/add/new'><FontAwesomeIcon icon={faPlusSquare} />Add</NavLink>
             <Grid container>
-                <Grid item sm={12}><h3>Settings</h3></Grid>
+                <Grid item sm={12}><h3><FontAwesomeIcon icon={faDollarSign} />&nbsp;&nbsp;Sales</h3></Grid>
             </Grid>            
-            <FormControlLabel
-                control={                    
-                    <Switch 
-                        color="primary"                        
-                    />
-                }
-                label="Theme Mode"
-                style={{color : "#8D9EBD"}}
-            />
+            <NavLink exact to='/transactions'><FontAwesomeIcon icon={faReceipt} />Transcations</NavLink>
         </Box>
     )
 }

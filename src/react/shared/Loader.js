@@ -14,6 +14,7 @@ function Loader(props) {
             <CircularProgress
                 size={70}
             />
+            <h4 style={{ textAlign : "center", color : "white", letterSpacing : "10px" }}>Loading</h4>
         </div>
     )
 }

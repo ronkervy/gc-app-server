@@ -23,17 +23,8 @@ function Home(props) {
     const { classes } = props;
     const dispatch = useDispatch();
     const { entities : products,loading } = useSelector(state=>state.products);
-    const { entities : transactions } = useSelector( state=>state.transactions );
+    const { entities : transactions, loading : transLoading } = useSelector( state=>state.transactions );
     const history = useHistory();
-
-    useEffect(()=>{
-        dispatch( getProducts('/products') );
-        dispatch( getAllTransaction({
-            opt : {
-                url : '/transactions'
-            }
-        }) );
-    },[]);
 
     const formatter = new Intl.NumberFormat('en-PH',{
         style : 'currency',
@@ -50,24 +41,54 @@ function Home(props) {
         return lowArr.length;
     }
 
-    const filterCountCurrentSales = (prods)=>{
+    const filterCountCurrentSales = (trans)=>{
         const currSales = [];
-        transactions.map(transaction=>{
+        trans.map(transaction=>{
             currSales.push(transaction.transaction_date);
         });
         return currSales.length;
     }
 
-    const filterMonthEarning = ()=>{
-        const currDate = new Date(Date.now());
-
+    const filterTransactionCount = (trans)=>{
+        const currDate = new Date(Date.now()).toISOString().split('T')[0];
+        let transArr = [];
+        trans.map(transaction=>{
+            const transDate = transaction.transaction_date.split('T')[0];            
+            if( transDate === currDate ){
+                transArr.push(transaction);
+            }
+        });
+        return transArr.length;
     }
+
+    const filterTotalMonthlySales = (trans)=>{
+        const currDate = new Date(Date.now()).toISOString().split('T')[0];
+        const priceArr = [];
+
+        trans.map(transaction=>{
+            const transDate = transaction.transaction_date.split('T')[0];
+            if( transDate === currDate ){
+                priceArr.push(transaction.total_price);
+            }
+        });
+
+        return priceArr.reduce((a,b)=>a+b,0);
+    }
+
+    useEffect(()=>{
+        dispatch( getProducts('/products') );
+        dispatch( getAllTransaction({
+            opt : {
+                url : '/transactions'
+            }
+        }) );
+    },[]);
 
     if( loading ){
         return(
             <Loader />
         )
-    }
+    }    
 
     return (
         <motion.div
@@ -151,7 +172,7 @@ function Home(props) {
                         sm={4}
                     >
                         <h2 style={{margin: "0px",textAlign : "left"}}>
-                            {filterCountCurrentSales(products)}
+                            {filterCountCurrentSales(transactions)}
                         </h2>
                         <p style={{margin: "0px"}}>Total Sales</p>
                     </Grid>
@@ -179,9 +200,9 @@ function Home(props) {
                                 }}                       
                             >                                
                                 <Grid item lg={4} sm={4}>
-                                    <h2
+                                    <h4
                                         style={{margin: "0px"}}
-                                    >{formatter.format(10000)}</h2>
+                                    >{formatter.format(filterTotalMonthlySales(transactions))}</h4>
                                     <p style={{margin: "0px"}}>Earnings this month</p>
                                 </Grid>
                                 <Grid item lg={4} sm={4} style={{ marginTop : "40px" }}>
@@ -204,7 +225,7 @@ function Home(props) {
                                     <p style={{margin: "0px"}}>Transactions this month</p>
                                     <h2
                                         style={{margin: "0px"}}
-                                    >280</h2>                                    
+                                    >{filterTransactionCount(transactions)}</h2>                                    
                                 </Grid>
                                 <Grid item lg={4} sm={4} style={{ marginTop : "25px" }}>
                                     <FontAwesomeIcon size="3x" color="#663394" icon={faReceipt} />

@@ -16,7 +16,8 @@ import {
     FormControlLabel,
     TablePagination,
     Menu,
-    MenuItem
+    MenuItem,
+    Grid
 } from '@material-ui/core'
 import { KeyboardArrowDown, KeyboardArrowUp } from '@material-ui/icons';
 import React, { useState } from 'react';
@@ -175,23 +176,25 @@ function ListTableRow(props) {
                         in={open === index}
                         timeout="auto" 
                         unmountOnExit
+                        component={Grid}
                     >
                         <Box margin={2}>
                             <Typography variant="h6" gutterBottom component="div">
                                 Ordered Items
                             </Typography>
                             <TableContainer elevation={3} component={Paper}>
-                                <Table size="small">
+                                <Table stickyHeader size="small">
                                     <TableHead>
                                         <TableRow>
-                                            <TableCell>Name</TableCell>
-                                            <TableCell  style={{
+                                            <TableCell colSpan={2}>Name</TableCell>
+                                            <TableCell style={{
                                                 textAlign : "center"
                                             }}>QTY</TableCell>
-                                            <TableCell style={{
+                                            <TableCell align="right" style={{
                                                 textAlign : "center"
                                             }}>Price</TableCell>
                                             <TableCell
+                                                align="right"
                                                 style={{
                                                     textAlign : "center"
                                                 }}
@@ -201,11 +204,11 @@ function ListTableRow(props) {
                                     <TableBody>
                                     {delivery.products.slice(page*rowsPerPage,page*rowsPerPage+rowsPerPage).map((val,i)=>(
                                         <TableRow key={i}>
-                                            <TableCell>{val.item}</TableCell>
+                                            <TableCell colSpan={2}>{val.item}</TableCell>
                                             <TableCell style={{
                                                 textAlign : "center"
                                             }}>{val.qty}</TableCell>
-                                            <TableCell style={{
+                                            <TableCell align="right" style={{
                                                 textAlign : "center"
                                             }}>
                                                 <NumberFormat
@@ -219,9 +222,11 @@ function ListTableRow(props) {
                                                 />
                                             </TableCell>
                                             <TableCell
+                                                colSpan={2}
                                                 style={{
                                                     textAlign : "center"
                                                 }}
+                                                align="right"
                                             >
                                                 {val.supplier}
                                             </TableCell>
@@ -229,24 +234,27 @@ function ListTableRow(props) {
                                     ))}
                                     <TableRow>
                                         <TablePagination
+                                            component={TableCell}
                                             rowsPerPageOptions={[6, 12, 120]}
                                             count={delivery.products.length}
                                             rowsPerPage={rowsPerPage}
                                             page={page}
                                             onPageChange={handleChangePage}
                                             onRowsPerPageChange={handleChangeRowsPerPage}
+                                            labelRowsPerPage={false}
+                                            colSpan={2}
                                         />
-                                        <TableCell colSpan={1}>
+                                        <TableCell>
                                             <IconButton
                                                 size="medium"
                                                 onClick={()=>{
                                                     history.push('/deliveries/del/' + delivery._id);
                                                 }}
                                             >
-                                                <FontAwesomeIcon color="red" icon={faTrashAlt} />
+                                                <FontAwesomeIcon size="sm" color="red" icon={faTrashAlt} />
                                             </IconButton>
                                         </TableCell>
-                                        <TableCell colSpan={2} style={{
+                                        <TableCell style={{
                                             textAlign : "right"
                                         }}>
                                             <FormControlLabel 

@@ -174,7 +174,10 @@ module.exports = {
             const resProd = await ProductModel.deleteOne({
                 _id : id
             });
-            return res.json( resProd );
+
+            const products = await ProductModel.find().sort({ 'createdAt' : 'desc' });            
+
+            return res.status(200).json( products );
         }catch(err){
             return next( createHttpError.Unauthorized({
                 message : err.message
@@ -575,6 +578,60 @@ module.exports = {
             }) );
         }
     },
+    transactionCountMonthly : async(req,res,next)=>{
+        try{
+            const resTrans = await TransactionModel.aggregate([                   
+                { "$project" :
+                    {
+                        "year" : { "$year": { "date" : "$createdAt", timezone : "Asia/Manila"} },
+                        "month" : { "$month": { "date" : "$createdAt", timezone : "Asia/Manila"} },   
+                        "total_earning" : { "$sum" : "$total_amount" },  
+                        "transact_id" : "$transact_id"                                                          
+                    }
+                },                
+                { "$unwind" : "$total_earning" },                
+                { "$group" : 
+                    {
+                        "_id" :
+                        { 
+                            "year" : "$year",
+                            "month" : "$month",
+                            "id" : "$transact_id"
+                        },
+                        "total_earning" :
+                        {
+                            "$sum" : "$total_earning"
+                        },
+                        "transaction_count" : 
+                        {
+                            "$sum" : 1
+                        }                                    
+                    }, 
+                },
+                { "$group" : 
+                    {
+                        "_id" : {
+                            "month" : "$_id.month"
+                        },
+                        "transaction_count" : { "$sum" : 1 }
+                    }
+                },
+                {
+                    "$limit" : 12
+                },
+                {
+                    "$sort" : { "_id.month" : -1 }
+                }
+            ]);
+
+            return res.status(200).json(resTrans);
+
+        }catch(err){
+            return next( createHttpError.InternalServerError({
+                message : err.message
+            }) );
+        }
+    },
     //SUPPLIERS API
     supplierList : async( req,res,next )=>{
 
@@ -645,7 +702,9 @@ module.exports = {
             const deleteSupp = await SupplierModel.deleteOne({
                 _id : id
             });
-            return res.status(200).json(deleteSupp);
+
+            const resSupp = await SupplierModel.find({ 'createdAt' : 'desc' });
+            return res.status(200).json(resSupp);
         }catch(err){
             return next( createHttpError.Unauthorized() );
         }
@@ -917,14 +976,6 @@ module.exports = {
         }
     },
     deliveryCountMonthly : async(req,res,next)=>{
-        /**
-         * 
-         * 
-         * $group: {
-                _id: { $substr : ["$transaction_date", 5, 2 ] },
-                "net_revenue" : { $sum: "item_net_total_value" },
-            }
-         */
         try{
             
             const resModel = await DeliveryModel.aggregate([   
@@ -932,7 +983,8 @@ module.exports = {
                     {
                         "year" : { "$year": { "date" : "$createdAt", timezone : "Asia/Manila"} },
                         "month" : { "$month": { "date" : "$createdAt", timezone : "Asia/Manila"} },   
-                        "total_expense" : { "$sum" : "$total_item_price" }                                                                                                                       
+                        "total_expense" : { "$sum" : "$total_item_price" },
+                        "id" : "$delivery_id"                                                                                                                   
                     }
                 },
                 { "$unwind" : "$total_expense" },
@@ -941,7 +993,8 @@ module.exports = {
                         "_id" :
                         { 
                             "year" : "$year",
-                            "month" : "$month",                         
+                            "month" : "$month",    
+                            "id" : "$id"                     
                         },
                         "total_expense" :
                         {
@@ -949,6 +1002,14 @@ module.exports = {
                         },
                         "delivery_count" : { "$sum" : 1 }                                            
                     }, 
+                },
+                { "$group" :
+                    {
+                        "_id" : {
+                            "month" : "$_id.month"
+                        },
+                        "delivery_count" : { "$sum" : 1 }
+                    }
                 },
                 {
                     "$limit" : 12
@@ -964,12 +1025,5 @@ module.exports = {
                 message : err.message
             });
         }
-    },
-    deliveryCountAnnual : async()=>{
-        try{
-
-        }catch(err){
-
-        }
-    },
+    }
 }

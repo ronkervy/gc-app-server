@@ -4,6 +4,10 @@ import Styles from './Styles';
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useHistory, useParams } from 'react-router';
+import { useDispatch, useSelector } from 'react-redux';
+import { deleteProduct } from '../store/ProdServices';
+import Loader from '../../shared/Loader';
+import { OpenNotification } from '../../shared/store/NotificationSlice';
 
 function ProdDeleteModal(props) {
     
@@ -11,6 +15,8 @@ function ProdDeleteModal(props) {
     const [open,setOpen] = useState(false);
     const history = useHistory();
     const { id } = useParams();
+    const dispatch = useDispatch();
+    const { loading } = useSelector(state=>state.products);
 
     const handleClose = ()=>{
         history.goBack();
@@ -20,6 +26,12 @@ function ProdDeleteModal(props) {
     useEffect(()=>{
         setOpen(true);
     },[]);
+
+    if( loading ){
+        return(
+            <Loader />
+        )
+    }
 
     return (
         <Modal
@@ -32,30 +44,55 @@ function ProdDeleteModal(props) {
             }}          
             aria-labelledby="Delete this item?"
             aria-describedby="simple-modal-description"
+            className={classes.DeleteModal}
         >
             <Fade
                 in={open}
             >                
-                <Grid container spacing={2} className={classes.DeleteModal}>
+                <Grid container spacing={2} className={classes.DeleteModalContent}>                        
                         <Grid item lg={12} sm={12}>
-                            <FontAwesomeIcon style={{fontSize : "30px", color: "maroon"}} icon={faTrashAlt} />
-                        </Grid>
-                        <Grid item lg={12} sm={12}>
-                            <h2>Delete {id}?</h2>
+                            <h4>Delete this item?</h4>
                         </Grid>
                         <Grid
                             item 
-                            lg={12} 
-                            sm={12}                            
+                            lg={4} 
+                            sm={4}                            
                         >
-                            <Button                            
+                            <Button    
+                                fullWidth                        
                                 variant="contained"
-                            >Yes</Button>&nbsp;&nbsp;
+                                color="secondary"
+                                onClick={ async()=>{
+                                    const resDelete = await dispatch(deleteProduct({
+                                        opt : {
+                                            url : `/products/${id}`
+                                        }
+                                    }));
+
+                                    if( deleteProduct.fulfilled.match(resDelete) ){
+                                        dispatch(OpenNotification({
+                                            message : "Item has been deleted.",
+                                            severity : "success"
+                                        }));
+                                        handleClose();
+                                    }else{
+                                        dispatch(OpenNotification({
+                                            message : "Item not deleted. There has been an error.",
+                                            severity : "error"
+                                        }));
+                                    }
+                                    
+                                }}
+                            >Yes</Button>                                                
+                        </Grid>                   
+                        <Grid item lg={4} sm={4}>
                             <Button
+                                color="primary"
+                                fullWidth
                                 variant="contained"
                                 onClick={handleClose}
-                            >No</Button>                        
-                        </Grid>                   
+                            >No</Button>
+                        </Grid>
                 </Grid>
             </Fade>
         </Modal>

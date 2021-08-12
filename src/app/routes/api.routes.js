@@ -13,6 +13,7 @@ const {
     transactionCreate,
     transactionUpdate,
     transactionDelete,
+    transactionCountMonthly,
     serverInfo,
     supplierProducts,
     supplierList,
@@ -26,7 +27,6 @@ const {
     deliveryCreate,
     deliveryUpdate,
     deliveryDelete,
-    deliveryCountAnnual,
     deliveryCountMonthly
 } = require('../controllers/api.controller');
 
@@ -48,6 +48,7 @@ router.delete('/products/:id',productDelete);
 router.get('/transactions',transactionList);
 router.get('/transactions/:id',transactionSingle);
 router.get('/search/transactions',transactionSearch);
+router.get('/transactions/count/monthly',transactionCountMonthly);
 router.post('/transactions',transactionCreate);
 router.patch('/transactions/:id',transactionUpdate);
 router.delete('/transactions/:id',transactionDelete);

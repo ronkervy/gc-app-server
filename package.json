@@ -5,14 +5,15 @@
   "description": "My Electron application description",
   "main": ".webpack/main",
   "scripts": {
-    "start": "electron-forge start",
+    "start": "set NODE_ENV=development && electron-forge start",
     "start-inspect": "electron-forge start --enable-logging --inspect-electron",
     "build": "react-scripts build",
-    "package": "electron-forge package",
+    "build:package": "set NODE_ENV=production && react-scripts build && electron-forge package",
+    "package": "set NODE_ENV=production && electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
     "lint": "echo \"No linting configured\"",
-    "serve": "electron --trace-warnings ."
+    "serve": "set NODE_ENV=development && electron --trace-warnings ."
   },
   "keywords": [],
   "author": {
@@ -52,6 +53,7 @@
       ],
       "plugins": [
         [
+          "@electron-forge/plugin-auto-unpack-natives",
           "@electron-forge/plugin-webpack",
           {
             "mainConfig": "./webpack.main.config.js",
@@ -64,8 +66,7 @@
                   "name": "main_window"
                 }
               ]
-            },
-            "port": 3000
+            }
           }
         ]
       ]
@@ -83,7 +84,7 @@
     "@electron-forge/plugin-webpack": "^6.0.0-beta.53",
     "@marshallofsound/webpack-asset-relocator-loader": "^0.5.0",
     "@types/fs-extra": "^9.0.12",
-    "babel-loader": "^8.2.2",
+    "babel-loader": "8.1.0",
     "bindings": "^1.5.0",
     "copy-webpack-plugin": "^9.0.1",
     "css-loader": "^4.3.0",

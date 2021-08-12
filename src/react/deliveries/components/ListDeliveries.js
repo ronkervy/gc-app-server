@@ -127,7 +127,7 @@ function ListDeliveries(props) {
                     onClick={()=>{
                         history.push('/deliveries/add');
                     }}
-                    size="medium"
+                    size="small"
                 >
                     <FontAwesomeIcon icon={faPlus} />
                 </Fab>

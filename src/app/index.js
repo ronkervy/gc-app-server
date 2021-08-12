@@ -13,7 +13,6 @@ const io = require('socket.io')(http,{
     }
 });
 const PORT = process.env.PORT || 8081;
-const ipc = require('./config/ipc.server');
 
 app.use(helmet());
 app.use(cors('*'));

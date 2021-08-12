@@ -80,6 +80,11 @@ function AddDeliveries(props) {
             open={openDialog}
             onClose={handleCloseDialog}
             TransitionComponent={Transition}
+            BackdropProps={{
+                style : {
+                    padding : "50px"
+                }
+            }}
             onKeyPress={(e)=>{
                 if(e.key === 'Esc'){
                     handleCloseDialog();
@@ -98,7 +103,7 @@ function AddDeliveries(props) {
                                 onClick={handleCloseDialog}
                                 aria-label="close"
                             >
-                                <Close style={{ color : "red" }} />
+                                <Close />
                             </IconButton>                                                
                         </Grid>
                         <Grid item lg={10} sm={10}>                            

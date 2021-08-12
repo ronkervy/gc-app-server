@@ -2,19 +2,19 @@ const fs = require("fs");
 const PDFDocument = require('pdfmake/build/pdfmake.js');
 const path = require('path');
 
-const font = {
+PDFDocument.fonts = {
     Roboto: {
-        normal: './fonts/Roboto-Regular.ttf',
-        bold: './fonts/Roboto-Medium.ttf',
-        italics: './fonts/Roboto-Italic.ttf',
-        bolditalics: './fonts/Roboto-MediumItalic.ttf'
+        normal: 'Roboto-Regular.ttf',
+        bold: 'Roboto-Medium.ttf',
+        italics: 'Roboto-Italic.ttf',
+        bolditalics: 'Roboto-MediumItalic.ttf'
     }
 }
 
 module.exports = {
     createPdf : (pdfdoc,id)=>{     
 
-        let printer = new PDFDocument(font);
+        let printer = new PDFDocument();
         let doc = printer.createPdfKitDocument(pdfdoc);
         
         let chunks = [];

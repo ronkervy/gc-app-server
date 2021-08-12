@@ -102,13 +102,10 @@ export const deleteProduct = createAsyncThunk(
     'products/deleteProduct',
     async(args,{rejectWithValue})=>{
         try{
-            const { opt, item_id } = args;
+            const { opt } = args;
             const res = await prodService({
                 ...opt,
                 method : 'DELETE',
-                params : {
-                    item_id
-                }
             });
             await Sleep(1000);
             return res.data;

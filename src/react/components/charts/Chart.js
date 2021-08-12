@@ -2,6 +2,7 @@ import React,{ useEffect,useState } from 'react';
 import { Line } from 'react-chartjs-2';
 import { useDispatch, useSelector } from 'react-redux';
 import { GetHomeChartRpt } from '../../deliveries/store/DelServices';
+import { GetTransChart } from '../../transactions/store/TransactionServices';
 
 
 const LineChart = () => {
@@ -73,12 +74,36 @@ const LineChart = () => {
     }
   }    
 
+  const resDataTrans = async()=>{
+    const resTrans = await dispatch( GetTransChart('/transactions/count/monthly') );
+
+    if( GetTransChart.fulfilled.match(resTrans) ){
+      const dataTrans = [];
+      resTrans.payload.map((rpt,index)=>{
+        
+        const ind = rpt._id.month - 1;
+
+        for( let i=0; i <= labels.length;i++ ){
+            if( i === ind ){
+              dataTrans[i] = rpt.transaction_count;
+            }else{
+              dataTrans.push(0);
+            }
+        }
+      });
+
+      setDataTransactions(dataTrans);
+    }
+  }
+
   useEffect(()=>{      
 
       resData();
+      resDataTrans();
 
       return ()=>{
           setDataDeliveries([]);
+          setDataTransactions([]);
       }
 
   },[]);
@@ -97,8 +122,8 @@ const LineChart = () => {
                 borderColor: '#36A2EB',
               },
               {
-                label: 'Transactions',
-                data: dataDeliveries,
+                label: 'Sales/Transactions',
+                data: dataTransactions,
                 fill: false,
                 backgroundColor: '#FF6384',
                 borderColor: '#FF6384',

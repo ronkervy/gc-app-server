@@ -109,7 +109,7 @@ export const GetHomeChartRpt = createAsyncThunk(
             await sleep(1000);
             return res.data;
         }catch(err){
-            return rejectWithValue(res.response.data);
+            return rejectWithValue(err.response.data);
         }
     }
 );

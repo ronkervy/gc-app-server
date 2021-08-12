@@ -1,12 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { createTransaction, deleteTransaction, getAllTransaction,updateTransaction } from './TransactionServices';
+import { createTransaction, deleteTransaction, getAllTransaction,GetTransChart,updateTransaction } from './TransactionServices';
 
 const TransactionSlice = createSlice({
     name : 'transactions',
     initialState : {
         entities : [],
         loading : false,
-        errors : null
+        errors : null,
+        charttransrpt : []
     },
     reducers : {},
     extraReducers : (builder)=>{
@@ -19,6 +20,18 @@ const TransactionSlice = createSlice({
             state.entities = payload;
         })
         .addCase(getAllTransaction.rejected,(state,{payload})=>{
+            state.loading = false;
+            state.errors = payload;
+        })
+        //GET TRANS CHART RPT
+        .addCase(GetTransChart.pending,state=>{
+            state.loading = true;
+        })
+        .addCase(GetTransChart.fulfilled,(state,{payload})=>{
+            state.loading = false;
+            state.charttransrpt = payload;
+        })
+        .addCase(GetTransChart.rejected,(state,{payload})=>{
             state.loading = false;
             state.errors = payload;
         })

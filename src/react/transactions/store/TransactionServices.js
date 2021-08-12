@@ -21,6 +21,7 @@ export const getAllTransaction = createAsyncThunk(
                 ...opt,
                 method : 'GET'
             });
+            await sleep(2000);
             return res.data;
         }catch(err){
             return rejectWithValue(err);
@@ -37,9 +38,10 @@ export const getSingleTransaction = createAsyncThunk(
                 ...opt,
                 method : 'GET'
             });
+            await sleep(2000);
             return res.data;
         }catch(err){
-            return rejectWithValue(err);
+            return rejectWithValue(err.response.data);
         }
     }
 );
@@ -54,6 +56,7 @@ export const createTransaction = createAsyncThunk(
                 method : 'POST',
                 data : values
             });
+            await sleep(2000);
             return res.data;
         }catch(err){
             return rejectWithValue(err);
@@ -70,6 +73,7 @@ export const findTransaction = createAsyncThunk(
                 ...opt,
                 method : 'GET'
             });
+            await sleep(2000);
             return res.data;
         }catch(err){
             return rejectWithValue(err.response.data);
@@ -104,6 +108,22 @@ export const deleteTransaction = createAsyncThunk(
                 method : 'DELETE'
             });
             await sleep(2000);
+            return res.data;
+        }catch(err){
+            return rejectWithValue(err.response.data);
+        }
+    }
+);
+
+export const GetTransChart = createAsyncThunk(
+    'transactions/GetTransChart',
+    async(url,{rejectWithValue})=>{
+        try{
+            const res = await TransServices({
+                url,
+                method : 'GET'
+            });
+            await sleep(1000);
             return res.data;
         }catch(err){
             return rejectWithValue(err.response.data);

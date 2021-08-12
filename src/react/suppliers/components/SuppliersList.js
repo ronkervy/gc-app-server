@@ -61,10 +61,11 @@ function SuppliersList(props) {
                     <Table stickyHeader aria-label="sticky table" size="small"  >
                         <TableHead>
                             <TableRow>
-                                <TableCell><FontAwesomeIcon icon={faIdCard} /> ID</TableCell>
-                                <TableCell><FontAwesomeIcon icon={faUserTie} /> Name</TableCell>
-                                <TableCell><FontAwesomeIcon icon={faEnvelope} /> Email</TableCell>
-                                <TableCell><FontAwesomeIcon icon={faPhone} /> Contact</TableCell>
+                                <TableCell>#ID</TableCell>
+                                <TableCell>Name</TableCell>
+                                <TableCell>Email</TableCell>
+                                <TableCell>Contact</TableCell>
+                                <TableCell>Actions</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -106,6 +107,7 @@ function SuppliersList(props) {
                 }}
             >
                 <Fab
+                    size="small"
                     color="primary"
                     onClick={()=>{
                         return history.push('/suppliers/add');
