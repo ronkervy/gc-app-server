@@ -89,8 +89,11 @@ function Reports(props) {
             onClose={handleClose}
             TransitionComponent={TransitionPage}
             fullScreen
+            style={{
+                padding : "30px"
+            }}
         >
-            <AppBar style={{ WebkitAppRegion : "no-drag" }}>
+            <AppBar position="relative" style={{ WebkitAppRegion : "no-drag" }}>
                 <Toolbar variant="dense" style={{ justifyContent : "space-between" }}>
                     <IconButton
                         size="medium"
@@ -141,7 +144,7 @@ function Reports(props) {
                     </ButtonGroup>                  
                 </Toolbar>
             </AppBar>
-            <Grid container style={{ padding: "20px", height : "100%", marginTop : "50px" }}>
+            <Grid container style={{ padding: "20px", height : "100%", marginTop : "0px" }}>
                 <iframe
                     title="Report"
                     src={url}

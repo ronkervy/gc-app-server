@@ -1,6 +1,5 @@
 const { Schema,Types } = require('mongoose');
 const db = require('../config/db.config');
-const createHttpError = require('http-errors');
 const ProductModel = require('../models/product.model');
 const SupplierModel = require('../models/supplier.model');
 const moment = require('moment-timezone');
@@ -29,6 +28,10 @@ const DeliverySchema = new Schema({
     delivery_status : {
         type : Boolean,
         default : false
+    },
+    createdAt : {
+        type : Date,
+        default : phTime
     },
     products : [{
         type : Types.ObjectId,

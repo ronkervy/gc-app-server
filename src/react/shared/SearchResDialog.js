@@ -10,8 +10,9 @@ import {
 import {
     Close
 } from '@material-ui/icons';
-import { useHistory, useParams } from 'react-router';
+import { useHistory, useParams,useLocation } from 'react-router';
 import ListProd from '../products/components/Product List/ListProd';
+import TransactionList from '../transactions/components/TransactionList';
 
 const Transition = forwardRef(function Transition(props,ref){
     return <Slide
@@ -19,11 +20,17 @@ const Transition = forwardRef(function Transition(props,ref){
     />
 });
 
+const useQuery = ()=>{
+    return new URLSearchParams(useLocation().search);
+}
+
 function SearchResDialog(props) {
 
     const [openDialog,setOpenDialog] = useState(false);
     const history = useHistory();
+    const query = useQuery();
     const {search} = useParams();
+    const model = query.get('model');
 
     const handleCloseDialog = ()=>{
         setOpenDialog(false);
@@ -32,7 +39,7 @@ function SearchResDialog(props) {
 
     useEffect(()=>{
         setOpenDialog(true);
-    },[]);
+    },[]);    
 
     return (
         <Dialog
@@ -68,8 +75,8 @@ function SearchResDialog(props) {
                         </Grid>
                     </Grid>                                  
                 </Toolbar>
-            </AppBar>            
-            <ListProd search={search} mode="search" />
+            </AppBar>        
+            {model === 'products' ? (<ListProd search={search} mode="search" />) : (<TransactionList search={search} mode="search" />)}            
         </Dialog>
     )
 }

@@ -34,7 +34,8 @@ function SearchHeader(props) {
                 disableGutters
             >
                 <FormControl variant="standard" fullWidth size="small" className={classes.AppHeader} >
-                    <TextField       
+                    <TextField      
+                        size="small" 
                         placeholder="`Press Ctrl + F`"                        
                         onClick={(e)=>{
                             handleOpen();
@@ -50,10 +51,13 @@ function SearchHeader(props) {
                         InputProps={{
                             startAdornment : (
                                 <InputAdornment position="start">
-                                    <FontAwesomeIcon icon={faSearch} />
+                                    <FontAwesomeIcon color="#1759A3" icon={faSearch} />
                                 </InputAdornment>
                             ),
-                            disableUnderline : true
+                            disableUnderline : true,
+                            style : {
+                                textAlign : "center"
+                            }
                         }}                                    
                     ></TextField>
                 </FormControl>

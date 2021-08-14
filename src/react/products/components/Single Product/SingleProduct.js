@@ -256,7 +256,7 @@ const SingleProduct = (props)=>{
                 padding : "50px"
             }}
         >
-            <AppBar className={SingleProdAppBar} style={{ position : "relative", WebkitAppRegion : 'no-drag' }}>
+            <AppBar position="relative" className={SingleProdAppBar} style={{ WebkitAppRegion : 'no-drag' }}>
                 <Toolbar variant="dense">
                     <IconButton size="small"  edge="start" color="inherit" onClick={handleClose}>
                         <Close />

@@ -6,15 +6,18 @@ import {
     Close,
     Minimize,
     SettingsRemote,
+    Wifi,
 } from '@material-ui/icons';
 import logo from 'Public/img/logo.png';
 import { motion } from 'framer-motion';
+import { useSelector } from 'react-redux';
 
 
 function MainBar(props) {
 
     const {classes} = props;
     const currDate = new Date(Date.now()).toDateString();
+    
     const [ip,setIP] = useState('');
 
     const { ipcRenderer } = window.require('electron');
@@ -52,7 +55,7 @@ function MainBar(props) {
                         <Divider style={{ margin : "0px 10px", alignSelf : "center", height: "25px"}} variant="fullWidth" orientation="vertical" flexItem />
                         <SettingsRemote htmlColor="#1759A3" />&nbsp;<h5>{ip}</h5>
                         <Divider style={{ margin : "0px 10px", alignSelf : "center", height: "25px"}} variant="fullWidth" orientation="vertical" flexItem />
-                        &nbsp;<h5 style={ ip !== '' ? { color : 'green' } : { color : 'red' } }>{ip !== '' ? 'Server Broadcasting' : 'Server not initiated'}</h5>
+                        &nbsp;<h5 style={ ip !== '' ? { color : 'green' } : { color : 'red' } }>{ip !== '' ? 'Server Broadcasting' : 'Server not initiated'}</h5>                        
                     </Grid>                    
                     <Grid item sm={4} lg={4} className={classes.MainBarRightBtns}>
                         <IconButton

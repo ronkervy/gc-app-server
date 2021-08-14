@@ -55,7 +55,7 @@ const useStyle = {
         display: "flex",
         justifyContent : "center",
         padding : "10px",
-        height: "50px",        
+        height: "40px",        
         backgroundColor : "#FFFFFF",
         color : "#5B73A0",
     },
@@ -105,19 +105,19 @@ const useStyle = {
         display : "flex",
         justifyContent : "center",
         alignItems : "center",
-        position : "absolute",
-        flexDirection : "column",
-        width : "420px",
+        
+    },
+    SearchModalContent : {
+        display : "flex",
+        justifyContent : "center",
+        alignItems : "center",
+        flexDirection : "row",
+        padding: "30px 20px 10px 30px",
+        alignItems : "center",
         background : "#ffffff",
-        top : "50%",
-        left : "50%",
-        padding : "20px",
+        width : "420px",
         borderRadius : "10px",
-        transform : "translate(-50%,-50%)",
-        outline : "none",
-        '& input[type=text]' : {
-            background : "#ffffff"
-        }
+        outline : "none"        
     }
 }
 

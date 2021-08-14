@@ -1,5 +1,5 @@
 const { app,BrowserWindow,ipcMain } = require('electron');
-// const { default : installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
+const { default : installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
 
 const { networkInterfaces } = require('os');
 const net_interface = networkInterfaces();
@@ -43,9 +43,9 @@ const createWindow = ()=>{
 
     if( process.env.NODE_ENV === "development" ){
         win.webContents.openDevTools();
-        // installExtension(REDUX_DEVTOOLS)
-        //     .then((name) => console.log(`Added Extension:  ${name}`))
-        //     .catch((err) => console.log('An error occurred: ', err));
+        installExtension(REDUX_DEVTOOLS)
+            .then((name) => console.log(`Added Extension:  ${name}`))
+            .catch((err) => console.log('An error occurred: ', err));
     }
 
     win.webContents.on('dom-ready',()=>{        

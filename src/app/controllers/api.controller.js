@@ -247,21 +247,33 @@ module.exports = {
     transactionSearch : async( req,res,next )=>{
         try{
             const { s,date } = req.query;
-            
-            const resTrans = await TransactionModel.aggregate([
-                {'$match' : 
+
+            const optMatch = date !== undefined ? {
+                '$match' : 
                     {                        
                         '$or' : [
-                            date !== undefined ? {
+                            {
                                 "createdAt" : {
                                     '$gte' : new Date(date)
                                 }
-                            } : { "customer_name" : { '$regex' : s + '+', '$options' : 'gi' } },                            
+                            },                            
                             { "transact_payment_type" : s },
                             { "transact_id" : s },
                         ]
                     }
-                },
+            } : {
+                '$match' : 
+                    {                        
+                        '$or' : [
+                            { "customer_name" : { '$regex' : s + '+', '$options' : 'gi' } },                            
+                            { "transact_payment_type" : s },
+                            { "transact_id" : { '$regex' : s + '+', '$options' : 'gi' } },
+                        ]
+                    }
+            };
+            
+            const resTrans = await TransactionModel.aggregate([
+                optMatch,
                 { '$lookup' :
                     {
                         from : 'products',

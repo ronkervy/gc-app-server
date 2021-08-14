@@ -68,10 +68,10 @@ function DeleteSupplier(props) {
                                         severity : "success"
                                     }));
                                     handleClose();
-                                }else{
+                                }else if( deleteSupplier.rejected.match(res) ){
                                     dispatch(OpenNotification({
                                         message : "Supplier not deleted.",
-                                        severity : "error"
+                                        severity : `error : ${res.payload}`
                                     }));
                                     handleClose();
                                 }

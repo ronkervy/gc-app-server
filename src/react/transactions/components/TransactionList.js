@@ -1,10 +1,25 @@
-import { AppBar, Dialog, Grid, IconButton, Slide, Toolbar } from '@material-ui/core'
+import { 
+    AppBar, 
+    Dialog,
+    Grid, 
+    IconButton, 
+    Paper, 
+    Slide, 
+    Table, 
+    TableBody, 
+    TableCell, 
+    TableContainer, 
+    TableHead, 
+    TableRow, 
+    Toolbar 
+} from '@material-ui/core'
 import { Close } from '@material-ui/icons';
 import React, { forwardRef, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Loader from '../../shared/Loader';
 import { getAllTransaction } from '../store/TransactionServices';
+import TransactionItems from './TransactionItems';
 
 const TransComp = forwardRef((props,ref)=>{
     return <Slide direction="up" {...props} ref={ref} />
@@ -12,9 +27,11 @@ const TransComp = forwardRef((props,ref)=>{
 
 function TransactionList(props) {
 
+    const { search : data,mode } = props;
     const [open,setOpen] = useState(false);
     const dispatch = useDispatch();
-    const { loading } = useSelector(state=>state.transactions);
+    
+    const { loading, entities : transactions } = useSelector(state=>state.transactions);
     const history = useHistory();
 
     const handleClose = ()=>{
@@ -23,11 +40,16 @@ function TransactionList(props) {
     }
     
     useEffect(()=>{
-        dispatch( getAllTransaction({
-            opt : {
-                url : '/transactions'
-            }
-        }) );
+
+        if( mode === 'search' ){
+
+        }else{
+            dispatch( getAllTransaction({
+                opt : {
+                    url : '/transactions'
+                }
+            }) );            
+        }
         setOpen(true);
     },[]);
 
@@ -43,6 +65,9 @@ function TransactionList(props) {
             open={open}
             onClose={handleClose}
             TransitionComponent={TransComp}
+            style={{
+                padding : "30px",
+            }}
         >
             <AppBar position="relative">
                 <Toolbar variant="dense">
@@ -64,9 +89,27 @@ function TransactionList(props) {
                     </Grid>
                 </Toolbar>
             </AppBar>
-            <Grid container spacing={2}>
+            <Grid container>
                 <Grid item lg={12} sm={12}>
-                    Transactions : {history.location.pathname}
+                    <TableContainer component={Paper} elevation={3} >
+                        <Table stickyHeader size="small">
+                            <TableHead>
+                                <TableRow>
+                                    <TableCell style={{ textAlign : "center" }}>Customer Name</TableCell>
+                                    <TableCell style={{ textAlign : "center" }}>Transaction Date</TableCell>
+                                    <TableCell style={{ textAlign : "center" }}>Payment Type</TableCell>
+                                    <TableCell style={{ textAlign : "center" }}>Cash Amount</TableCell>
+                                    <TableCell style={{ textAlign : "center" }}>Total</TableCell>
+                                    <TableCell style={{ textAlign : "center" }}>Change</TableCell>
+                                </TableRow>
+                            </TableHead>
+                            <TableBody>
+                                {transactions.map((transaction,i)=>(
+                                    <TransactionItems data={transaction} key={i} />
+                                ))}
+                            </TableBody>
+                        </Table>
+                    </TableContainer>
                 </Grid>
             </Grid>
         </Dialog>

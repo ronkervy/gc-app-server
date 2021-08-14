@@ -1,5 +1,7 @@
 const { Schema,Types } = require('mongoose');
 const db = require('../config/db.config');
+const moment = require('moment-timezone');
+const phTime = moment.tz(Date.now(),"Asia/Manila");
 
 const TransactionSchema = new Schema({
     transact_id : String,
@@ -35,6 +37,10 @@ const TransactionSchema = new Schema({
     total_per_unit : {
         type : Number,
         default : 0
+    },
+    createdAt : {
+        type : Date,
+        default : phTime
     },
     discount : {
         type : Number,

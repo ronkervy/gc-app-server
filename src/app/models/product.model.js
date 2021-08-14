@@ -1,7 +1,8 @@
 const { Schema,Types } = require('mongoose');
 const db = require('../config/db.config');
 const { v4 : uuidv4 } = require('uuid');
-const SupplierModel = require('../models/supplier.model');
+const moment = require('moment-timezone');
+const phTime = moment.tz(Date.now(),"Asia/Manila");
 
 const ProductSchema = new Schema({
     item_id : {
@@ -41,6 +42,10 @@ const ProductSchema = new Schema({
     },
     prod_prev_qty : {
         type : Number
+    },
+    createdAt : {
+        type : Date,
+        default : phTime
     },
     suppliers : [{
         type : Types.ObjectId,
