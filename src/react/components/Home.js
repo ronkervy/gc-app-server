@@ -17,6 +17,7 @@ import Loader from '../shared/Loader';
 import { getAllTransaction } from '../transactions/store/TransactionServices';
 import ChartHome from './charts/Chart';
 import WeeklyChart from './charts/WeeklyChart';
+import { getSettings } from '../shared/settings/store/SettingsService';
 
 function Home(props) {
 
@@ -50,11 +51,12 @@ function Home(props) {
     }
 
     const filterTransactionCount = (trans)=>{
-        const currDate = new Date(Date.now()).toISOString().split('T')[0];
+        const dt = new Date(Date.now()).toISOString().split('T')[0];
+        const currDate = dt.split('-').splice(0,2);
         let transArr = [];
         trans.map(transaction=>{
-            const transDate = transaction.transaction_date.split('T')[0];            
-            if( transDate === currDate ){
+            const transDate = transaction.transaction_date.split('T')[0].split('-').splice(0,2);
+            if( transDate[0] === currDate[0] && transDate[1] === currDate[1] ){
                 transArr.push(transaction);
             }
         });
@@ -62,12 +64,13 @@ function Home(props) {
     }
 
     const filterTotalMonthlySales = (trans)=>{
-        const currDate = new Date(Date.now()).toISOString().split('T')[0];
+        const dt = new Date(Date.now()).toISOString().split('T')[0];
+        const currDate = dt.split('-').splice(0,2);
         const priceArr = [];
 
         trans.map(transaction=>{
-            const transDate = transaction.transaction_date.split('T')[0];
-            if( transDate === currDate ){
+            const transDate = transaction.transaction_date.split('T')[0].split('-').splice(0,2);
+            if( transDate[0] === currDate[0] && transDate[1] === currDate[1] ){
                 priceArr.push(transaction.total_price);
             }
         });
@@ -82,6 +85,7 @@ function Home(props) {
                 url : '/transactions'
             }
         }) );
+        dispatch( getSettings() );
     },[]);
 
     if( loading ){
@@ -138,7 +142,10 @@ function Home(props) {
                     lg={4} 
                     sm={4}
                     boxShadow={2} 
-                    className={classes.boxOverview}            
+                    className={classes.boxOverview}     
+                    onDoubleClick={()=>{
+                        history.push("/lowcount");
+                    }}       
                 >
                     <Grid
                         item

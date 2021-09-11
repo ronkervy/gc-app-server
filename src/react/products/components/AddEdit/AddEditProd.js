@@ -74,8 +74,7 @@ const  AddProd = (props)=> {
         item_desc : mode === 'edit' ? data.item_desc : '',
         item_supplier : mode === 'edit' ? data.item_supplier : supplier,
         item_price : mode === 'edit' ? data.item_price : 0,
-        item_selling_price : mode === 'edit' ? data.item_selling_price : 0,
-        item_categ : mode === 'edit' ? data.item_categ : '',
+        item_unit : mode === 'edit' ? data.item_unit : '',
         item_qty : mode === 'edit' ? data.item_qty : 0
     }
 
@@ -97,10 +96,6 @@ const  AddProd = (props)=> {
 
         if( (/[a-zA-Z]/i).test(values.item_price) ){
             errors.item_price = true;            
-        }
-
-        if( (/[a-zA-Z]/i).test(values.item_selling_price) ){
-            errors.item_selling_price = true;
         }
 
         return errors;
@@ -200,7 +195,7 @@ const  AddProd = (props)=> {
                                 style={{textTransform: "capitalize"}}
                             />
                         </Grid>
-                        <Grid item lg={6} sm={6} >
+                        <Grid item lg={12} sm={12} >
                             <TextField 
                                 fullWidth
                                 size="small"
@@ -223,7 +218,7 @@ const  AddProd = (props)=> {
                                 style={{textTransform: "capitalize"}}
                             />
                         </Grid>
-                        <Grid item lg={6} sm={6}>
+                        <Grid item lg={8} sm={8}>
                             <FormControl variant="outlined" fullWidth size="small">
                                 <TextField
                                     select
@@ -258,7 +253,7 @@ const  AddProd = (props)=> {
                                 </TextField>
                             </FormControl>
                         </Grid>
-                        <Grid item sm={6} lg={6}>
+                        <Grid item sm={4} lg={4}>
                             <NumberFormat
                                 customInput={TextField} 
                                 thousandSeparator={true}
@@ -283,40 +278,14 @@ const  AddProd = (props)=> {
                                     )
                                 }}                                
                             />
-                        </Grid>
-                        <Grid item sm={6} lg={6}>
-                            <NumberFormat
-                                customInput={TextField} 
-                                thousandSeparator={true}
-                                decimalScale={2}
-                                decimalSeparator={'.'}
-                                fixedDecimalScale={true}                            
-                                fullWidth
-                                size="small"
-                                error={formik.errors.item_selling_price}
-                                helperText={ formik.errors.item_selling_price ? "Accepts only Number" : "" }                            
-                                id="item_selling_price"
-                                name="item_selling_price"
-                                label="Item Selling Price"
-                                variant="outlined"
-                                value={ formik.errors.item_selling_price ? "" : formik.values.item_selling_price}
-                                onChange={formik.handleChange}
-                                InputProps={{
-                                    startAdornment : (
-                                        <InputAdornment position="start">
-                                            <small>Php</small>
-                                        </InputAdornment>
-                                    )
-                                }}
-                            />                              
-                        </Grid>
+                        </Grid>                        
                         <Grid item sm={6} lg={8}>
                             <TextField
                                 fullWidth
-                                label="Item Category"
-                                name="item_categ"
-                                placeholder="Category"
-                                value={formik.values.item_categ}
+                                label="Item Unit"
+                                name="item_unit"
+                                placeholder="PC / Roll"
+                                value={formik.values.item_unit}
                                 onChange={formik.handleChange}                                
                             >
                             </TextField>
@@ -337,6 +306,7 @@ const  AddProd = (props)=> {
                         </Grid>                        
                         <Grid item sm={12} lg={12}>
                             <TextareaAutosize className={classes.textarea}
+                                placeholder="Description"
                                 minRows={8}              
                                 name="item_desc"
                                 variant="outlined"

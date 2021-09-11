@@ -1,6 +1,6 @@
-import React,{useState} from 'react';
+import React,{useEffect, useState} from 'react';
 import 'date-fns';
-import DateFnsUtils from '@date-io/date-fns';
+import { parseISO } from 'date-fns';
 import {
     MuiPickersUtilsProvider,
     KeyboardDatePicker
@@ -8,6 +8,9 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { Grid, TextField, MenuItem, Button } from '@material-ui/core';
+import MomentUtils from '@date-io/moment';
+import moment from 'moment-timezone';
+
 
 const TransactFilter = ({setFn})=>{
 
@@ -80,35 +83,39 @@ const DeliveriesFilter = ({setFn})=>{
 }
 
 const DTPicker = ({fn,model})=>{
-    const [selectedFromDate, setSelectedFromDate] = React.useState(new Date(Date.now()));
-    const [selectedToDate, setSelectedToDate] = React.useState(new Date(Date.now()));
+    const [selectedFromDate, setSelectedFromDate] = React.useState(new Date(moment.now()));
+    const [selectedToDate, setSelectedToDate] = React.useState(new Date(moment.now()));
     const [status,setStatus] = useState('all');
     const [filterPayment,setFilterPayment] = useState('all');
-
-    const handleFromDateChange = (date) => {
-        setSelectedFromDate(date);
+    
+    const handleFromDateChange = (dt) => {
+        setSelectedFromDate(dt._d);
     };
 
-    const handleToDateChange = (date) => {
-        setSelectedToDate(date);
+    const handleToDateChange = (dt) => {
+        setSelectedToDate(dt._i);
     };
+
+    useEffect(()=>{
+        moment.tz.setDefault("Asia/Manila");
+    },[]);
 
     return (
-        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+        <MuiPickersUtilsProvider utils={MomentUtils}>
           <Grid container spacing={2}>    
             { model === 'transactions' ? <TransactFilter setFn={setFilterPayment} /> : <DeliveriesFilter setFn={setStatus} /> }        
             <Grid item lg={6} sm={6}>
                 <KeyboardDatePicker
-                margin="dense"
-                size="small"
-                id="date-picker-dialog"
-                label="From Date"
-                format="yyyy-MM-dd"
-                value={selectedFromDate}
-                onChange={handleFromDateChange}
-                KeyboardButtonProps={{
-                    'aria-label': 'change date',     
-                }}
+                    margin="dense"
+                    size="small"
+                    id="date-picker-dialog"
+                    label="From Date"
+                    format="yyyy-MM-DD"
+                    value={selectedFromDate}
+                    onChange={handleFromDateChange}
+                    KeyboardButtonProps={{
+                        'aria-label': 'change date',     
+                    }}
                 />
             </Grid>
             <Grid item lg={6} sm={6}>
@@ -117,7 +124,7 @@ const DTPicker = ({fn,model})=>{
                     margin="dense"
                     id="date-picker-dialog"
                     label="To Date"
-                    format="yyyy-MM-dd"
+                    format="yyyy-MM-DD"
                     value={selectedToDate}
                     onChange={handleToDateChange}
                     KeyboardButtonProps={{
@@ -136,7 +143,8 @@ const DTPicker = ({fn,model})=>{
                         borderColor : "white",
                         backgroundColor : "orange"            
                     }}
-                    onClick={()=>{          
+                    onClick={()=>{  
+                        console.log(selectedToDate.toISOString());  
                         fn({
                             from : selectedFromDate.toISOString().split('T')[0],
                             to : selectedToDate.toISOString().split('T')[0],

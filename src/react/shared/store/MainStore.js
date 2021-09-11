@@ -7,6 +7,7 @@ import InvoiceReducer from './InvoiceSlice';
 import PrinterReducer from './PrinterSlice';
 import TransactionReducer from '../../transactions/store/TransactionSlice';
 import ReportReducer from '../../reports/store/ReportSlice';
+import SettingsReducer from '../../shared/settings/store/SettingsSlice';
 
 export default configureStore({
     reducer : {
@@ -17,7 +18,8 @@ export default configureStore({
         invoice : InvoiceReducer,
         printers : PrinterReducer,
         transactions : TransactionReducer,
-        report : ReportReducer
+        report : ReportReducer,
+        settings : SettingsReducer
     },    
     middleware : getDefaultMiddleware({
         serializableCheck : false

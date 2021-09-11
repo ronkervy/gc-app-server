@@ -44,7 +44,7 @@ out/
 msi/
 .webpack/
 build/
-advanced_ins_files/
+PreReq/
 
 # TypeScript v1 declaration files
 typings/

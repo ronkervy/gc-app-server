@@ -2,7 +2,7 @@ import React,{useState,useEffect,forwardRef} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppBar, Dialog, Fab, Grid, IconButton, Slide, Toolbar } from '@material-ui/core';
 import { useHistory } from 'react-router';
-import { Add, Close } from '@material-ui/icons';
+import { Add, ArrowBack } from '@material-ui/icons';
 import SearchTableForm from './SearchTableForm';
 import { ClearCart } from '../store/DeliveriesSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -90,6 +90,9 @@ function AddDeliveries(props) {
                     handleCloseDialog();
                 }
             }}
+            TransitionProps={{
+                timeout : 500
+            }}
         >
             <AppBar position="relative">
                 <Toolbar variant="dense">
@@ -103,7 +106,7 @@ function AddDeliveries(props) {
                                 onClick={handleCloseDialog}
                                 aria-label="close"
                             >
-                                <Close />
+                                <ArrowBack />
                             </IconButton>                                                
                         </Grid>
                         <Grid item lg={10} sm={10}>                            

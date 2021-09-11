@@ -3,6 +3,18 @@ body, html {
   background: transparent;
 }
 
+#root::before {
+  content: "";
+  background-image: url("../public/img/Doubs.svg");
+  background-size: cover;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  bottom: 0px;
+  left: 0px;
+  opacity: 0.7;
+}
+
 #root {
   display: -webkit-box;
   display: -ms-flexbox;

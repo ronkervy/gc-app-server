@@ -1,4 +1,4 @@
-import { faEnvelope, faIdCard, faPhone, faPlus, faUserTie } from '@fortawesome/free-solid-svg-icons';
+import { faPlus } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Fab, Grid, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, withStyles } from '@material-ui/core';
 import React,{useEffect,useState} from 'react';
@@ -70,7 +70,7 @@ function SuppliersList(props) {
                         </TableHead>
                         <TableBody>
                             <SuppTableItems rowsPerPage={rowsPerPage} page={page} items={contacts} />
-                            <TableRow>
+                            <TableRow style={{ position : "absolute", bottom : 0 }}>
                                 <TablePagination 
                                     rowsPerPageOptions={[6, 12, 120]}
                                     count={contacts.length}

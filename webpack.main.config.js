@@ -1,7 +1,7 @@
 const StringReplacePlugin = require("string-replace-webpack-plugin");
-const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const rules = require('./webpack.rules');
+const path = require('path');
 
 rules.push(
   {
@@ -68,7 +68,7 @@ module.exports = {
   resolve: {
         alias: {
           'unicode-properties': 'unicode-properties/unicode-properties.cjs.js',
-          'pdfmake': 'pdfmake/build/pdfmake.js'
+          'pdfmake': 'pdfmake/build/pdfmake.js',
         }
   },
   plugins : [new StringReplacePlugin()],

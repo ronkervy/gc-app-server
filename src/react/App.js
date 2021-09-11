@@ -30,9 +30,15 @@ import TransactionList from "./transactions/components/TransactionList";
 import { getProducts } from "./products/store/ProdServices";
 import Loader from "./shared/Loader";
 import DeleteSupplier from "./suppliers/components/DeleteSupplier";
+import TransactionSingle from "./transactions/components/TransactionSingle";
+import TransactionDeleteModal from "./transactions/components/TransactionDeleteModal";
+import TransactionPrint from "./transactions/components/TransactionPrint";
+import Settings from "./shared/settings/components/Settings";
+import LowCountItems from "./components/LowCountItems";
+import moment from 'moment-timezone';
 
 function App(props) {
-
+  moment.tz.setDefault("Asia/Manila");
   const searchRef = useRef(null);
   const dispatch = useDispatch();
   const history = useHistory();
@@ -81,17 +87,23 @@ function App(props) {
                   <Route exact path="/">
                       <Home />
                   </Route>
-                  <Route exact path="/products">
-                        <ListProd />
-                  </Route>
                   <Route exact path="/products/:id" >
                         <SingleProduct />
                   </Route>
                   <Route exact path="/products/add/new">
                         <AddEditProd />
                   </Route>
+                  <Route exact path="/products/del/:id" >
+                        <ProdDeleteModal />
+                  </Route>
                   <Route exact path="/products/search/:search" >
                         <SearchResDialog />
+                  </Route>
+                  <Route exact path="/lowcount">
+                        <LowCountItems />
+                  </Route>
+                  <Route exact path="/products">
+                        <ListProd />
                   </Route>
                   <Route exact path="/reports" >
                         <Reports />
@@ -105,17 +117,8 @@ function App(props) {
                   <Route exact path="/report/products">
                         <ProductsFilterModal />
                   </Route>
-                  <Route exact path="/products/del/:id" >
-                        <ProdDeleteModal />
-                  </Route>
                   <Route exact path="/deliveries/add">
                         <AddDeliveries />
-                  </Route>
-                  <Route exact path="/suppliers" >
-                        <SuppliersList />
-                  </Route>
-                  <Route exact path="/suppliers/add">
-                        <AddSupplier />
                   </Route>
                   <Route exact path="/deliveries">
                         <ListDeliveries />
@@ -123,17 +126,35 @@ function App(props) {
                   <Route exact path="/deliveries/del/:id">
                         <DeliveryDeleteModal />
                   </Route>
+                  <Route exact path="/deliveries/invoice" >
+                        <InvoicePreview />
+                  </Route>
+                  <Route exact path="/suppliers" >
+                        <SuppliersList />
+                  </Route>
+                  <Route exact path="/suppliers/add">
+                        <AddSupplier />
+                  </Route>
                   <Route exact path="/supplier/del/:id">
                         <DeleteSupplier />
                   </Route>
                   <Route exact path="/suppliers/:id">
                         <SingleSupp />
                   </Route>
-                  <Route exact path="/deliveries/invoice" >
-                        <InvoicePreview />
-                  </Route>
                   <Route exact path="/transactions">
                         <TransactionList />
+                  </Route>
+                  <Route exact path="/transactions/:id">
+                        <TransactionSingle />
+                  </Route>
+                  <Route exact path="/transactions/del/:id">
+                        <TransactionDeleteModal />
+                  </Route>
+                  <Route exact path="/transactions/print/:id">
+                        <TransactionPrint />
+                  </Route>
+                  <Route exact path="/settings">
+                        <Settings />
                   </Route>
               </Switch>    
               <Toast 

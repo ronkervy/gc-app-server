@@ -13,14 +13,22 @@ const io = require('socket.io')(http,{
     }
 });
 const PORT = process.env.PORT || 8081;
+const fs = require('fs');
+const { CmdQueue } = require('cmd-printer');
 
 app.use(helmet());
 app.use(cors('*'));
+app.use('/static',express.static(path.join(__dirname,'../renderer/main_window/public')));
 app.use(express.static(path.join(__dirname,'..','/renderer/main_window/public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended : false }));
 
 app.use('/api/v1',apiRoutes);
+
+app.use('/loader',(req,res,next)=>{
+    res.status(200).sendFile(path.resolve(__dirname,'../renderer/main_window/public/loader.html'));
+});
+
 app.use('/',(req,res)=>{
     res.status(302).redirect('http://localhost:3000/main_window');
 });
@@ -42,15 +50,26 @@ app.use((err,req,res,next)=>{
 http.listen(PORT,()=>{
     io.on("connection",(socket)=>{
         const addr = socket.request.connection.remoteAddress;
+        
+        socket.on('default-printer',(printer)=>{
+            socket.broadcast.emit('server-printer',printer);
+        });
 
-        socket.on("ping",()=>{
-            const s = new Date().toLocaleString();            
-            setTimeout(()=>{  
-                io.local.emit("pong",{
-                    message : 'Server Replies @ ' + s,
-                    status : true
-                });
-            },3000);
+        socket.on('printcmd', async(args)=>{
+            try{
+                const { data,id,sid } = args;
+                const filePath = process.env.NODE_ENV === 'development' ? path.join(__dirname,'..','/renderer/main_window/public/pdfs/') : path.join(__dirname,'../','../','src/pdfs/').replace('app.asar','app.asar.unpacked');            
+                const pdfFile = filePath + `${id}.pdf`;
+                let cmd = new CmdQueue();
+
+                console.log(sid,socket.id);
+                socket.to(sid).emit("print-status","printing");       
+
+                await fs.writeFileSync(pdfFile, data, {encoding: 'base64'});     
+                await cmd.print([pdfFile]);
+            }catch(err){
+                console.log(err);
+            }
         });
     
         socket.on("client",client=>{

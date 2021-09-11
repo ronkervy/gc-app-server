@@ -2,6 +2,7 @@ const formatter = new Intl.NumberFormat('en-PH',{
     style : 'currency',
     currency : 'Php'
 });
+
 export default (docs,logoURL)=>{
 
     let priceArr = [];
@@ -19,7 +20,7 @@ export default (docs,logoURL)=>{
 
     return {
         pageSize : 'A4',
-        pageMargins: [ 40, 80, 40, 60 ],
+        pageMargins: [ 40, 80, 40, 20 ],
         header : (currentPage)=>{
             if( currentPage === 1 ){
                 return [
@@ -137,28 +138,26 @@ export default (docs,logoURL)=>{
                         ],                 
                         [
                             { text : [
-                                "From Date : ",
+                                "From : ",
                                     {
                                         text :
                                         `${from}`,
                                         style : {
-                                            fontSize : 10,                                            
+                                            fontSize : 8,                                            
                                             alignment : 'right',
-                                            bold : true,
-                                            color : "green"
+                                            bold : true,                                            
                                         },
                                         border : [true,true,true,true],
                                     },
                                     {
                                         text : [
-                                            " - To Date : ",
+                                            " To : ",
                                             {
                                                 text : `${to}`,
                                                 style : {
-                                                    fontSize : 10,                                            
+                                                    fontSize : 8,                                            
                                                     alignment : 'right',
-                                                    bold : true,
-                                                    color : "green"
+                                                    bold : true,                                                    
                                                 },
                                                 border : [true,true,true,true],
                                             }
@@ -219,13 +218,15 @@ export default (docs,logoURL)=>{
                 table: {
                     // headers are automatically repeated if the table spans over multiple pages
                     // you can declare how many rows should be treated as headers
+                    dontBreakRows : false,
                     headerRows: 1,
-                    widths: [ '*', 100, '*', '*','*','*'],
+                    widths: [ 110, 120, '*', '*','*','*'],
                     body: [                        
                         [
                             {
                                 text : 'Name',
-                                style : 'tableHeader'
+                                style : 'tableHeader',
+                                border : [true,true,true,true]
                             }, 
                             {
                                 text : 'Receipt Number',
@@ -244,7 +245,7 @@ export default (docs,logoURL)=>{
                                 style : 'tableHeader'
                             },
                             {
-                                text : 'Total amount',
+                                text : 'Total',
                                 style : 'tableHeader'
                             }
                         ],
@@ -252,59 +253,6 @@ export default (docs,logoURL)=>{
                     ]
                 },
                 margin : [0,20,0,0]
-            },
-            {
-                layout: {
-                    hLineWidth : (i,node)=>{
-                        return (i === 0 || i === node.table.body.length) ? 1 : 0;
-                    },
-                    hLineHeight : (i,node)=>{
-                        return (i === 0 || i === node.table.body.widths) ? 1 : 0;
-                    }
-                }, // optional
-                table: {
-                    // headers are automatically repeated if the table spans over multiple pages
-                    // you can declare how many rows should be treated as headers
-                    headerRows: 1,
-                    // heights : (row)=>{
-                    //     return (row + 1) * 25;
-                    // },
-                    widths: ['*','*'],
-                    body: [
-                        [
-                            {
-                                text : '',
-                                fillColor : 'grey'
-                            },
-                            '',
-                        ],
-                        [
-                            {
-                                text : 'Total Price',
-                                alignment : 'center',
-                                color : 'white',
-                                fillColor : 'grey',
-                                fontSize : 9,
-                                margin : [0,4]
-                            },
-                            { 
-                                text : `${formatter.format(totalPriceArr)}`,
-                                alignment : 'center',
-                                rowSpan : 2,
-                                fontSize : 9,
-                                margin : [0,4]
-                            }
-                        ],
-                        [   
-                            {
-                                text : '',
-                                fillColor : 'grey'
-                            },
-                            ''
-                        ]
-                    ]
-                },
-                margin : [0,10]                
             }
         ],
         styles : {
@@ -315,12 +263,10 @@ export default (docs,logoURL)=>{
                 fontSize : 9
             },
             tableHeader : {
-                fontSize : 10,
-                color : 'white',
-                fillColor : 'grey',
+                fontSize : 9,
+                bold : true,
                 alignment : 'center',
-                margin : [0,5],
-                border : [true,false,true,false]
+                margin : [0,5],                
             },
             tableItems : {
                 alignment : 'center',
@@ -333,7 +279,7 @@ export default (docs,logoURL)=>{
             }
         },
         defaultStyle : {
-            font : 'Roboto',
+            font : 'Arial',
             columnGap : 5
         }
     }

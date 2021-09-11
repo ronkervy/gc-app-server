@@ -31,6 +31,11 @@ const {
 } = require('../controllers/api.controller');
 
 const {
+    getSettings,
+    saveSettings
+} = require('../controllers/settings.controller');
+
+const {
     generatePdf,
     transactionDoc,
     generateReportDoc
@@ -79,5 +84,9 @@ router.get('/server_info',serverInfo);
 
 //REPORTS
 router.get('/reports/:model',generateReportDoc);
+
+//SETTINGS
+router.get('/settings',getSettings);
+router.post('/settings',saveSettings);
 
 module.exports = router;

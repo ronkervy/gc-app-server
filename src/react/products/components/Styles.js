@@ -20,16 +20,16 @@ const useStyles = {
         borderColor : "lightgrey"
     },
     Table : {
+        position : "relative",
+        minHeight : "490px",
         marginTop : "10px",
         '& tr td' : {
-            fontSize : ".8em",
             '& :hover' : {
                 
             }
         },
         '& th' : {
             fontWeight : "70",
-            fontSize : ".8em"
         }
     },
     ProductModal : {

@@ -8,6 +8,7 @@ import {
     Slide
 } from '@material-ui/core';
 import {
+    ArrowBack,
     Close
 } from '@material-ui/icons';
 import { useHistory, useParams,useLocation } from 'react-router';
@@ -55,6 +56,9 @@ function SearchResDialog(props) {
             style={{
                 padding : "50px"
             }}   
+            TransitionProps={{
+                timeout : 500
+            }}
         >            
             <AppBar color="inherit" style={{position : "relative"}}>
                 <Toolbar variant="dense">
@@ -68,7 +72,7 @@ function SearchResDialog(props) {
                                 onClick={handleCloseDialog}
                                 aria-label="close"
                             >
-                                <Close style={{ color : "red" }} />
+                                <ArrowBack />
                             </IconButton>                                                
                         </Grid>
                         <Grid item lg={10} sm={10}>                            

@@ -21,7 +21,7 @@ export const getAllTransaction = createAsyncThunk(
                 ...opt,
                 method : 'GET'
             });
-            await sleep(2000);
+            await sleep(1000);
             return res.data;
         }catch(err){
             return rejectWithValue(err);
@@ -38,7 +38,7 @@ export const getSingleTransaction = createAsyncThunk(
                 ...opt,
                 method : 'GET'
             });
-            await sleep(2000);
+            await sleep(1000);
             return res.data;
         }catch(err){
             return rejectWithValue(err.response.data);
@@ -56,10 +56,27 @@ export const createTransaction = createAsyncThunk(
                 method : 'POST',
                 data : values
             });
-            await sleep(2000);
+            await sleep(1000);
             return res.data;
         }catch(err){
             return rejectWithValue(err);
+        }
+    }
+);
+
+export const createTransactionReport = createAsyncThunk(
+    'transactions/createTransactionReport',
+    async(url,{rejectWithValue})=>{
+        try{
+            const res = await TransServices({
+                baseURL : `http://localhost:8081/api/v1/gc-print`,
+                url,
+                method : 'GET'    
+            });
+            await sleep(1000);
+            return res.data;
+        }catch(err){
+            return rejectWithValue(err.response.data);
         }
     }
 );
@@ -73,7 +90,7 @@ export const findTransaction = createAsyncThunk(
                 ...opt,
                 method : 'GET'
             });
-            await sleep(2000);
+            await sleep(1000);
             return res.data;
         }catch(err){
             return rejectWithValue(err.response.data);
@@ -85,12 +102,13 @@ export const updateTransaction = createAsyncThunk(
     'transactions/updateTransaction',
     async(args,{rejectWithValue})=>{
         try{
-            const { opt } = args;
+            const { opt,value } = args;
             const res = await TransServices({
                 ...opt,
-                method : 'PATCH'
+                method : 'PATCH',
+                data : value
             });
-            await sleep(2000);
+            await sleep(1000);
             return res.data;
         }catch(err){
             return rejectWithValue(err.response.data);
@@ -107,7 +125,7 @@ export const deleteTransaction = createAsyncThunk(
                 ...opt,
                 method : 'DELETE'
             });
-            await sleep(2000);
+            await sleep(1000);
             return res.data;
         }catch(err){
             return rejectWithValue(err.response.data);

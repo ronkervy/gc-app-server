@@ -11,28 +11,56 @@ import {
     TableContainer, 
     TableHead, 
     TableRow, 
-    Toolbar 
+    Toolbar,
+    TablePagination,
+    makeStyles
 } from '@material-ui/core'
-import { Close } from '@material-ui/icons';
+import { ArrowBack, Close } from '@material-ui/icons';
 import React, { forwardRef, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import Loader from '../../shared/Loader';
-import { getAllTransaction } from '../store/TransactionServices';
+import { findTransaction, getAllTransaction } from '../store/TransactionServices';
 import TransactionItems from './TransactionItems';
 
 const TransComp = forwardRef((props,ref)=>{
-    return <Slide direction="up" {...props} ref={ref} />
+    return <Slide direction="down" {...props} ref={ref} />
 });
+
+const useStyles = makeStyles((theme)=>({
+    TransDialog : {
+        padding : "30px",
+        height : "100%"
+    },
+    TransDialogContent : {
+        height : "auto",
+    },
+    TransTable : {
+        minHeight : "580px",
+        position : "relative"
+    }
+}));
 
 function TransactionList(props) {
 
-    const { search : data,mode } = props;
+    const { search,mode } = props;
     const [open,setOpen] = useState(false);
     const dispatch = useDispatch();
     
     const { loading, entities : transactions } = useSelector(state=>state.transactions);
     const history = useHistory();
+    const [page, setPage] = useState(0);
+    const [rowsPerPage, setRowsPerPage] = useState(6);
+    const { TransTable,TransDialog,TransDialogContent } = useStyles();
+  
+    const handleChangePage = (event, newPage) => {
+      setPage(newPage);
+    };
+  
+    const handleChangeRowsPerPage = (event) => {
+      setRowsPerPage(+event.target.value);
+      setPage(0);
+    };
 
     const handleClose = ()=>{
         history.goBack();
@@ -42,7 +70,11 @@ function TransactionList(props) {
     useEffect(()=>{
 
         if( mode === 'search' ){
-
+            dispatch( findTransaction({
+                opt : {
+                    url : `/search/transactions?s=${search}`
+                }
+            }) );
         }else{
             dispatch( getAllTransaction({
                 opt : {
@@ -65,8 +97,9 @@ function TransactionList(props) {
             open={open}
             onClose={handleClose}
             TransitionComponent={TransComp}
-            style={{
-                padding : "30px",
+            className={TransDialog}
+            TransitionProps={{
+                timeout : 500
             }}
         >
             <AppBar position="relative">
@@ -81,7 +114,7 @@ function TransactionList(props) {
                                 onClick={handleClose}
                                 aria-label="close"
                             >
-                                <Close />
+                                <ArrowBack />
                             </IconButton>                                                
                         </Grid>
                         <Grid item lg={10} sm={10}>                            
@@ -89,24 +122,35 @@ function TransactionList(props) {
                     </Grid>
                 </Toolbar>
             </AppBar>
-            <Grid container>
-                <Grid item lg={12} sm={12}>
-                    <TableContainer component={Paper} elevation={3} >
+            <Grid container className={TransDialogContent}>
+                <Grid item lg={12} sm={12} style={{ padding : "30px"}}>
+                    <TableContainer component={Paper} elevation={3} className={TransTable} >
                         <Table stickyHeader size="small">
                             <TableHead>
                                 <TableRow>
-                                    <TableCell style={{ textAlign : "center" }}>Customer Name</TableCell>
+                                    <TableCell style={{ textAlign : "left" }}>Customer Name</TableCell>
                                     <TableCell style={{ textAlign : "center" }}>Transaction Date</TableCell>
                                     <TableCell style={{ textAlign : "center" }}>Payment Type</TableCell>
                                     <TableCell style={{ textAlign : "center" }}>Cash Amount</TableCell>
                                     <TableCell style={{ textAlign : "center" }}>Total</TableCell>
                                     <TableCell style={{ textAlign : "center" }}>Change</TableCell>
+                                    <TableCell style={{ textAlign : "center" }}>Action</TableCell>
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {transactions.map((transaction,i)=>(
+                                {transactions.slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage).map((transaction,i)=>(
                                     <TransactionItems data={transaction} key={i} />
                                 ))}
+                                <TableRow style={{ position : "absolute", bottom : 0 }}>
+                                    <TablePagination
+                                        rowsPerPageOptions={[6, 12, 120]}
+                                        count={transactions.length}
+                                        rowsPerPage={rowsPerPage}
+                                        page={page}
+                                        onPageChange={handleChangePage}
+                                        onRowsPerPageChange={handleChangeRowsPerPage}
+                                    />
+                                </TableRow> 
                             </TableBody>
                         </Table>
                     </TableContainer>

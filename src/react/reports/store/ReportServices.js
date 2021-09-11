@@ -21,7 +21,7 @@ export const generateReport = createAsyncThunk(
                 url,
                 method : 'GET'
             });
-            await sleep(2000);
+            await sleep(1000);
             return res.data;
         }catch(err){
             return rejectWithValue(err.response.data);

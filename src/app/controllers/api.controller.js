@@ -122,7 +122,6 @@ module.exports = {
                     product.suppliers.push(item_supplier);
                     await product.save();
                     
-    
                     //Find the supplier in the suppliers table
                     const resSupp = await SupplierModel.findById(item_supplier);
                     const resProdIndex = resSupp.products.indexOf(product._id);
@@ -221,14 +220,16 @@ module.exports = {
                                 'purchased_qty' : '$qty',
                                 'inventory_qty' : '$products.item_qty',
                                 'discount' : '$discount',
+                                'item_unit' : '$products.item_unit',
                                 'supplier' : '$suppliers.supplier_name'
                             }
-                        },                        
+                        },                                                
                         'transaction_date' : { '$first' : '$createdAt' },
                         'payment_type' : { '$first' : '$transact_payment_type' },
                         'cash_amount' : { '$first' : '$cash_amount' },
                         'total_price' : { '$first' : '$total_amount' },
-                        'change_amount' : { '$first' : '$change_amount' }
+                        'change_amount' : { '$first' : '$change_amount' },
+                        'payments' : { '$first' : '$partial_payments' }
                     }  
                 },
                 { "$sort" : 
@@ -313,7 +314,8 @@ module.exports = {
                         'payment_type' : { '$first' : '$transact_payment_type' },
                         'cash_amount' : { '$first' : '$cash_amount' },
                         'total_price' : { '$first' : '$total_amount' },
-                        'change_amount' : { '$first' : '$change_amount' }
+                        'change_amount' : { '$first' : '$change_amount' },
+                        'payments' : { '$first' : '$partial_payments' }
                     }  
                 },
                 { "$sort" : 
@@ -377,7 +379,8 @@ module.exports = {
                         'payment_type' : { '$first' : '$transact_payment_type' },
                         'cash_amount' : { '$first' : '$cash_amount' },
                         'total_price' : { '$first' : '$total_amount' },
-                        'change_amount' : { '$first' : '$change_amount' }
+                        'change_amount' : { '$first' : '$change_amount' },
+                        'payments' : { '$first' : '$partial_payments' }
                     }  
                 },
                 { "$sort" : 
@@ -507,7 +510,8 @@ module.exports = {
                         'payment_type' : { '$first' : '$transact_payment_type' },
                         'cash_amount' : { '$first' : '$cash_amount' },
                         'total_price' : { '$first' : '$total_amount' },
-                        'change_amount' : { '$first' : '$change_amount' }
+                        'change_amount' : { '$first' : '$change_amount' },
+                        'payments' : { '$first' : '$partial_payments' }
                     }  
                 },
                 { "$sort" : 

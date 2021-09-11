@@ -23,6 +23,8 @@ const useStyles = {
         borderRadius : "10px"
     },
     Table : {
+        position : "relative",
+        minHeight : "490px",
         marginTop : "10px",
         '& tr td' : {
             fontSize : ".8em",

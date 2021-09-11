@@ -29,6 +29,7 @@ import { AddToCart, RemoveFromCart,UpdateQty,SetDiscount } from '../store/Delive
 import { motion } from 'framer-motion';
 import { getAllSuppliers, getSupplierProducts } from '../../suppliers/store/SupplierServices';
 import Loader from '../../shared/Loader';
+import { Refresh } from '@material-ui/icons';
 
 
 function SearchTable(props) {
@@ -117,8 +118,8 @@ function SearchTable(props) {
     }
 
     return (
-        <Grid container spacing={2} style={{ padding : "0px 20px" }}>            
-            <Grid item lg={8} sm={8}>
+        <Grid container spacing={2}>            
+            <Grid item lg={6} sm={6}>
                 <FormControl
                     fullWidth                    
                     size="small"
@@ -135,11 +136,26 @@ function SearchTable(props) {
                                 </InputAdornment>
                             )
                         }}
-                        onChange={(e)=>{
-                            setSearch(e.target.value)
+                        onKeyPress={(e)=>{
+                            if( e.key === 'Enter' ){
+                                setSearch(e.target.value)
+                            }                            
                         }}
                     />                      
                 </FormControl>                              
+            </Grid>
+            <Grid item lg={2} sm={2}>
+                <FormControl
+                    fullWidth
+                    size="small"
+                    margin="dense"
+                >
+                    <IconButton
+                        size="small"                                                            
+                    >
+                        <Refresh />
+                    </IconButton>
+                </FormControl>
             </Grid>
             <Grid item lg={4} sm={4}>
                 <FormControl

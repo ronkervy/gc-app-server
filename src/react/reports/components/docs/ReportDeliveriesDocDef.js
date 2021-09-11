@@ -99,6 +99,7 @@ export default (docs,logoURL,prods)=>{
             },
             {
                 table : {
+                    dontBreakRows : false,
                     headerRows : 1,
                     widths : ['*','*','*'],
                     body : [
@@ -136,6 +137,7 @@ export default (docs,logoURL,prods)=>{
                             table: {
                                 // headers are automatically repeated if the table spans over multiple pages
                                 // you can declare how many rows should be treated as headers
+                                dontBreakRows : true,
                                 headerRows: 1,
                                 widths: [ 120, '*', '*', '*','*','*'],
                                 body: [                        
@@ -161,7 +163,7 @@ export default (docs,logoURL,prods)=>{
                                             style : 'tableHeader'
                                         },
                                         {
-                                            text : 'Total amount',
+                                            text : 'Total',
                                             style : 'tableHeader'
                                         }
                                     ],
@@ -228,7 +230,7 @@ export default (docs,logoURL,prods)=>{
             }
         },
         defaultStyle : {
-            font : 'Roboto',
+            font : 'Arial',
             columnGap : 5
         }
     }

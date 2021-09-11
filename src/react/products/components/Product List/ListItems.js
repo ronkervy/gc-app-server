@@ -46,26 +46,15 @@ function ListItems({item,index}) {
                     />
                 </small>                
             </TableCell>
-            <TableCell>
-                <small>
-                    <NumberFormat 
-                        displayType="text" 
-                        value={item.item_selling_price} 
-                        thousandSeparator={true} 
-                        prefix={'Php '} 
-                        decimalScale={2} 
-                        decimalSeparator={'.'}
-                        fixedDecimalScale={true}
-                    />    
-                </small>                    
+            <TableCell style={{ textTransform : "uppercase" }}>
+                <small>{item.item_unit}</small>                    
             </TableCell>
             <TableCell
-                style={{textAlign : "center"}}
+                align="center"
             >  
                 <IconButton
                     variant="contained"                                            
                     size="small"
-                    style={{ fontSize : ".8em !important", color:"#ffffff"}}  
                     onClick={(e)=>{    
                         history.push('/products/' + item._id);
                     }}                               
@@ -79,7 +68,6 @@ function ListItems({item,index}) {
                     variant="contained"
                     color="default"
                     size="small"
-                    style={{ fontSize : ".8em !important"}}   
                     onClick={(e)=>{
                         setSelectedItem(item);
                         handleOpen();
@@ -88,8 +76,7 @@ function ListItems({item,index}) {
                 <IconButton
                     variant="contained"
                     color="secondary"
-                    size="small"
-                    style={{ fontSize : ".8em !important"}}     
+                    size="small" 
                     onClick={(e)=>{
                         history.push('/products/del/' + item._id);
                     }}   

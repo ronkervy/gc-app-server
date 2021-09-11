@@ -42,7 +42,7 @@ function InvoicePreview(props) {
                 <div className={classes.InvoiceModal}>
                     <Fab
                         size="small"
-                        variant="round"
+                        variant="circular"
                         onClick={handleClose}
                         style={{
                             position : "absolute",

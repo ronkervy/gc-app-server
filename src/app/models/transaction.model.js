@@ -10,6 +10,9 @@ const TransactionSchema = new Schema({
         type : String,
         default : 'full'
     },
+    customer_address : {
+        type : String
+    },
     cash_amount : {
         type : Number,
         default : 0

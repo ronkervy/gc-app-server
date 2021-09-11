@@ -18,6 +18,7 @@ import {
     Divider
 } from '@material-ui/core';
 import {
+    ArrowBack,
     Close
 } from '@material-ui/icons';
 import { useFormik } from 'formik';
@@ -99,6 +100,9 @@ function AddSupplier(props) {
                 }
             }}         
             style={{ padding : "50px" }}
+            TransitionProps={{
+                timeout : 500
+            }}
         >
             <AppBar position="relative">
                 <Toolbar variant="dense">
@@ -112,7 +116,7 @@ function AddSupplier(props) {
                                 onClick={handleCloseDialog}
                                 aria-label="close"
                             >
-                                <Close />
+                                <ArrowBack />
                             </IconButton>                                                
                         </Grid>
                         <Grid item lg={10} sm={10}>                            

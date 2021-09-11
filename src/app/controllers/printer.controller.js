@@ -1,16 +1,13 @@
-const ProductModel = require('../models/product.model');
-const SupplierModel = require('../models/supplier.model');
 const DeliveryModel = require('../models/delivery.model');
 const TransactionModel = require('../models/transaction.model');
 const formatter = new Intl.NumberFormat('en-PH',{
     style : 'currency',
     currency : 'Php'
 });
+const moment = require('moment-timezone');
+moment.tz.setDefault("Asia/Manila");
 
 const createHttpError = require('http-errors');
-const {createPdf} = require('../config/create.pdf');
-const DocumentDef = require('../config/DocumentDef');
-const transactionDocDef = require('../config/PrintDocDef');
 const path = require('path');
 const fs = require('fs');
 
@@ -28,10 +25,6 @@ module.exports = {
                 path: 'suppliers',
                 select : 'supplier_name'
             });
-            
-            function numberWithCommas(x) {
-                return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-            }
 
             let prodArr = resDelivery.map(delivery=>{
 
@@ -41,10 +34,15 @@ module.exports = {
                     arr.push(
                         {text : prod.item_name, style : 'tableItems'},
                         {text : delivery.delivery_qty, style : 'tableItems'},
-                        {text : numberWithCommas(delivery.item_price),style : 'tableItems'},
+                        {text : formatter.format(delivery.item_price),style : 'tableItemsAmount'},
                         {text : delivery.item_discount === 0 ? 'net' : delivery.item_discount + '%', style : 'tableItems'},
                         {text : delivery.suppliers[index].supplier_name,style : 'tableItems'},
-                        {text : numberWithCommas(delivery.total_item_price),style : 'tableItems'}                  
+                        {
+                            text : formatter.format(delivery.total_item_price),
+                            style : 'tableItemsAmount',
+                            total : delivery.total_item_price,
+                            date : delivery.createdAt
+                        }                  
                     );
                 });
                 return arr;
@@ -55,10 +53,7 @@ module.exports = {
             return res.json({
                 doc : JSON.stringify(prodArr),
                 logo : new Buffer.from(pngimage).toString('base64')
-            });
-
-            // let binaryResult = await createPdf(docDef,id);
-            // return res.contentType('application/pdf').send(binaryResult.binary);            
+            });          
 
         }catch(err){
             return next(createHttpError.Unauthorized({
@@ -74,7 +69,7 @@ module.exports = {
                 transact_id : id
             }).populate({
                 path : 'product',
-                select : 'item_name item_price suppliers',
+                select : 'item_name item_price suppliers item_unit',
                 populate : {
                     path : 'suppliers',
                     select : 'supplier_name'
@@ -87,21 +82,24 @@ module.exports = {
 
                 transaction.product.suppliers.map(supp=>{
                     arr.push(
-                        {text : transaction.product.item_name, style : 'tableItems'},
-                        {text : supp.supplier_name, style : 'tableItems'},
-                        {text : transaction.qty, style : 'tableItems'},                        
+                        {text : transaction.qty, style : 'tableItems'},  
+                        {text : transaction.product.item_unit.toUpperCase(), style : 'tableItems'},
+                        {text : transaction.product.item_name, style : 'tableItems'},                                              
                         {text : formatter.format(transaction.item_current_price), style : 'tableItemsAmount'},
-                        {text : formatter.format(transaction.total_per_unit), style : 'tableItemsAmount'},
                         {
-                            text : transaction.discount > 0 ? parseFloat(transaction.discount) * 100 + ' %' : 'Net', 
-                            style : 'tableItems',
+                            text : formatter.format(transaction.total_per_unit), 
+                            style : 'tableItemsAmount',
                             _id : transaction.transact_id,
                             customer_name : transaction.customer_name,
+                            price : transaction.item_current_price,
                             date : transaction.createdAt,
                             transact_type : transaction.transact_payment_type,
-                            total_amount : formatter.format(transaction.total_amount),
+                            cash_amount : formatter.format(transaction.cash_amount),
+                            total_amount : transaction.total_amount,
                             change_amount : formatter.format(transaction.change_amount),
-                        }
+                            discount : transaction.discount,
+                            customer_address : transaction.customer_address
+                        }                        
                     );
                 });
 
@@ -114,9 +112,6 @@ module.exports = {
                 doc : JSON.stringify(transArr),
                 logo : new Buffer.from(pngimage).toString('base64')
             });
-
-            // const binaryResult = await createPdf(docDef,id);    
-            // return res.contentType('application/pdf').send(binaryResult.binary);
             
         }catch(err){
             return next( createHttpError.Unauthorized({
@@ -249,8 +244,6 @@ module.exports = {
                     prods : JSON.stringify(resArrProd)
                 });
 
-                // return res.status(200).json(resDeliveries);
-
             }else if( model === 'transactions' ){
                 
                 const optMatch = payment_type === undefined ? (
@@ -299,6 +292,7 @@ module.exports = {
                         {
                             '_id' : '$transact_id',
                             'customer_name' : { '$first' : '$customer_name' },
+                            'customer_address' : { '$first' : '$cutomer_address' },
                             'cart_count' : { '$sum' : 1 },
                             'cart' : {
                                 '$push' : {

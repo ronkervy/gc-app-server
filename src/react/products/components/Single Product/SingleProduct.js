@@ -10,16 +10,10 @@ import {
     MenuItem,
     AppBar,
     IconButton,
-    Table,
-    TableContainer,
-    TableHead,
-    TableRow,
-    TableCell,
-    TableBody,
     TextareaAutosize,
     InputAdornment
 } from '@material-ui/core';
-import { Close } from '@material-ui/icons';
+import { ArrowBack } from '@material-ui/icons';
 import { useHistory } from 'react-router';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -29,7 +23,7 @@ import { useFormik } from 'formik';
 import Styles from '../Styles';
 import { OpenNotification } from '../../../shared/store/NotificationSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBoxOpen, faCodeBranch, faUserTie } from '@fortawesome/free-solid-svg-icons';
+import { faBoxOpen, faCodeBranch, faRuler, faUserTie } from '@fortawesome/free-solid-svg-icons';
 import NumberFormat from 'react-number-format';
 
 const EditForm = ({product})=>{
@@ -60,7 +54,9 @@ const EditForm = ({product})=>{
             item_name : product.item_name,
             item_qty : product.item_qty,
             item_price : product.item_price,
-            item_supplier : product.item_supplier
+            item_supplier : product.item_supplier,
+            item_unit : product.item_unit,
+            item_desc : product.item_desc
         },
         validate,
         onSubmit : async(values)=>{
@@ -170,7 +166,28 @@ const EditForm = ({product})=>{
                         value={formik.values.item_qty}
                     />
                 </Grid>
-                <Grid item lg={8} sm={8}>
+                <Grid item lg={4} sm={4}>
+                    <TextField
+                        size="small"
+                        fullWidth
+                        onBlur={formik.handleBlur}
+                        error={formik.errors.item_unit}
+                        label="Item Unit"
+                        variant="outlined"
+                        id="item_unit"
+                        name="item_unit"
+                        onChange={formik.handleChange}
+                        value={formik.values.item_unit}
+                        InputProps={{
+                            startAdornment : (
+                                <InputAdornment position="start">
+                                    <FontAwesomeIcon icon={faRuler} />
+                                </InputAdornment>
+                            )
+                        }}
+                    />
+                </Grid>
+                <Grid item lg={4} sm={4}>
                     <TextField
                         select
                         size="small"
@@ -206,7 +223,19 @@ const EditForm = ({product})=>{
                         variant="contained"
                         color="primary"                        
                     >Update</Button>
-                </Grid>                
+                </Grid>   
+                <Grid item lg={12} sm={12}>
+                    <TextareaAutosize   
+                        placeholder="Description"                     
+                        minRows={8}              
+                        name="item_desc"
+                        variant="outlined"
+                        aria-label="maximum height"
+                        value={formik.values.item_desc}
+                        onChange={formik.handleChange}
+                        style={{padding: "10px", outline : "none",width : "100%",height : "250px"}}
+                    />
+                </Grid>             
             </Grid>
         </form>
     )
@@ -253,33 +282,21 @@ const SingleProduct = (props)=>{
             fullScreen  
             TransitionComponent={TransitionComp}
             style={{
-                padding : "50px"
+                padding : "100px"
+            }}
+            TransitionProps={{
+                timeout : 500
             }}
         >
             <AppBar position="relative" className={SingleProdAppBar} style={{ WebkitAppRegion : 'no-drag' }}>
                 <Toolbar variant="dense">
                     <IconButton size="small"  edge="start" color="inherit" onClick={handleClose}>
-                        <Close />
+                        <ArrowBack />
                     </IconButton>
                 </Toolbar>
             </AppBar>
             <div className={ProductModal}>
-                <EditForm product={selectedProd} />
-                <Grid container spacing={2}>
-                    <Grid item lg={12} sm={12}>
-                        <TableContainer elevation={3} className={SingleProdTable}>
-                            <Table size="small" stickyHeader aria-label="sticky table" >
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Name</TableCell>
-                                        <TableCell>Item Price</TableCell>
-                                        <TableCell>Item QTY</TableCell>                                </TableRow>
-                                </TableHead>
-                                <TableBody></TableBody>
-                            </Table>
-                        </TableContainer>
-                    </Grid>
-                </Grid>
+                <EditForm product={selectedProd} />                
             </div>
         </Dialog>
     )

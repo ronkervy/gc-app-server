@@ -24,7 +24,7 @@ const ProductSchema = new Schema({
     item_desc : {
         type : String
     },
-    item_categ : {
+    item_unit : {
         type : String
     },
     item_qty : {

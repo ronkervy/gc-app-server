@@ -26,7 +26,10 @@
       "electronRebuildConfig": {},
       "packagerConfig": {
         "prune": true,
-        "asar": true,
+        "asar": {
+          "unpack": "**/app/config/default.json",
+          "unpackDir": "{**/src/pdfs,**/src/native_modules}"
+        },
         "icon": "./src/app/logo.png"
       },
       "makers": [
@@ -104,6 +107,7 @@
   },
   "dependencies": {
     "@date-io/date-fns": "^1.3.13",
+    "@date-io/moment": "^1.3.13",
     "@fortawesome/fontawesome-svg-core": "^1.2.35",
     "@fortawesome/free-regular-svg-icons": "^5.15.3",
     "@fortawesome/free-solid-svg-icons": "^5.15.3",
@@ -116,15 +120,19 @@
     "axios": "^0.21.1",
     "body-parser": "^1.19.0",
     "chart.js": "^3.5.0",
+    "cmd-printer": "^1.0.0",
     "cors": "^2.8.5",
     "date-fns": "^2.22.1",
+    "electron-node-config": "^1.1.0",
     "electron-squirrel-startup": "^1.0.0",
     "express": "^4.17.1",
+    "file-saver": "^2.0.5",
     "formik": "^2.2.9",
     "framer-motion": "^4.1.17",
     "helmet": "^4.6.0",
     "http-errors": "^1.7.2",
     "ip": "^1.1.5",
+    "moment": "^2.29.1",
     "moment-timezone": "^0.5.33",
     "mongodb": "^3.6.9",
     "mongoose": "^5.13.0",

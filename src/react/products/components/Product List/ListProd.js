@@ -10,7 +10,9 @@ import {
   TableContainer,
   TablePagination,
   TableRow,
-  Paper
+  Paper,
+  Tooltip,
+  Typography
 } from '@material-ui/core';
 import Styles from '../Styles';
 import ListItems from './ListItems';
@@ -18,7 +20,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faBox,
     faMoneyBill,
-    faMoneyBillAlt,
     faWrench
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -34,10 +35,11 @@ function ListProd(props) {
   const { classes,mode,search } = props;
   const { entities : products,loading : prodLoading } = useSelector(state=>state.products);
   const { entities : suppliers, loading : suppLoading } = useSelector(state=>state.suppliers);
+  const history = useHistory();
   const dispatch = useDispatch();
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(6);
-  const history = useHistory();
+
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -85,19 +87,20 @@ function ListProd(props) {
       transition={{duration : .5}}
     >
         <TableContainer component={Paper} elevation={3}  className={classes.Table}>
-            <Table size="medium" stickyHeader aria-label="sticky table" >
+            <Table size="small" stickyHeader aria-label="sticky table" >
               <TableHead>
                   <TableRow>
-                      <TableCell><FontAwesomeIcon icon={faBox} /> Name</TableCell>
+                      <TableCell>Name</TableCell>
                       <TableCell>QTY</TableCell>
                       <TableCell><FontAwesomeIcon style={{ color : "green" }} icon={faMoneyBill} /> Price</TableCell>
-                      <TableCell><FontAwesomeIcon style={{ color : "green" }} icon={faMoneyBillAlt} /> SRP</TableCell>
+                      <TableCell>Unit</TableCell>
                       <TableCell style={{ textAlign : "center" }}><FontAwesomeIcon icon={faWrench} /> Actions</TableCell>
                   </TableRow>
               </TableHead>   
               <TableBody>
-                  {products.slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage).map((item,index)=>(
+                  {products.slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage).map((item,index)=>(                    
                     <TableRow 
+                        title={item.item_desc}
                         style={{cursor : "pointer"}} 
                         onDoubleClick={(e)=>{
                             history.push('/products/' + item._id);
@@ -106,10 +109,10 @@ function ListProd(props) {
                         tabIndex={-1} 
                         hover
                     >
-                        <ListItems item={item} />
+                        <ListItems item={item} />                       
                     </TableRow>
                   ))}                  
-                  <TableRow>
+                  <TableRow style={{ position : "absolute", bottom : 0 }}>
                     <TablePagination
                         rowsPerPageOptions={[6, 12, 120]}
                         count={products.length}

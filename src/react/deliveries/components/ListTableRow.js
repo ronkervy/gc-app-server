@@ -28,7 +28,7 @@ import { CreateInvoice } from '../../shared/store/InvoiceService';
 import { UpdateDeliveryStatus } from '../store/DelServices';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import DocumentDef from '../../components/DocumentDef';
+import DocumentDef from '../doc/DocumentDef';
 
 function ListTableRow(props) {
 
@@ -36,12 +36,14 @@ function ListTableRow(props) {
     const history = useHistory();
     const { delivery,index } = props;
     const { entities : del } = useSelector(state=>state.deliveries);
+    const { settings } = useSelector(state=>state.settings.entities);
     const [open,setOpen] = useState(-1);
     const [elem,setElem] = useState(null);
     const [delivered,setDelivered] = useState(del[index].status);
     const dnow = new Date(delivery.date).toLocaleDateString('en-US',{month : 'numeric',year : 'numeric',day : '2-digit'});
     const [page,setPage] = useState(0);
     const [rowsPerPage,setRowsPerPage] = useState(6);
+    const { ipcRenderer } = window.require('electron');
 
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
@@ -61,7 +63,28 @@ function ListTableRow(props) {
     }
 
     const handlePrint = async (id)=>{
-        
+        const resPDF = await dispatch( CreateInvoice({
+            opt : {
+                url : '/deliveries/' + id
+            }
+        }) );
+
+        if( CreateInvoice.fulfilled.match(resPDF) ){  
+            pdfMake.vfs = pdfFonts.pdfMake.vfs;          
+            const { doc,logo } = resPDF.payload;
+            let pdf = JSON.parse(doc);
+
+            const docDef = DocumentDef(pdf,logo);
+            const docGenerator = pdfMake.createPdf(docDef);
+            
+            docGenerator.getBlob((blob)=>{
+                const url = window.URL.createObjectURL(blob);
+                ipcRenderer.invoke('printPDF',{
+                    url,
+                    settings
+                });
+            });
+        }
     }
 
     const handleGeneratePdf = async(id)=>{

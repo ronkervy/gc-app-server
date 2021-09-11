@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { createTransaction, deleteTransaction, getAllTransaction,GetTransChart,updateTransaction } from './TransactionServices';
+import { createTransaction, createTransactionReport, deleteTransaction, findTransaction, getAllTransaction,getSingleTransaction,GetTransChart,updateTransaction } from './TransactionServices';
 
 const TransactionSlice = createSlice({
     name : 'transactions',
@@ -7,7 +7,8 @@ const TransactionSlice = createSlice({
         entities : [],
         loading : false,
         errors : null,
-        charttransrpt : []
+        charttransrpt : [],
+        doc : ''
     },
     reducers : {},
     extraReducers : (builder)=>{
@@ -20,6 +21,30 @@ const TransactionSlice = createSlice({
             state.entities = payload;
         })
         .addCase(getAllTransaction.rejected,(state,{payload})=>{
+            state.loading = false;
+            state.errors = payload;
+        })
+        //FIND TRANSACTIONS
+        .addCase(findTransaction.pending,state=>{
+            state.loading = true;
+        })
+        .addCase(findTransaction.fulfilled,(state,{payload})=>{
+            state.loading = false;
+            state.entities = payload;
+        })
+        .addCase(findTransaction.rejected,(state,{payload})=>{
+            state.loading = false;
+            state.errors = payload;
+        })
+        //GET SINGLE TRANSACTIONS
+        .addCase(getSingleTransaction.pending,state=>{
+            state.loading = true;
+        })
+        .addCase(getSingleTransaction.fulfilled,(state,{payload})=>{
+            state.loading = false;
+            state.entities = payload;
+        })
+        .addCase(getSingleTransaction.rejected,(state,{payload})=>{
             state.loading = false;
             state.errors = payload;
         })
@@ -45,6 +70,19 @@ const TransactionSlice = createSlice({
         })
         .addCase(createTransaction.rejected,(state,{payload})=>{
             state.loading = false;
+            state.errors = payload;
+        })
+        //CREATE TRANSACTION REPORT
+        .addCase(createTransactionReport.pending,state=>{
+            state.loading = true;
+        })
+        .addCase(createTransactionReport.fulfilled,(state,{payload})=>{
+            state.loading = false;
+            state.doc = payload;
+        })
+        .addCase(createTransactionReport.rejected,(state,{payload})=>{
+            state.loading = false;
+            state.doc = '';
             state.errors = payload;
         })
         //UPDATE TRANSACTION

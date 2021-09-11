@@ -1,0 +1,20 @@
+{
+  "settings": {
+    "server-name" : "",
+    "port": "",
+    "theme": {
+      "darkmode": false
+    },
+    "address": "",
+    "printer": {
+      "list": ["default"],
+      "options": {
+        "silent" : true,
+        "scale" : "fit",
+        "orientation" : "landscape",
+        "printingMode" : "",
+        "pages" : []
+      } 
+    }
+  }
+}

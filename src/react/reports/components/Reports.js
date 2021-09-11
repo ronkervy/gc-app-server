@@ -1,6 +1,6 @@
 import React, { forwardRef, useEffect, useState } from 'react';
 import { Dialog,Slide,AppBar,Toolbar, Grid, IconButton, ButtonGroup, Button} from '@material-ui/core';
-import { Close } from '@material-ui/icons';
+import { ArrowBack, Close } from '@material-ui/icons';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { generateReport } from '../store/ReportServices';
@@ -12,7 +12,8 @@ import ReportDeliveriesDocDef from './docs/ReportDeliveriesDocDef';
 import ReportTransactionDocDef from './docs/ReportTransactionDocDef';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBoxOpen, faReceipt, faTruckLoading } from '@fortawesome/free-solid-svg-icons';
-import { clearModel, clearUri, setModel } from '../store/ReportSlice';
+import { clearUri, setModel } from '../store/ReportSlice';
+import docImage from 'Public/img/logo.png';
 
 const TransitionPage = forwardRef((props,ref)=>{
     return <Slide direction="up" ref={ref} {...props} />
@@ -92,6 +93,9 @@ function Reports(props) {
             style={{
                 padding : "30px"
             }}
+            TransitionProps={{
+                timeout : 500
+            }}
         >
             <AppBar position="relative" style={{ WebkitAppRegion : "no-drag" }}>
                 <Toolbar variant="dense" style={{ justifyContent : "space-between" }}>
@@ -100,7 +104,7 @@ function Reports(props) {
                         onClick={handleClose}
                         color="inherit"
                     >
-                        <Close />
+                        <ArrowBack />
                     </IconButton>
                     <ButtonGroup
                         variant="contained"                        
@@ -110,20 +114,10 @@ function Reports(props) {
                         }}
                     >
                         <Button
-                            startIcon={<FontAwesomeIcon icon={faBoxOpen} />}
-                            style={{
-                                background : "orange"
-                            }}   
-                            onClick={()=>{
-                                dispatch( clearUri() );
-                                history.push('/report/products');
-                            }}
-                        >
-                            Products
-                        </Button>
-                        <Button
                             startIcon={<FontAwesomeIcon icon={faReceipt} />}
-                            color="default"
+                            style={{
+                                backgroundColor : "orange"
+                            }}
                             onClick={()=>{
                                 dispatch( clearUri() );
                                 history.push('/report/transactions');
@@ -144,12 +138,38 @@ function Reports(props) {
                     </ButtonGroup>                  
                 </Toolbar>
             </AppBar>
-            <Grid container style={{ padding: "20px", height : "100%", marginTop : "0px" }}>
-                <iframe
-                    title="Report"
-                    src={url}
-                    style={{ border : "none", display:"block", height : "100% !important", width : "100%" }}
-                ></iframe>
+            <Grid 
+                container
+                style={ uri !== '' ? { 
+                    padding: "20px", 
+                    height : "100%", 
+                    marginTop : "0px",
+                    backgroundColor : "gainsboro"
+                } : {
+                    height : "100%", 
+                    display : "flex",
+                    alignItems : "center",
+                    justifyContent : "center",
+                } }
+            >
+                {uri !== '' ? (
+                    <iframe
+                        title="Report"
+                        src={url}
+                        style={{ border : "none", display:"block", height : "100% !important", width : "100%" }}
+                    ></iframe>
+                ) : (
+                    <div>
+                        <img
+                            src={docImage} alt="doc-img" 
+                            style={{
+                                opacity : .2
+                            }}
+                        />
+                        <h3 style={{ marginTop : "5px", textAlign : "center", opacity : .2 }}>No report loaded</h3>
+                    </div>
+                )}
+                
             </Grid>
         </Dialog>
     )

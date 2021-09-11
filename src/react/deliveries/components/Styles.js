@@ -26,7 +26,7 @@ const useStyles = {
         padding : "40px"
     },
     Table : {
-        marginTop : "10px",
+        minHeight : "490px",
         '& table' : {
             '& tr td' : {
                 fontSize : "1em"

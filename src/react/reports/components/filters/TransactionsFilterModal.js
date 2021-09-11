@@ -24,7 +24,7 @@ function TransactionsFilterModal(props) {
 
     const requestReport = (args)=>{
         const { from,to,filter } = args;
-        const uri = filter !== 'all' && typeof(filter) === boolean ? `/transactions?payment_type=${filter}&from=${from}&to=${to}` : `/transactions?from=${from}&to=${to}`;
+        const uri = filter !== 'all' ? `/transactions?payment_type=${filter}&from=${from}&to=${to}` : `/transactions?from=${from}&to=${to}`;
         dispatch( setUri(uri) );
         handleClose();
     }
