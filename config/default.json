@@ -1,20 +1,30 @@
 {
   "settings": {
-    "server-name" : "",
+    "server-name": "",
     "port": "",
     "theme": {
       "darkmode": false
     },
     "address": "",
     "printer": {
-      "list": ["default"],
+      "list": [
+        "OneNote for Windows 10",
+        "OneNote (Desktop)",
+        "Microsoft XPS Document Writer",
+        "Microsoft Print to PDF",
+        "HP Deskjet 2510 series",
+        "Fax",
+        "EPSON LX-310 ESC/P"
+      ],
       "options": {
-        "silent" : true,
-        "scale" : "fit",
-        "orientation" : "landscape",
-        "printingMode" : "",
-        "pages" : []
-      } 
+        "silent": false,
+        "printTo" : "",
+        "monochrome" : true,
+        "scale": "noscale",
+        "orientation": "portrait",
+        "printingMode": "",
+        "pages": []
+      }
     }
   }
 }

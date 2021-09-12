@@ -15,6 +15,7 @@ const io = require('socket.io')(http,{
 const PORT = process.env.PORT || 8081;
 const fs = require('fs');
 const { CmdQueue } = require('cmd-printer');
+const axios = require('axios');
 
 app.use(helmet());
 app.use(cors('*'));
@@ -50,6 +51,9 @@ app.use((err,req,res,next)=>{
 http.listen(PORT,()=>{
     io.on("connection",(socket)=>{
         const addr = socket.request.connection.remoteAddress;
+        const settingsServices = axios.create({
+            baseURL : "http://localhost:8081/api/v1/settings"
+        });
         
         socket.on('default-printer',(printer)=>{
             socket.broadcast.emit('server-printer',printer);
@@ -57,12 +61,20 @@ http.listen(PORT,()=>{
 
         socket.on('printcmd', async(args)=>{
             try{
+                const resSettings = await settingsServices({
+                    method : "GET"
+                });
+
+                const { settings } = resSettings.data;
+
                 const { data,id,sid } = args;
                 const filePath = process.env.NODE_ENV === 'development' ? path.join(__dirname,'..','/renderer/main_window/public/pdfs/') : path.join(__dirname,'../','../','src/pdfs/').replace('app.asar','app.asar.unpacked');            
                 const pdfFile = filePath + `${id}.pdf`;
-                let cmd = new CmdQueue();
 
-                console.log(sid,socket.id);
+                let cmd = new CmdQueue({
+                    ...settings.printer.options
+                });
+
                 socket.to(sid).emit("print-status","printing");       
 
                 await fs.writeFileSync(pdfFile, data, {encoding: 'base64'});     

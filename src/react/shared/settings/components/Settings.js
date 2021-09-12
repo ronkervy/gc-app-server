@@ -1,4 +1,4 @@
-import { Backdrop, Fade, Modal,makeStyles, Grid, TextField, MenuItem, Button } from '@material-ui/core'
+import { Backdrop, Fade, Modal,makeStyles, Grid, TextField, MenuItem, Button, Typography } from '@material-ui/core'
 import { Save } from '@material-ui/icons';
 import React,{ useState,useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -6,7 +6,6 @@ import { useHistory } from 'react-router-dom';
 import Loader from '../../Loader';
 import { getSettings, saveSettings } from '../store/SettingsService';
 import { io } from 'socket.io-client';
-import { CmdPrinter } from 'cmd-printer';
 
 const useStyles = makeStyles((theme)=>({
     ModalSettings : {
@@ -35,10 +34,18 @@ function Settings() {
         printer : {
             default : '',
             list : [],
-            options : {}
+            options : {
+                silent: false,
+                printTo : "",
+                monochrome : true,
+                scale: "noscale",
+                orientation : "portrait",
+                printingMode : "",
+                pages : []
+            }
         }
     });
-    const [printerList,setPrinterList] = useState([]);
+    
     const [ipAddress,setIPAddress] = useState('');
     const socket = io('http://localhost:8081');
     
@@ -53,47 +60,81 @@ function Settings() {
             return {
                 ...state,
                 printer : {
-                    default : printerVal,
-                    list : [...printerList]
+                    ...state.printer,
+                    default : printerVal
                 }
             }
         });        
     }
 
-    const getPrinterList = async()=>{
-        let printers = await CmdPrinter.getAll();
-        printers.map(printer=>{
-            setPrinterList(state=>{
-                return [
-                    ...state,
-                    printer.name
-                ]
-            });
+    const handleChangeMonochrome = (e)=>{
+        setDefaultPrinter(state=>{
+            return {
+                ...state,
+                printer : {
+                    ...state.printer,
+                    options : {
+                        ...state.printer.options,
+                        monochrome : e.target.value
+                    }
+                }
+            }
+        });    
+    }
+
+    const handleChangeOrientation = (e)=>{
+        setDefaultPrinter(state=>{
+            return {
+                ...state,
+                printer : {
+                    ...state.printer,
+                    options : {
+                        ...state.printer.options,
+                        orientation : e.target.value
+                    }
+                }
+            }
         });
     }
 
-    const loadPrinters = async()=>{
-        getPrinterList();      
-        const resPrinters = await dispatch( getSettings() );  
-        if( getSettings.fulfilled.match(resPrinters) ){
-            const { settings } = resPrinters.payload;            
-            setDefaultPrinter(state=>{
-                return {
-                    ...state,
-                    printer : {
-                        ...state.printer,
-                        default : settings.printer.default === undefined ? '' : settings.printer.default,
+    const handleScaleChange = (e)=>{
+        setDefaultPrinter(state=>{
+            return {
+                ...state,
+                printer : {
+                    ...state.printer,
+                    options : {
+                        ...state.printer.options,
+                        scale : e.target.value
                     }
                 }
-            });
+            }
+        });
+    }
+
+    const loadDefaultPrinter = async()=>{
+        const res = await dispatch( getSettings() );
+
+        if( getSettings.fulfilled.match(res) ){
+           const { settings } = res.payload;
+           console.log(settings);
+           setDefaultPrinter(state=>{
+               return {
+                   ...settings,
+                   printer : {
+                       ...settings.printer,
+                       default : settings.printer.default
+                   }
+               }
+           });
         }
     }
 
     useEffect(()=>{
         ipcRenderer.invoke('get-ip').then(args=>{
             setIPAddress(args);
-        });        
-        loadPrinters();
+        });       
+        loadDefaultPrinter();
         setOpen(true);
     },[]);
 
@@ -127,6 +168,52 @@ function Settings() {
                             label="IP Address"
                         />
                     </Grid>
+                    <Grid item lg={12} sm={12}>
+                        <Typography variant="h6">Printer Options</Typography>
+                    </Grid>
+                    <Grid item lg={6} sm={6}>
+                        <TextField 
+                            fullWidth
+                            select
+                            size="small"
+                            variant="outlined"
+                            label="Monochrome"
+                            value={defaultPrinter.printer.options.monochrome}
+                            onChange={handleChangeMonochrome}
+                        >
+                            <MenuItem value={true}>True</MenuItem>
+                            <MenuItem value={false}>False</MenuItem>
+                        </TextField>
+                    </Grid>
+                    <Grid item lg={6} sm={6}>
+                        <TextField 
+                            fullWidth
+                            select
+                            size="small"
+                            variant="outlined"
+                            label="Orientation"
+                            value={defaultPrinter.printer.options.orientation}
+                            onChange={handleChangeOrientation}
+                        >
+                            <MenuItem value="landscape">Landscape</MenuItem>
+                            <MenuItem value="portrait">Protrait</MenuItem>
+                        </TextField>
+                    </Grid>
+                    <Grid item lg={12} sm={12}>
+                        <TextField 
+                            fullWidth
+                            select
+                            size="small"
+                            variant="outlined"
+                            label="Scale"
+                            value={defaultPrinter.printer.options.scale}
+                            onChange={handleScaleChange}
+                        >
+                            <MenuItem value="noscale">No Scale</MenuItem>
+                            <MenuItem value="shrink">Shrink</MenuItem>
+                            <MenuItem value="fit">Fit to page</MenuItem>
+                        </TextField>
+                    </Grid>                                    
                     <Grid item lg={8} sm={8}>
                         <TextField 
                             select
@@ -134,10 +221,10 @@ function Settings() {
                             size="small"
                             variant="outlined"
                             label="Default Printer"
-                            value={defaultPrinter.printer.default}  
+                            value={defaultPrinter.printer === undefined ? '' : defaultPrinter.printer.default}  
                             onChange={handleChange}                       
                         >
-                            {printerList.map((printer,i)=>(
+                            {defaultPrinter.printer.list.map((printer,i)=>(
                                 <MenuItem 
                                     key={i}       
                                     value={printer}                             

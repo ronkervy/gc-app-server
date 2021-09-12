@@ -109,7 +109,7 @@ function AddDeliveries(props) {
                                 <ArrowBack />
                             </IconButton>                                                
                         </Grid>
-                        <Grid item lg={10} sm={10}>                            
+                        <Grid item lg={10} sm={10}>                          
                         </Grid>
                     </Grid>
                 </Toolbar>

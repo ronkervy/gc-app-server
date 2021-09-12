@@ -5,6 +5,7 @@ import React,{ useEffect,useState} from 'react';
 import {
     Close,
     Minimize,
+    Refresh,
     Settings,
     SettingsRemote
 } from '@material-ui/icons';
@@ -13,12 +14,17 @@ import { motion } from 'framer-motion';
 import { useSelector,useDispatch } from 'react-redux';
 import { useHistory } from 'react-router-dom';
 import { io } from 'socket.io-client';
+import { getProducts } from '../products/store/ProdServices';
+import { getAllTransaction } from '../transactions/store/TransactionServices';
+import { GetAllDeliveries } from '../deliveries/store/DelServices';
+import { getAllSuppliers } from '../suppliers/store/SupplierServices';
 
 function MainBar(props) {
 
     const {classes} = props;
     const currDate = new Date(Date.now()).toDateString();
     const socket = io('http://localhost:8081');
+    const dispatch = useDispatch();
     
     const history = useHistory();
     
@@ -61,6 +67,32 @@ function MainBar(props) {
                         &nbsp;<h5 style={ ip !== '' ? { color : 'green' } : { color : 'red' } }>{ip !== '' ? 'Server Broadcasting' : 'Server not initiated'}</h5>                        
                     </Grid>                    
                     <Grid item sm={4} lg={4} className={classes.MainBarRightBtns}>
+                        <IconButton
+                            size="small"
+                            component={motion.button}
+                            whileHover={{scale : 1.1}}
+                            onClick={()=>{
+                                dispatch( getProducts('/products') );
+                                dispatch( getAllTransaction({
+                                    opt : {
+                                        url : '/transactions'
+                                    }
+                                }));
+                                dispatch( GetAllDeliveries({
+                                    opt : {
+                                        url : '/deliveries'
+                                    }
+                                }));
+                                dispatch( getAllSuppliers({
+                                    opt : {
+                                        url : "/suppliers"
+                                    }
+                                }) );                   
+                            }}
+                            color="primary"
+                        >
+                            <Refresh />
+                        </IconButton>
                         <IconButton
                             size="small"
                             component={motion.button}

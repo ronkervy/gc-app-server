@@ -137,7 +137,7 @@ export default (docs,logoURL)=>{
                                             text : `Discount : ${formatter.format(discount)}`,
                                             style : {
                                                 fontSize : 15,
-                                                font : 'Arial'
+                                                font : 'Times'
                                             },
                                             bold : true
                                         },
@@ -145,7 +145,7 @@ export default (docs,logoURL)=>{
                                             text : `Amount to pay : ${formatter.format(total_amount)}`,
                                             style : {
                                                 fontSize : 15,
-                                                font : 'Arial'
+                                                font : 'Times'
                                             },
                                             bold : true
                                         }
@@ -162,7 +162,7 @@ export default (docs,logoURL)=>{
                                                     text : `${cash_amount}`,
                                                     style : { 
                                                         alignment : "center", 
-                                                        font : "Arial",
+                                                        font : "Times",
                                                         fontSize : 15
                                                     } 
                                                 }
@@ -173,7 +173,7 @@ export default (docs,logoURL)=>{
                                         { 
                                             text : `Change : ${change_amount}`,
                                             style : {
-                                                font : 'Arial',
+                                                font : 'Times',
                                                 fontSize : 15
                                             },
                                             bold : true
@@ -216,7 +216,7 @@ export default (docs,logoURL)=>{
                         { 
                             fontSize : 22,
                             //color : "#808080",
-                            font : "Arial"                            
+                            font : "Times"                            
                         } 
                     }
                 ],
@@ -358,13 +358,13 @@ export default (docs,logoURL)=>{
                 // bold : true,
                 //color : "#808080"
                 fontSize : 12,
-                font : "Arial",
+                font : "Times",
                 bold : true
             },
             subheader : {
                 fontSize : 12,
                 // bold : true,
-                font : "Arial",
+                font : "Times",
                 bold : true
             },
             tableHeader : {
@@ -384,7 +384,7 @@ export default (docs,logoURL)=>{
                 alignment : 'center',
                 margin : [0,2],
                 fontSize : 13,
-                font : "Arial",
+                font : "Times",
             }
         },
         defaultStyle : {

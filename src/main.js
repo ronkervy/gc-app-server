@@ -1,18 +1,15 @@
 const { app,BrowserWindow,ipcMain } = require('electron');
 const { exec } = require('child_process');
-const fs = require('fs');
-const path = require('path');
-const { CmdQueue } = require('cmd-printer');
-//const { default : installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
 const { networkInterfaces } = require('os');
 const net_interface = networkInterfaces();
 require('./app/index');
+const axios = require('axios');
 
 if (require('electron-squirrel-startup')){
     app.quit();
 }
 
-let win,loader,printWindow,ipaddr;
+let win,loader,ipaddr;
     
 for( let key in net_interface ){ 
     if( key != 'vEthernet (WSL)' ){                        
@@ -24,6 +21,34 @@ for( let key in net_interface ){
         });
     }     
 }
+
+const SettingsServices = axios.create({
+    baseURL : "http://localhost:8081/api/v1/settings",
+    timeout : 1000
+});
+
+const setPrinters = async(printerList)=>{
+    try{
+        const resSettings = await SettingsServices({
+            method : "GET"
+        });
+    
+        const { settings } = resSettings.data;
+    
+        await SettingsServices({
+            method : "POST",
+            data : {
+                ...settings,
+                printer : {
+                    ...settings.printer,
+                    list : [...printerList]
+                }
+            }
+        });
+    }catch(err){
+        console.log(err);
+    }   
+};
 
 const createWindow = ()=>{
 
@@ -54,12 +79,25 @@ const createWindow = ()=>{
     win.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
     if( process.env.NODE_ENV === "development" ){
-        // installExtension(REDUX_DEVTOOLS)
-        // .then((name) => console.log(`Added Extension:  ${name}`))
-        // .catch((err) => console.log('An error occurred: ', err));
-    }
+        const { default : installExtension, REDUX_DEVTOOLS } = require('electron-devtools-installer');
+        installExtension(REDUX_DEVTOOLS)
+        .then((name) => console.log(`Added Extension:  ${name}`))
+        .catch((err) => console.log('An error occurred: ', err));
+    }    
 
-    win.once('ready-to-show',()=>{
+    win.webContents.once('dom-ready',()=>{
+        let printers = win.webContents.getPrinters();
+        console.log(printers);
+        const printerArr = [];
+        
+        printers.map((printer,i)=>{
+            printerArr.push(printers[i].name);
+        });
+        
+        setPrinters(printerArr);
+    });
+
+    win.once('ready-to-show',()=>{  
         win.show();
     });
 
@@ -91,17 +129,6 @@ app.on('activate',()=>{
     if( BrowserWindow.getAllWindows().length === 0 || win === null ){
         createWindow();
     }
-});
-
-ipcMain.handle('printcmd', async(e,args)=>{
-    const { data,id,settings } = args;
-    const filePath = process.env.NODE_ENV === 'development' ? path.join(__dirname,'..','/renderer/main_window/public/pdfs/') : path.join(__dirname,'../','../','src/pdfs/').replace('app.asar','app.asar.unpacked');            
-    const pdfFile = filePath + `${id}.pdf`;
-    let cmd = new CmdQueue();
-
-    await fs.writeFileSync(pdfFile, data, {encoding: 'base64'});     
-    await cmd.print([pdfFile]);
-
 });
 
 ipcMain.handle('changeDefaultPrinter',(e,args)=>{

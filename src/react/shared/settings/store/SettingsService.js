@@ -17,7 +17,7 @@ export const getSettings = createAsyncThunk(
             const res = await SettingsServices({
                 method : 'GET'
             });
-            await sleep(3000);
+            await sleep(2000);
             return res.data;
         }catch(err){    
             return rejectWithValue(err.response.data);
@@ -34,7 +34,7 @@ export const saveSettings = createAsyncThunk(
                 method : "POST",
                 data : settings
             });
-            await sleep(3000);
+            await sleep(2000);
             return res.data;
         }catch(err){
             return rejectWithValue(err.response.data);

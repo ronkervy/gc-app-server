@@ -42,6 +42,7 @@ module.exports = {
             settingsJSON.settings.printer.list = [];
             const { printer } = req.body;
             settingsJSON.settings.printer.default = printer.default !== '' || printer.default !== undefined ? printer.default : settingsJSON.settings.printer.default;
+            settingsJSON.settings.printer.options = printer.options;
             if( printer.list !== undefined ){
                 printer.list.map(prntr=>{         
                     settingsJSON.settings.printer.list.push(prntr);

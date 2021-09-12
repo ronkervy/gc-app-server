@@ -119,7 +119,7 @@ function SearchTable(props) {
 
     return (
         <Grid container spacing={2}>            
-            <Grid item lg={6} sm={6}>
+            <Grid item lg={8} sm={8}>
                 <FormControl
                     fullWidth                    
                     size="small"
@@ -143,20 +143,7 @@ function SearchTable(props) {
                         }}
                     />                      
                 </FormControl>                              
-            </Grid>
-            <Grid item lg={2} sm={2}>
-                <FormControl
-                    fullWidth
-                    size="small"
-                    margin="dense"
-                >
-                    <IconButton
-                        size="small"                                                            
-                    >
-                        <Refresh />
-                    </IconButton>
-                </FormControl>
-            </Grid>
+            </Grid>            
             <Grid item lg={4} sm={4}>
                 <FormControl
                     fullWidth

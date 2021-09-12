@@ -25,6 +25,7 @@ function Home(props) {
     const dispatch = useDispatch();
     const { entities : products,loading } = useSelector(state=>state.products);
     const { entities : transactions, loading : transLoading } = useSelector( state=>state.transactions );
+    const { entities,loading : settingsLoading } = useSelector(state=>state.settings);
     const history = useHistory();
 
     const formatter = new Intl.NumberFormat('en-PH',{
@@ -88,7 +89,7 @@ function Home(props) {
         dispatch( getSettings() );
     },[]);
 
-    if( loading ){
+    if( loading || settingsLoading ){
         return(
             <Loader />
         )
