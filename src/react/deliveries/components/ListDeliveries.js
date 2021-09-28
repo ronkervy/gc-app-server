@@ -30,7 +30,7 @@ function ListDeliveries(props) {
     const { entities : deliveries,loading : deliveriesIsLoading } = useSelector(state=>state.deliveries);
 
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(6);
+    const [rowsPerPage, setRowsPerPage] = useState(8);
   
     const handleChangePage = (event, newPage) => {
       setPage(newPage);
@@ -63,11 +63,14 @@ function ListDeliveries(props) {
             animate={{x : 0,opacity : 1}}
             component={motion.div}
         >
-            <Grid item lg={12} sm={12} style={{
+            <Grid item lg={12} xl={12} sm={12} style={{
                 marginTop : "10px"
             }}>
-                <TableContainer component={Paper} elevation={2}>
-                    <Table size="small" stickyHeader className={classes.Table}>
+                <TableContainer component={Paper} elevation={2} className={classes.Table} style={{
+                    height : "auto",
+                    minHeight : "490px"
+                }}>
+                    <Table size="medium" stickyHeader >
                         <TableHead>
                             <TableRow>               
                                 <TableCell />                 
@@ -85,9 +88,9 @@ function ListDeliveries(props) {
                             {deliveries.slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage).map((delivery,index)=>(
                                 <ListTableRow key={index} delivery={delivery} index={index} />
                             ))}                                                       
-                            <TableRow>
+                            <TableRow style={{ bottom : 0, right : 0, position : "absolute" }}>
                                 <TablePagination
-                                    rowsPerPageOptions={[6, 12, 120]}
+                                    rowsPerPageOptions={[8]}
                                     count={deliveries.length}
                                     rowsPerPage={rowsPerPage}
                                     page={page}
@@ -102,6 +105,7 @@ function ListDeliveries(props) {
             <Grid
                 item 
                 lg={12} 
+                xl={12}
                 sm={12}
                 component={motion.div}
                 style={{

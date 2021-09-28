@@ -107,7 +107,7 @@ function AddSupplier(props) {
             <AppBar position="relative">
                 <Toolbar variant="dense">
                     <Grid container spacing={2}>
-                        <Grid item lg={2} sm={2} style={{WebkitAppRegion: "no-drag"}}>
+                        <Grid item lg={2} xl={2} sm={2} style={{WebkitAppRegion: "no-drag"}}>
                             <IconButton
                                 disableRipple={true}
                                 size="small"
@@ -119,7 +119,7 @@ function AddSupplier(props) {
                                 <ArrowBack />
                             </IconButton>                                                
                         </Grid>
-                        <Grid item lg={10} sm={10}>                            
+                        <Grid item lg={10} xl={10} sm={10}>                            
                         </Grid>
                     </Grid>
                 </Toolbar>
@@ -127,7 +127,7 @@ function AddSupplier(props) {
             <Grid container className={classes.AddSupplierWrap}>                
                 <form onSubmit={formik.handleSubmit} style={{width : "500px",height : "500px"}}>                    
                     <Grid item container spacing={2} component={Paper} elevation={3} style={{padding : "30px"}}>
-                    <Grid item lg={6} sm={6}>
+                    <Grid item lg={6} xl={6} sm={6}>
                             <TextField
                                 fullWidth
                                 variant="outlined"
@@ -145,7 +145,7 @@ function AddSupplier(props) {
                                 onChange={formik.handleChange}
                             />
                         </Grid>
-                        <Grid item lg={6} sm={6}>
+                        <Grid item lg={6} xl={6} sm={6}>
                             <TextField
                                 fullWidth 
                                 variant="outlined"
@@ -164,7 +164,7 @@ function AddSupplier(props) {
                             />
                         </Grid>     
                         <Divider />
-                        <Grid item lg={8} sm={8}>
+                        <Grid item lg={8} xl={8} sm={8}>
                             <NumberFormat
                                 customInput={TextField}
                                 format="#### ### ####"
@@ -184,7 +184,7 @@ function AddSupplier(props) {
                                 onChange={formik.handleChange}
                             />
                         </Grid>                    
-                        <Grid item lg={12} sm={12}>
+                        <Grid item lg={12} xl={12} sm={12}>
                             <TextField
                                 fullWidth 
                                 variant="outlined"
@@ -202,7 +202,7 @@ function AddSupplier(props) {
                                 onChange={formik.handleChange}
                             />
                         </Grid>
-                        <Grid item lg={12} sm={12}>
+                        <Grid item lg={12} xl={12} sm={12}>
                             <TextareaAutosize 
                                 maxRows="6" 
                                 placeholder="Memo"
@@ -213,7 +213,7 @@ function AddSupplier(props) {
                             >
                             </TextareaAutosize>
                         </Grid>
-                        <Grid item lg={12} sm={12}>
+                        <Grid item lg={12} xl={12} sm={12}>
                                 <Button
                                     startIcon={
                                         <FontAwesomeIcon icon={faSave} />

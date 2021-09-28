@@ -27,15 +27,15 @@ const useStyles = {
         minHeight : "490px",
         marginTop : "10px",
         '& tr td' : {
-            fontSize : ".8em",
-            '& :hover' : {
-                
-            }
+            fontSize : ".8em"
         },
         '& th' : {
             fontWeight : "70",
             fontSize : ".8em"
-        }        
+        },
+        '@media only screen and (max-width : 1366px)' : {
+            minHeight : "490px",
+        }     
     }
 }
 

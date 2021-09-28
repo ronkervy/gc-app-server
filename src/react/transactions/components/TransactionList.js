@@ -50,7 +50,7 @@ function TransactionList(props) {
     const { loading, entities : transactions } = useSelector(state=>state.transactions);
     const history = useHistory();
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(6);
+    const [rowsPerPage, setRowsPerPage] = useState(8);
     const { TransTable,TransDialog,TransDialogContent } = useStyles();
   
     const handleChangePage = (event, newPage) => {
@@ -70,6 +70,7 @@ function TransactionList(props) {
     useEffect(()=>{
 
         if( mode === 'search' ){
+            console.log(search);
             dispatch( findTransaction({
                 opt : {
                     url : `/search/transactions?s=${search}`
@@ -105,7 +106,7 @@ function TransactionList(props) {
             <AppBar position="relative">
                 <Toolbar variant="dense">
                     <Grid container spacing={2}>
-                        <Grid item lg={2} sm={2} style={{WebkitAppRegion: "no-drag"}}>
+                        <Grid item lg={2} xl={2} sm={2} style={{WebkitAppRegion: "no-drag"}}>
                             <IconButton
                                 disableRipple={true}
                                 size="small"
@@ -117,13 +118,13 @@ function TransactionList(props) {
                                 <ArrowBack />
                             </IconButton>                                                
                         </Grid>
-                        <Grid item lg={10} sm={10}>                            
+                        <Grid item lg={10} xl={10} sm={10}>                            
                         </Grid>
                     </Grid>
                 </Toolbar>
             </AppBar>
             <Grid container className={TransDialogContent}>
-                <Grid item lg={12} sm={12} style={{ padding : "30px"}}>
+                <Grid item lg={12} xl={12} sm={12} style={{ padding : "30px"}}>
                     <TableContainer component={Paper} elevation={3} className={TransTable} >
                         <Table stickyHeader size="small">
                             <TableHead>
@@ -143,7 +144,7 @@ function TransactionList(props) {
                                 ))}
                                 <TableRow style={{ position : "absolute", bottom : 0 }}>
                                     <TablePagination
-                                        rowsPerPageOptions={[6, 12, 120]}
+                                        rowsPerPageOptions={[8]}
                                         count={transactions.length}
                                         rowsPerPage={rowsPerPage}
                                         page={page}

@@ -42,7 +42,7 @@ function ListTableRow(props) {
     const [delivered,setDelivered] = useState(del[index].status);
     const dnow = new Date(delivery.date).toLocaleDateString('en-US',{month : 'numeric',year : 'numeric',day : '2-digit'});
     const [page,setPage] = useState(0);
-    const [rowsPerPage,setRowsPerPage] = useState(6);
+    const [rowsPerPage,setRowsPerPage] = useState(8);
     const { ipcRenderer } = window.require('electron');
 
     const handleChangePage = (event, newPage) => {
@@ -60,31 +60,6 @@ function ListTableRow(props) {
 
     const handleClick = (i)=>{
         setOpen(open === i ? -1 : i);
-    }
-
-    const handlePrint = async (id)=>{
-        const resPDF = await dispatch( CreateInvoice({
-            opt : {
-                url : '/deliveries/' + id
-            }
-        }) );
-
-        if( CreateInvoice.fulfilled.match(resPDF) ){  
-            pdfMake.vfs = pdfFonts.pdfMake.vfs;          
-            const { doc,logo } = resPDF.payload;
-            let pdf = JSON.parse(doc);
-
-            const docDef = DocumentDef(pdf,logo);
-            const docGenerator = pdfMake.createPdf(docDef);
-            
-            docGenerator.getBlob((blob)=>{
-                const url = window.URL.createObjectURL(blob);
-                ipcRenderer.invoke('printPDF',{
-                    url,
-                    settings
-                });
-            });
-        }
     }
 
     const handleGeneratePdf = async(id)=>{
@@ -132,7 +107,7 @@ function ListTableRow(props) {
                         {open === index ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
                     </IconButton>
                 </TableCell>
-                <TableCell style={{fontSize : "10px",color : "green"}}>{delivery._id}</TableCell>                
+                <TableCell style={{color : "green"}}>{delivery._id.substring(0,23) + '...'}</TableCell>                
                 <TableCell style={{textAlign : "center"}}>{delivery.count}</TableCell>
                 <TableCell>{dnow}</TableCell>
                 <TableCell>
@@ -170,15 +145,14 @@ function ListTableRow(props) {
                                 handleClose();
                             }}
                         >
-                            <FontAwesomeIcon color="red" icon={faFilePdf} />&nbsp;&nbsp;Generate PDF file
+                            <FontAwesomeIcon color="blue" icon={faFilePdf} />&nbsp;&nbsp;Generate PDF file
                         </MenuItem>
                         <MenuItem
-                            onClick={(e)=>{
-                                handlePrint(delivery._id);
-                                handleClose();
+                            onClick={()=>{
+                                history.push('/deliveries/del/' + delivery._id);
                             }}
                         >
-                            <FontAwesomeIcon color="green" icon={faPrint} />&nbsp;&nbsp;Print Order
+                            <FontAwesomeIcon color="red" icon={faTrashAlt} />&nbsp;&nbsp;Delete
                         </MenuItem>
                     </Menu>                                                  
                 </TableCell>
@@ -226,8 +200,11 @@ function ListTableRow(props) {
                                     </TableHead>
                                     <TableBody>
                                     {delivery.products.slice(page*rowsPerPage,page*rowsPerPage+rowsPerPage).map((val,i)=>(
-                                        <TableRow key={i}>
-                                            <TableCell colSpan={2}>{val.item}</TableCell>
+                                        <TableRow 
+                                            key={i}
+                                            title={`Name : ${val.item}\nSupplier : ${val.supplier}`}
+                                        >
+                                            <TableCell colSpan={2}>{val.item.substring(0,13) + '...'}</TableCell>
                                             <TableCell style={{
                                                 textAlign : "center"
                                             }}>{val.qty}</TableCell>
@@ -251,14 +228,14 @@ function ListTableRow(props) {
                                                 }}
                                                 align="right"
                                             >
-                                                {val.supplier}
+                                                {val.supplier !== undefined ? val.supplier.substring(0,6) + '...' : val.supplier}
                                             </TableCell>
                                         </TableRow>
                                     ))}
                                     <TableRow>
                                         <TablePagination
                                             component={TableCell}
-                                            rowsPerPageOptions={[6, 12, 120]}
+                                            rowsPerPageOptions={[8]}
                                             count={delivery.products.length}
                                             rowsPerPage={rowsPerPage}
                                             page={page}

@@ -9,6 +9,9 @@ const ProductSchema = new Schema({
         type : String,
         unique : true
     }, 
+    item_brand : {
+        type : String,
+    },
     item_name : {
         type : String,
         required : true
@@ -17,7 +20,7 @@ const ProductSchema = new Schema({
         type : Number,
         required : true
     },
-    item_selling_price : {
+    item_srp : {
         type : Number,
         required : true
     },
@@ -25,6 +28,9 @@ const ProductSchema = new Schema({
         type : String
     },
     item_unit : {
+        type : String
+    },
+    item_type : {
         type : String
     },
     item_qty : {

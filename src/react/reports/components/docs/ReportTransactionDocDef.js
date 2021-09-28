@@ -20,7 +20,8 @@ export default (docs,logoURL)=>{
 
     return {
         pageSize : 'A4',
-        pageMargins: [ 40, 80, 40, 20 ],
+        pageMargins: [ 40, 60, 40, 30 ],
+        compress : false,
         header : (currentPage)=>{
             if( currentPage === 1 ){
                 return [
@@ -67,22 +68,12 @@ export default (docs,logoURL)=>{
                 ]
             }
         },
-        footer : ( currentPage, pageCount )=>{
-            if( currentPage === pageCount ){
-                return {
-                    columns : [
-                        {
-                            text : "************** Nothing Follows **************",                            
-                            style : {
-                                alignment : 'center',
-                                italics : true,
-                                color : "maroon",
-                                fontSize : 10
-                            }
-                        }
-                    ]
-                }
-            }
+        footer : ( currentPage, pageCount )=>{ 
+            return {
+                text : 'Page ' + currentPage.toString() + ' of ' + pageCount,
+                alignment : "center",
+                fontSize : 10
+            }; 
         },
         content: [
             {
@@ -218,7 +209,7 @@ export default (docs,logoURL)=>{
                 table: {
                     // headers are automatically repeated if the table spans over multiple pages
                     // you can declare how many rows should be treated as headers
-                    dontBreakRows : false,
+                    dontBreakRows : true,
                     headerRows: 1,
                     widths: [ 110, 120, '*', '*','*','*'],
                     body: [                        
@@ -237,7 +228,7 @@ export default (docs,logoURL)=>{
                                 style : 'tableHeader'
                             },
                             {
-                                text : 'Payment Type',
+                                text : 'Payment',
                                 style : 'tableHeader'
                             },
                             {
@@ -252,7 +243,7 @@ export default (docs,logoURL)=>{
                         ...docs
                     ]
                 },
-                margin : [0,20,0,0]
+                margin : [0,5,0,0]
             }
         ],
         styles : {

@@ -159,7 +159,7 @@ function Settings() {
                 in={open}
             >
                 <Grid container className={ModalContent} spacing={2}>
-                    <Grid item lg={12} sm={12}>
+                    <Grid item lg={12} xl={12} sm={12}>
                         <TextField 
                             fullWidth
                             size="small"
@@ -168,10 +168,10 @@ function Settings() {
                             label="IP Address"
                         />
                     </Grid>
-                    <Grid item lg={12} sm={12}>
+                    <Grid item lg={12} xl={12} sm={12}>
                         <Typography variant="h6">Printer Options</Typography>
                     </Grid>
-                    <Grid item lg={6} sm={6}>
+                    <Grid item lg={6} xl={6} sm={6}>
                         <TextField 
                             fullWidth
                             select
@@ -185,7 +185,7 @@ function Settings() {
                             <MenuItem value={false}>False</MenuItem>
                         </TextField>
                     </Grid>
-                    <Grid item lg={6} sm={6}>
+                    <Grid item lg={6} xl={6} sm={6}>
                         <TextField 
                             fullWidth
                             select
@@ -199,7 +199,7 @@ function Settings() {
                             <MenuItem value="portrait">Protrait</MenuItem>
                         </TextField>
                     </Grid>
-                    <Grid item lg={12} sm={12}>
+                    <Grid item lg={12} xl={12} sm={12}>
                         <TextField 
                             fullWidth
                             select
@@ -214,7 +214,7 @@ function Settings() {
                             <MenuItem value="fit">Fit to page</MenuItem>
                         </TextField>
                     </Grid>                                    
-                    <Grid item lg={8} sm={8}>
+                    <Grid item lg={8} xl={8} sm={8}>
                         <TextField 
                             select
                             fullWidth
@@ -232,7 +232,7 @@ function Settings() {
                             ))}
                         </TextField>
                     </Grid>
-                    <Grid item lg={4} sm={4}>
+                    <Grid item lg={4} xl={4} sm={4}>
                         <Button
                             fullWidth
                             variant="contained"

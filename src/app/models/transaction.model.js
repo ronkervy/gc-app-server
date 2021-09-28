@@ -21,7 +21,15 @@ const TransactionSchema = new Schema({
         type : Number,
         default : 0
     },
+    change_amount_srp : {
+        type : Number,
+        default : 0
+    },
     total_amount : {
+        type : Number,
+        default : 0
+    },
+    total_amount_srp : {
         type : Number,
         default : 0
     },
@@ -38,6 +46,10 @@ const TransactionSchema = new Schema({
         default : true
     },
     total_per_unit : {
+        type : Number,
+        default : 0
+    },
+    total_per_unit_srp : {
         type : Number,
         default : 0
     },

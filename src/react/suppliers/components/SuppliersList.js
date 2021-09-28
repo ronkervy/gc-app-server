@@ -19,7 +19,7 @@ function SuppliersList(props) {
     const dispatch = useDispatch();
     const { entities : contacts,loading : suppLoading } = useSelector(state=>state.suppliers);
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(6);
+    const [rowsPerPage, setRowsPerPage] = useState(8);
 
     const handleChangePage = (event, newPage) => {
       setPage(newPage);
@@ -55,6 +55,7 @@ function SuppliersList(props) {
             <Grid 
                 item 
                 lg={12} 
+                xl={12}
                 sm={12}
             >
                 <TableContainer elevation={3} component={Paper} className={classes.Table} >
@@ -72,7 +73,7 @@ function SuppliersList(props) {
                             <SuppTableItems rowsPerPage={rowsPerPage} page={page} items={contacts} />
                             <TableRow style={{ position : "absolute", bottom : 0 }}>
                                 <TablePagination 
-                                    rowsPerPageOptions={[6, 12, 120]}
+                                    rowsPerPageOptions={[8]}
                                     count={contacts.length}
                                     rowsPerPage={rowsPerPage}
                                     page={page}
@@ -87,6 +88,7 @@ function SuppliersList(props) {
             <Grid 
                 component={motion.div}
                 item lg={12} 
+                xl={12}
                 sm={12}
                 style={{
                     right : "10px",

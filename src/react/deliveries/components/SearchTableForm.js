@@ -1,10 +1,10 @@
-import { faBoxOpen, faPlusCircle, faSearch, faShoppingCart, faTrashAlt, faUserTie } from '@fortawesome/free-solid-svg-icons';
+import { faBoxOpen, faPlusCircle, faSearch, faShoppingCart, faRecycle,faTrashAlt, faUserTie } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { 
     Grid, 
     InputAdornment, 
     TextField, 
-    Box, 
+    Box,
     FormControl, 
     withStyles, 
     TableContainer, 
@@ -30,22 +30,24 @@ import { motion } from 'framer-motion';
 import { getAllSuppliers, getSupplierProducts } from '../../suppliers/store/SupplierServices';
 import Loader from '../../shared/Loader';
 import { Refresh } from '@material-ui/icons';
+import { getProducts } from '../../products/store/ProdServices';
 
 
 function SearchTable(props) {
     
     const [search, setSearch] = useState('');
-
+    const { address,soldTo } = props.infoField;
     const dispatch = useDispatch();
-    const [supplier,setSupplier] = useState('');
-    const [supplierProducts,setSuppliersProducts] = useState({});
     const [supp,setSupp] = useState({});
     const { entities : products, loading : prodLoading } = useSelector( state=>state.products );
     const { cart } = useSelector( state=>state.deliveries );
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(6);
     const [cartPage, setCartPage] = useState(0);
-    const [cartRowsPerPage, setCartRowsPerPage] = useState(6);
+    const [cartRowsPerPage, setCartRowsPerPage] = useState(4);
+    const [filter,setFilter] = useState({
+        supplier : 'clear'
+    });
   
     const handleChangePage = (event, newPage) => {
       setPage(newPage);
@@ -65,35 +67,27 @@ function SearchTable(props) {
       setCartPage(0);
     };
 
-    const handleSupplierName = (e)=>{
-        setSupplier(e.target.value);
+    const filterSupplier = (e)=>{
+        setFilter(state=>{
+            return {
+                ...state,
+                supplier : e.target.value
+            }
+        });
     }
 
     useEffect(()=>{
-        if( supplier !== '' ){
-            const resSuppProd = async ()=>{
-                const res = await dispatch( getSupplierProducts({
-                    opt : {
-                        url : '/suppliers/prods/' + supplier
-                    },
-                    name : search
-                }) );
-
-                if( getSupplierProducts.fulfilled.match( res ) ){
-                    setSuppliersProducts(res.payload);
-                }
-            }
-            resSuppProd();
-        }else if( search !== '' ){
+        if( search !== '' ){
             dispatch( findProduct({
                 opt : {
-                    url : '/products/search/' + search
+                    url : '/search/products?query=' + search
                 }
             }) );
         }
-    },[search,supplier]);
+    },[search]);
 
     useEffect(()=>{
+        dispatch( getProducts('/products') );
         const getSupp = async ()=>{
             const res = await dispatch( getAllSuppliers({
                 opt : {
@@ -118,68 +112,108 @@ function SearchTable(props) {
     }
 
     return (
-        <Grid container spacing={2}>            
-            <Grid item lg={8} sm={8}>
-                <FormControl
-                    fullWidth                    
-                    size="small"
-                    margin="dense"
+        <Grid container spacing={2}>  
+            <Grid container spacing={2} component={Paper} style={{ padding : "5px", margin : "10px" }}>
+                <Grid 
+                    item 
+                    lg={6} 
+                    xl={6} 
+                    sm={6}
+                    style={{
+                        display : "flex",
+                        alignItems : "center",
+                        justifyContent : "center"
+                    }}
                 >
-                    <TextField 
-                        margin="dense"
-                        variant="outlined"
-                        placeholder="Search"
-                        InputProps={{
-                            startAdornment : (
-                                <InputAdornment position="start">
-                                    <FontAwesomeIcon icon={faSearch} />
-                                </InputAdornment>
-                            )
-                        }}
-                        onKeyPress={(e)=>{
-                            if( e.key === 'Enter' ){
-                                setSearch(e.target.value)
-                            }                            
-                        }}
-                    />                      
-                </FormControl>                              
-            </Grid>            
-            <Grid item lg={4} sm={4}>
-                <FormControl
-                    fullWidth
-                    size="small"
-                    margin="dense"
-                >
-                    <TextField
-                        select
-                        margin="dense"
-                        variant="outlined"
-                        placeholder="Supplier"
-                        value={supplier}
-                        InputProps={{
-                            startAdornment : (
-                                <InputAdornment position="start">
-                                    <FontAwesomeIcon icon={faUserTie} />
-                                </InputAdornment>
-                            )
-                        }}
-                        onChange={handleSupplierName}
+                    <FormControl
+                        fullWidth                    
+                        size="small"
                     >
-                        {supp.length > 0 ? supp.map((contact,i)=>(
-                            <MenuItem key={i} value={contact._id}>{contact.supplier_name}</MenuItem>
-                        )) : (
-                            <MenuItem>Please create a supplier first.</MenuItem>
-                        )}
-                    </TextField>
-                </FormControl>
-            </Grid>
-            <Grid item lg={6} sm={6}>                    
-                    <TableContainer elevation={3} component={Paper} style={{ minHeight : "500px", position : "relative" }}>
+                        <TextField 
+                            size="small"
+                            variant="outlined"
+                            placeholder="Search"
+                            InputProps={{
+                                startAdornment : (
+                                    <InputAdornment position="start">
+                                        <FontAwesomeIcon icon={faSearch} />
+                                    </InputAdornment>
+                                )
+                            }}
+                            onKeyPress={(e)=>{
+                                if( e.key === 'Enter' ){
+                                    setSearch(e.target.value)
+                                }                            
+                            }}
+                        />                      
+                    </FormControl>                              
+                </Grid>                          
+                <Grid 
+                    item 
+                    lg={4} 
+                    xl={4} 
+                    sm={4}
+                    style={{
+                        display : "flex",
+                        alignItems : "center",
+                        justifyContent : "center"
+                    }}
+                >
+                    <FormControl
+                        fullWidth
+                        size="small"
+                    >
+                        <TextField
+                            select
+                            label="Supplier"
+                            size="small"
+                            variant="outlined"
+                            placeholder="Supplier"
+                            value={filter.supplier}
+                            InputProps={{
+                                startAdornment : (
+                                    <InputAdornment position="start">
+                                        <FontAwesomeIcon icon={faUserTie} />
+                                    </InputAdornment>
+                                )
+                            }}
+                            onChange={filterSupplier}
+                        >
+                            <MenuItem value="clear">No Filter</MenuItem>
+                            {supp.length > 0 ? supp.map((contact,i)=>(
+                                <MenuItem key={i} value={contact._id}>{contact.supplier_name}</MenuItem>
+                            )) : (
+                                <MenuItem>Please create a supplier first.</MenuItem>
+                            )}
+                        </TextField>
+                    </FormControl>
+                </Grid>
+                <Grid item lg={2} xl={2} sm={2} style={{
+                    display : "flex",
+                    alignItems : "center",
+                    justifyContent : "center"
+                }}>
+                    <Button
+                        style={{
+                            background : "green",
+                            color : "white"
+                        }}
+                        variant="contained"
+                        size="medium"
+                        startIcon={<Refresh />}
+                        onClick={async ()=>{
+                            await dispatch( getProducts("/products") );
+                        }}
+                    >Refresh</Button>
+                </Grid>              
+            </Grid>                
+            <Grid item lg={6} xl={6} sm={6}>                    
+                    <TableContainer elevation={3} component={Paper} style={{ height : "auto", minHeight : "390px", position : "relative" }}>
                         <Table size="small">
                             <TableHead>
                                 <TableRow>
                                     <TableCell>Product Name</TableCell>
-                                    <TableCell>Product Price</TableCell>
+                                    <TableCell>Price</TableCell>
                                     <TableCell style={{textAlign : "center"}}>QTY</TableCell>
                                     <TableCell style={{textAlign : "center"}}>Actions</TableCell>
                                 </TableRow>
@@ -198,17 +232,17 @@ function SearchTable(props) {
                                     duration : .5
                                 }}
                             >
-                                {(supplier !== '' ? supplierProducts : products).length > 0 ? (supplier !== '' ? supplierProducts : products).slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage).map((product,index)=>(
+                                {(filter.supplier != 'clear' ? products.filter(product=>product.suppliers.indexOf(filter.supplier) !== -1) : products).slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage).map((product,index)=>(
                                     <TableRow 
+                                        title={`Name : ${product.item_name}`}
                                         key={index}
                                     >
-                                        <TableCell>{product.item_name}</TableCell>
+                                        <TableCell>{product.item_name.substring(0,18) + "..."}</TableCell>
                                         <TableCell>
                                             <NumberFormat 
                                                 customInput={TextField}
                                                 margin="dense"
                                                 displayType="text"
-                                                prefix="Php "
                                                 thousandSeparator={true}
                                                 decimalScale={2}
                                                 decimalSeparator={'.'}
@@ -226,24 +260,19 @@ function SearchTable(props) {
                                                 color="primary"
                                                 startIcon={<FontAwesomeIcon icon={faPlusCircle} />}
                                                 onClick={(e)=>{                                                    
-                                                    dispatch( AddToCart(product) );
+                                                    dispatch( AddToCart({
+                                                        ...product,
+                                                        address,
+                                                        soldTo
+                                                    }) );
                                                 }}
                                             >Add</Button>
                                         </TableCell>
                                     </TableRow>
-                                )) : (
-                                    <TableRow>
-                                        <TableCell colSpan={4} style={{ textAlign : "center" }}>
-                                            <Typography variant="h6">
-                                                <FontAwesomeIcon color="primary" icon={faBoxOpen} />&nbsp;&nbsp;
-                                                No Product to display
-                                            </Typography>
-                                        </TableCell>
-                                    </TableRow>
-                                )}
+                                ))}
                                 <TableRow style={{ position : "absolute", bottom : 0, left : 0 }} >
                                     <TablePagination
-                                        rowsPerPageOptions={[6, 12, 120]}
+                                        rowsPerPageOptions={[5]}
                                         count={products.length}
                                         rowsPerPage={rowsPerPage}
                                         page={page}
@@ -256,8 +285,8 @@ function SearchTable(props) {
                         </Table>
                     </TableContainer>
                 </Grid>                
-                <Grid item lg={6} sm={6}>
-                    <TableContainer elevation={3} component={Paper}  style={{minHeight : "500px", position : "relative"}}>
+                <Grid item lg={6} xl={6} sm={6}>
+                    <TableContainer elevation={3} component={Paper}  style={{minHeight : "390px", position : "relative"}}>
                         <Table size="small">
                             <TableHead>
                                 <TableRow>
@@ -346,7 +375,7 @@ function SearchTable(props) {
                                 )}
                                 <TableRow style={{ bottom : 0, left: 0, position : "absolute" }}>
                                     <TablePagination
-                                        rowsPerPageOptions={[6, 12, 120]}
+                                        rowsPerPageOptions={[4]}
                                         count={cart.length}
                                         rowsPerPage={cartRowsPerPage}
                                         page={cartPage}

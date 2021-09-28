@@ -15,6 +15,8 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faBoxOpen,
+    faList,
+    faTag,
     faUserTie
 } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
@@ -24,23 +26,23 @@ import {
     getProducts,
     updateProduct
 } from '../../store/ProdServices';
-import io from 'socket.io-client';
+import { io } from 'socket.io-client';
 import NumberFormat from 'react-number-format';
 import { getAllSuppliers } from '../../../suppliers/store/SupplierServices';
 import { OpenNotification } from '../../../shared/store/NotificationSlice';
 import { useHistory } from 'react-router-dom';
 import Loader from '../../../shared/Loader';
+import { Autocomplete } from '@material-ui/lab';
 
 
 const  AddProd = (props)=> {    
 
-    const { classes,data,mode,supp } = props;
+    const { classes,data,supp } = props;
     const dispatch = useDispatch();
-    const [updatedProd,setUpdatedProd] = useState();
-    const [createdProd,setCreatedProd] = useState();
     const [supplier,setSupplier] = useState('');
     const { entities : suppliers,loading } = useSelector(state=>state.suppliers);
-    const { loading : prodLoad } = useSelector(state=>state.products);
+    const { loading : prodLoad,entities : products } = useSelector(state=>state.products);
+    const [createdProd,setCreatedProd] = useState([]);    
     const history = useHistory();
 
     const handleSuppChange = (e)=>{
@@ -48,34 +50,27 @@ const  AddProd = (props)=> {
         formik.handleChange(e);
     }
 
-    useEffect(()=>{
-        if( mode !== 'edit' ){
-            dispatch( getAllSuppliers({
-                opt : {
-                    url : '/suppliers'
-                }
-            }) );
-        }
-    },[mode]);
+    const productTypeAutoComplete = ()=>{
+        const typesArr = [...new Set(products.map(product=>product.item_type))];
+        return typesArr;
+    }
 
-    useEffect(()=>{        
-        const socket = io("http://localhost:8081");
-        socket.emit("created_product",createdProd);
-    },[createdProd,mode]);
-
-    useEffect(()=>{
-        const socket = io("http://localhost:8081");
-        socket.emit("updated_product",updateProduct);
-    },[updatedProd,mode]);
+    const productBrandAutoComplete = ()=>{
+        const brandsArr = [...new Set(products.map(product=>product.item_brand))];
+        return brandsArr;
+    }
 
     const initialValues = {
-        item_code : mode === 'edit' ? data.item_code : '',
-        item_name : mode === 'edit' ? data.item_name : '',
-        item_desc : mode === 'edit' ? data.item_desc : '',
-        item_supplier : mode === 'edit' ? data.item_supplier : supplier,
-        item_price : mode === 'edit' ? data.item_price : 0,
-        item_unit : mode === 'edit' ? data.item_unit : '',
-        item_qty : mode === 'edit' ? data.item_qty : 0
+        item_code : '',
+        item_name : '',
+        item_desc : '',
+        item_supplier : supplier,
+        item_price : parseFloat(0),
+        item_unit : '',
+        item_qty : 0,
+        item_srp : 0,
+        item_type : '',
+        item_brand : ''
     }
 
     const validate = values =>{
@@ -104,30 +99,6 @@ const  AddProd = (props)=> {
     const formik = useFormik({
         initialValues, 
         onSubmit : async (values,actions) =>{
-            if( mode === 'edit' ){
-                const product = await dispatch( updateProduct({
-                    opt : {
-                        url : "/products/" + data.item_id
-                    },
-                    values
-                }));
-
-                if( updateProduct.fulfilled.match(product) ){
-                    const editedProd = product.payload;
-                    setUpdatedProd(editedProd);        
-                    dispatch( OpenNotification({
-                        message : "Product has been updated.",
-                        severity : "success"
-                    }) );                                                                  
-                }else{
-                    dispatch( OpenNotification({
-                        message : "Product has not been updated.",
-                        severity : "error"
-                    }) );   
-                }         
-                return;
-            }
-
             const product = await dispatch( createProduct({
                 opt : {
                     url : "/products"
@@ -137,12 +108,11 @@ const  AddProd = (props)=> {
 
             if( createProduct.fulfilled.match(product) ){
                 const newProduct = product.payload;
-
+                setCreatedProd(newProduct);
                 dispatch( OpenNotification({
                     message : "Product has been saved in the database.",
                     severity : "success"
-                }) ); 
-                setCreatedProd(newProduct);                
+                }) );                 
                 actions.resetForm();                
             }else{
                 dispatch( OpenNotification({
@@ -153,6 +123,18 @@ const  AddProd = (props)=> {
         },
         validate
     });
+
+    useEffect(()=>{
+        if( createdProd.length <= 0 ) return;
+        const socket = io('http://localhost:8081/');
+        socket.emit("created_product",{
+            message : "new item created"
+        });
+    },[createdProd]);
+
+    useEffect(()=>{
+        dispatch( getProducts('/products') );
+    },[]);
 
     if( loading || prodLoad ){
         return(
@@ -169,10 +151,10 @@ const  AddProd = (props)=> {
             transition={{duration : .4}}
             animate={{x:0,opacity : 1}}            
         >
-            <Box lg={12} boxShadow={1} padding={3} style={{backgroundColor : "#FFFFFF"}}>
+            <Box boxShadow={1} padding={3} style={{backgroundColor : "#FFFFFF"}}>
                 <form onSubmit={formik.handleSubmit}>
                     <Grid container spacing={2}>
-                        <Grid item lg={12} sm={12}>
+                        <Grid item lg={4} xl={4} sm={4}>
                             <TextField 
                                 fullWidth
                                 size="small"
@@ -195,7 +177,68 @@ const  AddProd = (props)=> {
                                 style={{textTransform: "capitalize"}}
                             />
                         </Grid>
-                        <Grid item lg={12} sm={12} >
+                        <Grid item lg={4} xl={4} sm={4}>
+                            <Autocomplete 
+                                disablePortal
+                                options={productTypeAutoComplete()}
+                                onChange={(e,value)=>formik.setFieldValue('item_type',value)}
+                                size="small"                                
+                                renderInput={(params) => (
+                                    <TextField 
+                                        fullWidth
+                                        error={formik.errors.item_type}
+                                        helperText={ formik.touched.item_type && formik.errors.item_type ? "Accepts character greater than 3" : "" }
+                                        variant="outlined"
+                                        id="item_type" 
+                                        label="Product Type" 
+                                        name="item_type" 
+                                        onChange={formik.handleChange}
+                                        value={ formik.values.item_type }
+                                        InputProps={{
+                                            startAdornment : (
+                                                <InputAdornment position="start">
+                                                    <FontAwesomeIcon icon={faList} />
+                                                </InputAdornment>
+                                            )
+                                        }}
+                                        style={{textTransform: "capitalize"}}
+                                        {...params}
+                                    />
+                                )}
+                            />                            
+                        </Grid>
+                        <Grid item lg={4} xl={4} sm={4}>
+                        <Autocomplete 
+                                disablePortal
+                                options={productBrandAutoComplete()}
+                                size="small"      
+                                inputValue={formik.values.item_brand}
+                                onChange={(e,value)=>formik.setFieldValue('item_brand',value)}                       
+                                renderInput={(params) => (
+                                    <TextField 
+                                        fullWidth
+                                        error={formik.errors.item_brand}
+                                        helperText={ formik.touched.item_brand && formik.errors.item_brand ? "Accepts character greater than 3" : "" }
+                                        variant="outlined"
+                                        id="item_brand" 
+                                        label="Product Brand" 
+                                        name="item_brand" 
+                                        onChange={formik.handleChange}
+                                        value={ formik.values.item_brand }
+                                        InputProps={{
+                                            startAdornment : (
+                                                <InputAdornment position="start">
+                                                    <FontAwesomeIcon icon={faList} />
+                                                </InputAdornment>
+                                            )
+                                        }}
+                                        style={{textTransform: "capitalize"}}
+                                        {...params}
+                                    />
+                                )}
+                            />                                                     
+                        </Grid>
+                        <Grid item lg={12} xl={12} sm={12} >
                             <TextField 
                                 fullWidth
                                 size="small"
@@ -218,7 +261,7 @@ const  AddProd = (props)=> {
                                 style={{textTransform: "capitalize"}}
                             />
                         </Grid>
-                        <Grid item lg={8} sm={8}>
+                        <Grid item lg={4} xl={4} sm={4}>
                             <FormControl variant="outlined" fullWidth size="small">
                                 <TextField
                                     select
@@ -240,7 +283,7 @@ const  AddProd = (props)=> {
                                     name="item_supplier"
                                     value={formik.values.item_supplier}
                                 >
-                                    {(mode === 'edit' ? supp : suppliers).map((contact,index)=>{
+                                    {suppliers.map((contact,index)=>{
                                         return(
                                             <MenuItem 
                                                 key={index}
@@ -253,7 +296,7 @@ const  AddProd = (props)=> {
                                 </TextField>
                             </FormControl>
                         </Grid>
-                        <Grid item sm={4} lg={4}>
+                        <Grid item sm={4} lg={4} xl={4}>
                             <NumberFormat
                                 customInput={TextField} 
                                 thousandSeparator={true}
@@ -267,19 +310,31 @@ const  AddProd = (props)=> {
                                 id="item_price"
                                 name="item_price"
                                 label="Item Price"
-                                variant="outlined"
+                                variant="outlined"                                
                                 value={ formik.errors.item_price ? "" : formik.values.item_price}
-                                onChange={formik.handleChange}
-                                InputProps={{
-                                    startAdornment : (
-                                        <InputAdornment position="start">
-                                            <small>Php</small>
-                                        </InputAdornment>
-                                    )
-                                }}                                
+                                onChange={formik.handleChange}                            
                             />
-                        </Grid>                        
-                        <Grid item sm={6} lg={8}>
+                        </Grid>   
+                        <Grid item sm={4} lg={4} xl={4}>
+                            <NumberFormat
+                                customInput={TextField} 
+                                thousandSeparator={true}
+                                decimalScale={2}
+                                decimalSeparator={'.'}
+                                fixedDecimalScale={true}
+                                size="small"
+                                fullWidth
+                                error={formik.errors.item_srp}
+                                helperText={ formik.errors.item_srp ? "Accepts only Number" : "" }
+                                id="item_srp"
+                                name="item_srp"
+                                label="Item SRP"
+                                variant="outlined"                                
+                                value={ formik.errors.item_srp ? "" : formik.values.item_srp}
+                                onChange={formik.handleChange}                            
+                            />
+                        </Grid>                    
+                        <Grid item sm={6} lg={8} xl={8}>
                             <TextField
                                 fullWidth
                                 label="Item Unit"
@@ -290,10 +345,9 @@ const  AddProd = (props)=> {
                             >
                             </TextField>
                         </Grid>
-                        <Grid item sm={6} lg={4}>
+                        <Grid item sm={6} lg={4} xl={4}>
                             <NumberFormat
-                                customInput={TextField} 
-                                thousandSeparator={true}                                
+                                customInput={TextField}                             
                                 fullWidth
                                 error={ formik.errors.item_qty }
                                 label="Item Quantity"
@@ -304,7 +358,7 @@ const  AddProd = (props)=> {
                                 onChange={formik.handleChange}
                             />
                         </Grid>                        
-                        <Grid item sm={12} lg={12}>
+                        <Grid item sm={12} lg={12} xl={12}>
                             <TextareaAutosize className={classes.textarea}
                                 placeholder="Description"
                                 minRows={8}              
@@ -324,7 +378,7 @@ const  AddProd = (props)=> {
                         size="large" 
                         variant="contained" 
                         color="primary" 
-                    >{ props.mode === 'edit' ? 'Update' : 'Save' }</Button>
+                    >Save</Button>
                 </form>                
             </Box>          
         </Grid>

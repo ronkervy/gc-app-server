@@ -6,6 +6,12 @@ const moment = require('moment-timezone');
 const phTime = moment.tz(Date.now(),"Asia/Manila");
 
 const DeliverySchema = new Schema({
+    sold_to : {
+        type : String
+    },
+    delivery_address : {
+        type : String
+    },
     delivery_id : {
         type : String
     },

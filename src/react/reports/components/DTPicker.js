@@ -22,7 +22,7 @@ const TransactFilter = ({setFn})=>{
     }
 
     return(
-        <Grid item lg={12} sm={12}>
+        <Grid item lg={12} xl={12} sm={12}>
             <TextField
                 margin="dense"
                 size="small"
@@ -57,7 +57,7 @@ const DeliveriesFilter = ({setFn})=>{
     }
 
     return(
-        <Grid item lg={12} sm={12}>
+        <Grid item lg={12} xl={12} sm={12}>
             <TextField
                 margin="dense"
                 size="small"
@@ -104,7 +104,7 @@ const DTPicker = ({fn,model})=>{
         <MuiPickersUtilsProvider utils={MomentUtils}>
           <Grid container spacing={2}>    
             { model === 'transactions' ? <TransactFilter setFn={setFilterPayment} /> : <DeliveriesFilter setFn={setStatus} /> }        
-            <Grid item lg={6} sm={6}>
+            <Grid item lg={6} xl={6} sm={6}>
                 <KeyboardDatePicker
                     margin="dense"
                     size="small"
@@ -118,7 +118,7 @@ const DTPicker = ({fn,model})=>{
                     }}
                 />
             </Grid>
-            <Grid item lg={6} sm={6}>
+            <Grid item lg={6} xl={6} sm={6}>
                 <KeyboardDatePicker
                     size="small"                    
                     margin="dense"
@@ -132,7 +132,7 @@ const DTPicker = ({fn,model})=>{
                     }}
                 />
             </Grid>
-            <Grid item lg={12} sm={12}>
+            <Grid item lg={12} xl={6} sm={12}>
                 <Button                                
                     size="medium"
                     variant="contained"    

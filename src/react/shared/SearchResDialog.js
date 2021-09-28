@@ -30,8 +30,8 @@ function SearchResDialog(props) {
     const [openDialog,setOpenDialog] = useState(false);
     const history = useHistory();
     const query = useQuery();
-    const {search} = useParams();
     const model = query.get('model');
+    const search = query.get('search');
 
     const handleCloseDialog = ()=>{
         setOpenDialog(false);
@@ -60,10 +60,11 @@ function SearchResDialog(props) {
                 timeout : 500
             }}
         >            
+            {console.log(model)}
             <AppBar color="inherit" style={{position : "relative"}}>
                 <Toolbar variant="dense">
                     <Grid container spacing={2}>
-                        <Grid item lg={2} sm={2} style={{WebkitAppRegion: "no-drag"}}>
+                        <Grid item lg={2} xl={2} sm={2} style={{WebkitAppRegion: "no-drag"}}>
                             <IconButton
                                 disableRipple={true}
                                 size="small"
@@ -75,7 +76,7 @@ function SearchResDialog(props) {
                                 <ArrowBack />
                             </IconButton>                                                
                         </Grid>
-                        <Grid item lg={10} sm={10}>                            
+                        <Grid item lg={10} xl={10} sm={10}>                            
                         </Grid>
                     </Grid>                                  
                 </Toolbar>

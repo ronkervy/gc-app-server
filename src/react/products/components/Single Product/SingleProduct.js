@@ -23,15 +23,16 @@ import { useFormik } from 'formik';
 import Styles from '../Styles';
 import { OpenNotification } from '../../../shared/store/NotificationSlice';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBoxOpen, faCodeBranch, faRuler, faUserTie } from '@fortawesome/free-solid-svg-icons';
+import { faBoxes, faBoxOpen, faCodeBranch, faIcons, faRuler, faUserTie } from '@fortawesome/free-solid-svg-icons';
 import NumberFormat from 'react-number-format';
+import { io } from 'socket.io-client';
 
 const EditForm = ({product})=>{
 
     const dispatch = useDispatch();
     const history = useHistory();
     const { entities : suppliers, loading } = useSelector(state=>state.suppliers);
-
+    const socket = io('http://localhost:8081/');
     const validate = (values)=>{
         const errors = {};
 
@@ -54,9 +55,12 @@ const EditForm = ({product})=>{
             item_name : product.item_name,
             item_qty : product.item_qty,
             item_price : product.item_price,
+            item_srp : product.item_srp,
             item_supplier : product.item_supplier,
             item_unit : product.item_unit,
-            item_desc : product.item_desc
+            item_desc : product.item_desc,
+            item_brand : product.item_brand,
+            item_type : product.item_type
         },
         validate,
         onSubmit : async(values)=>{
@@ -68,6 +72,7 @@ const EditForm = ({product})=>{
             }) );
 
             if( updateProduct.fulfilled.match(resUpdate) ){
+                socket.emit("updated_product",resUpdate.payload);                
                 dispatch( OpenNotification({
                     message : 'Product has been updated.',
                     severity : 'success'
@@ -91,7 +96,7 @@ const EditForm = ({product})=>{
     return(
         <form onSubmit={formik.handleSubmit}>
             <Grid container spacing={2}>
-                <Grid item lg={6} sm={6}>
+                <Grid item lg={6} xl={6} sm={6}>
                     <TextField
                         size="small"
                         fullWidth
@@ -112,7 +117,7 @@ const EditForm = ({product})=>{
                         }}
                     />
                 </Grid>
-                <Grid item lg={6} sm={6}>
+                <Grid item lg={6} xl={6} sm={6}>
                     <TextField
                         size="small"
                         fullWidth
@@ -133,10 +138,9 @@ const EditForm = ({product})=>{
                         }}
                     />
                 </Grid>
-                <Grid item lg={6} sm={6}>
+                <Grid item lg={4} xl={4} sm={4}>
                     <NumberFormat
                         customInput={TextField} 
-                        thousandSeparator={true}
                         decimalScale={2}
                         decimalSeparator={'.'}
                         fixedDecimalScale={true}
@@ -152,7 +156,25 @@ const EditForm = ({product})=>{
                         value={formik.values.item_price}
                     />
                 </Grid>
-                <Grid item lg={6} sm={6}>
+                <Grid item lg={4} xl={4} sm={4}>
+                    <NumberFormat
+                        customInput={TextField} 
+                        decimalScale={2}
+                        decimalSeparator={'.'}
+                        fixedDecimalScale={true}
+                        size="small"
+                        fullWidth
+                        onBlur={formik.handleBlur}
+                        error={formik.errors.item_srp}
+                        label="Item SRP"
+                        variant="outlined" 
+                        id="item_srp"
+                        name="item_srp"
+                        onChange={formik.handleChange}
+                        value={formik.values.item_srp}
+                    />
+                </Grid>
+                <Grid item lg={4} xl={4} sm={4}>
                     <TextField
                         size="small"
                         fullWidth
@@ -166,7 +188,49 @@ const EditForm = ({product})=>{
                         value={formik.values.item_qty}
                     />
                 </Grid>
-                <Grid item lg={4} sm={4}>
+                <Grid item lg={6} xl={6} sm={6}>
+                    <TextField
+                        size="small"
+                        fullWidth
+                        onBlur={formik.handleBlur}
+                        error={formik.errors.item_brand}
+                        label="Item Brand"
+                        variant="outlined"
+                        id="item_brand"
+                        name="item_brand"
+                        onChange={formik.handleChange}
+                        value={formik.values.item_brand}
+                        InputProps={{
+                            startAdornment : (
+                                <InputAdornment position="start">
+                                    <FontAwesomeIcon icon={faBoxes} />
+                                </InputAdornment>
+                            )
+                        }}
+                    />
+                </Grid>
+                <Grid item lg={6} xl={6} sm={6}>
+                    <TextField
+                        size="small"
+                        fullWidth
+                        onBlur={formik.handleBlur}
+                        error={formik.errors.item_type}
+                        label="Item Type"
+                        variant="outlined"
+                        id="item_type"
+                        name="item_type"
+                        onChange={formik.handleChange}
+                        value={formik.values.item_type}
+                        InputProps={{
+                            startAdornment : (
+                                <InputAdornment position="start">
+                                    <FontAwesomeIcon icon={faBoxes} />
+                                </InputAdornment>
+                            )
+                        }}
+                    />
+                </Grid>
+                <Grid item lg={4} xl={4} sm={4}>
                     <TextField
                         size="small"
                         fullWidth
@@ -187,7 +251,7 @@ const EditForm = ({product})=>{
                         }}
                     />
                 </Grid>
-                <Grid item lg={4} sm={4}>
+                <Grid item lg={4} xl={4} sm={4}>
                     <TextField
                         select
                         size="small"
@@ -216,7 +280,7 @@ const EditForm = ({product})=>{
                         ))}                        
                     </TextField>
                 </Grid>
-                <Grid item lg={4} sm={4}>
+                <Grid item lg={4} xl={4} sm={4}>
                     <Button 
                         fullWidth
                         type="submit"
@@ -224,7 +288,7 @@ const EditForm = ({product})=>{
                         color="primary"                        
                     >Update</Button>
                 </Grid>   
-                <Grid item lg={12} sm={12}>
+                <Grid item lg={12} xl={12} sm={12}>
                     <TextareaAutosize   
                         placeholder="Description"                     
                         minRows={8}              
@@ -279,10 +343,10 @@ const SingleProduct = (props)=>{
         <Dialog
             open={open}
             onClose={handleClose}
-            fullScreen  
+            maxWidth="md"
             TransitionComponent={TransitionComp}
             style={{
-                padding : "100px"
+                        
             }}
             TransitionProps={{
                 timeout : 500

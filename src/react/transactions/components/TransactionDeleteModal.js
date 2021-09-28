@@ -50,6 +50,7 @@ function TransactionDeleteModal() {
                 message : "Transaction has been deleted.",
                 severity : "success"
             }));
+            handleClose();
         }else if( deleteTransaction.rejected.match(resDel) ){
             dispatch(OpenNotification({
                 message : `Transaction not deleted error : ${resDel.payload}`,
@@ -82,18 +83,19 @@ function TransactionDeleteModal() {
                 in={open}
             >
                 <Grid container spacing={2} className={TransDeleteModalContent}>
-                    <Grid item lg={12} sm={12}>
+                    <Grid item lg={12} xl={12} sm={12}>
                         <h3 style={{ textAlign : "center" }}>Delete this item?</h3>
                     </Grid>
-                    <Grid item lg={4} sm={4}>
+                    <Grid item lg={4} xl={4} sm={4}>
                         <Button
                             fullWidth
                             size="medium"
                             variant="contained"
                             color="secondary"
+                            onClick={handleDelete}
                         >Delete</Button>
                     </Grid>
-                    <Grid item lg={4} sm={4}>
+                    <Grid item lg={4} xl={4} sm={4}>
                         <Button
                             fullWidth
                             size="medium"

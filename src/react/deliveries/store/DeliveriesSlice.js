@@ -27,7 +27,9 @@ export const DeliveriesSlice = createSlice({
                 item_name,
                 item_price,
                 item_qty,
-                item_supplier
+                item_supplier,
+                soldTo,
+                address
             } = payload;
             
             const qty = 1;
@@ -41,7 +43,9 @@ export const DeliveriesSlice = createSlice({
                     price : item_price,
                     item_discount : discount,
                     inventory_qty : item_qty,
-                    supplier : item_supplier
+                    supplier : item_supplier,
+                    soldTo,
+                    address
                 });
             }else{
                 state.cart[index].qty = parseInt(state.cart[index].qty) + 1;

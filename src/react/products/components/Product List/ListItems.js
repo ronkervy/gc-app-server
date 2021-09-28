@@ -31,23 +31,20 @@ function ListItems({item,index}) {
 
     return(
         <>            
-            <TableCell style={{ textTransform : "capitalize" }}>{item.item_name}</TableCell>
-            <TableCell>{item.item_qty}</TableCell>
-            <TableCell>
-                <small>
-                    <NumberFormat 
-                        displayType="text" 
-                        value={item.item_price} 
-                        thousandSeparator={true} 
-                        prefix={'Php '} 
-                        decimalScale={2} 
-                        decimalSeparator={'.'}
-                        fixedDecimalScale={true}
-                    />
-                </small>                
+            <TableCell style={{ fontSize : item.item_name.length >= 30 ? "10px" : "12px", textTransform : "capitalize" }}>{ item.item_name.length >= 30 ? item.item_name.substring(0,30) + '...' : item.item_name }</TableCell>
+            <TableCell style={{ fontSize : "12px" }}>{item.item_qty}</TableCell>
+            <TableCell style={{ fontSize : "12px" }}>
+                <NumberFormat 
+                    displayType="text" 
+                    value={item.item_price} 
+                    thousandSeparator={true} 
+                    decimalScale={2} 
+                    decimalSeparator={'.'}
+                    fixedDecimalScale={true}
+                />                
             </TableCell>
-            <TableCell style={{ textTransform : "uppercase" }}>
-                <small>{item.item_unit}</small>                    
+            <TableCell style={{ fontSize : "14px", textTransform : "uppercase" }}>
+                {item.item_unit}                 
             </TableCell>
             <TableCell
                 align="center"
@@ -64,7 +61,7 @@ function ListItems({item,index}) {
                     handleClose={handleClose}
                     data={selectedItem}
                 />
-                <IconButton
+                {/* <IconButton
                     variant="contained"
                     color="default"
                     size="small"
@@ -72,7 +69,7 @@ function ListItems({item,index}) {
                         setSelectedItem(item);
                         handleOpen();
                     }}     
-                ><FontAwesomeIcon icon={faBarcode} /></IconButton>&nbsp;&nbsp;
+                ><FontAwesomeIcon icon={faBarcode} /></IconButton>&nbsp;&nbsp; */}
                 <IconButton
                     variant="contained"
                     color="secondary"

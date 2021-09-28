@@ -24,7 +24,7 @@ function Nav(props) {
     return (
         <Box className={classes.AppNav} boxShadow={2}>       
             <Grid container>
-                <Grid item sm={12} lg={12}><h3><FontAwesomeIcon icon={faBars} />&nbsp;&nbsp;Menu</h3></Grid>
+                <Grid item sm={12} xl={12} lg={12}><h3><FontAwesomeIcon icon={faBars} />&nbsp;&nbsp;Menu</h3></Grid>
             </Grid>            
             <NavLink exact to='/'><FontAwesomeIcon icon={faHome} /> Home</NavLink>
             <NavLink exact to='/deliveries'><FontAwesomeIcon icon={faTruckLoading} /> Deliveries</NavLink>

@@ -13,7 +13,7 @@ function SuppTableItems(props) {
             {items.slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage).map(item=>{
                 return (
                     <TableRow key={item._id}>
-                        <TableCell style={{color : "green"}}>{item.supplier_id}</TableCell>
+                        <TableCell style={{color : "green"}}>{item.supplier_id.substring(0,23)}</TableCell>
                         <TableCell>{item.supplier_name}</TableCell>
                         <TableCell>{item.supplier_email}</TableCell>
                         <TableCell>{item.supplier_contact}</TableCell>

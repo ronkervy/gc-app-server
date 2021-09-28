@@ -1,3 +1,4 @@
+const path = require('path');
 module.exports = [
   // Add support for native node modules
   {
@@ -23,6 +24,13 @@ module.exports = [
             presets : ['@babel/preset-react']
         }
     }
+  },
+  {
+    test: /\.(js|json|msi)$/,
+    exclude: [
+      path.resolve(__dirname,'converter'),
+      path.resolve(__dirname,'msi')
+    ]
   }
   // Put your webpack loader rules in this array.  This is where you would put
   // your ts-loader configuration for instance:

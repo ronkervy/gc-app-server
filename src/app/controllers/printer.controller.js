@@ -69,7 +69,7 @@ module.exports = {
                 transact_id : id
             }).populate({
                 path : 'product',
-                select : 'item_name item_price suppliers item_unit',
+                select : 'item_name item_price item_srp suppliers item_unit',
                 populate : {
                     path : 'suppliers',
                     select : 'supplier_name'
@@ -87,7 +87,7 @@ module.exports = {
                         {text : transaction.product.item_name, style : 'tableItems'},                                              
                         {text : formatter.format(transaction.item_current_price), style : 'tableItemsAmount'},
                         {
-                            text : formatter.format(transaction.total_per_unit), 
+                            text : formatter.format(transaction.total_per_unit_srp), 
                             style : 'tableItemsAmount',
                             _id : transaction.transact_id,
                             customer_name : transaction.customer_name,
@@ -95,8 +95,8 @@ module.exports = {
                             date : transaction.createdAt,
                             transact_type : transaction.transact_payment_type,
                             cash_amount : formatter.format(transaction.cash_amount),
-                            total_amount : transaction.total_amount,
-                            change_amount : formatter.format(transaction.change_amount),
+                            total_amount : transaction.total_amount_srp,
+                            change_amount : transaction.change_amount_srp,
                             discount : transaction.discount,
                             customer_address : transaction.customer_address
                         }                        
@@ -308,8 +308,8 @@ module.exports = {
                             'transaction_date' : { '$first' : '$createdAt' },
                             'payment_type' : { '$first' : '$transact_payment_type' },
                             'cash_amount' : { '$first' : '$cash_amount' },
-                            'total_amount' : { '$first' : '$total_amount' },
-                            'change_amount' : { '$first' : '$change_amount' },
+                            'total_amount' : { '$first' : '$total_amount_srp' },
+                            'change_amount' : { '$first' : '$change_amount_srp' },
                             'balance' : { "$first" : "$partial_payments" }
                         }  
                     },

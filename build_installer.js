@@ -16,7 +16,6 @@ const msiCreator = new MSICreator({
   },
   ui : {      
       chooseDirectory : true,
-      
   }
 });
 

@@ -102,7 +102,7 @@ function Home(props) {
             animate={{x : 0, opacity : 1}}
         >
             <Grid container>
-                <Grid item lg={12}>
+                <Grid item lg={12} xl={12}>
                     <h3>Overview</h3>
                 </Grid>                
             </Grid>
@@ -112,7 +112,8 @@ function Home(props) {
                     whileHover={{
                         scale : 1.1
                     }}
-                    lg={4} 
+                    lg={4}
+                    xl={4} 
                     sm={4}
                     boxShadow={2}
                     className={classes.boxOverview}                             
@@ -120,6 +121,7 @@ function Home(props) {
                     <Grid
                         item
                         lg={4}
+                        xl={4}
                         sm={4}
                     >
                         <h2 style={{margin: "0px",textAlign : "left"}}>
@@ -130,6 +132,7 @@ function Home(props) {
                     <Grid
                         item
                         lg={4}
+                        xl={4}
                         sm={4}
                     >
                         <FontAwesomeIcon size="3x" color="#FFBB38" icon={faBox} />
@@ -141,6 +144,7 @@ function Home(props) {
                         scale : 1.1
                     }}                
                     lg={4} 
+                    xl={4}
                     sm={4}
                     boxShadow={2} 
                     className={classes.boxOverview}     
@@ -151,6 +155,7 @@ function Home(props) {
                     <Grid
                         item
                         lg={4}
+                        xl={4}
                         sm={4}
                     >
                         <h2 style={{margin: "0px",textAlign : "left"}}>{filterLowCounts(products)}</h2>
@@ -159,6 +164,7 @@ function Home(props) {
                     <Grid
                         item
                         lg={4}
+                        xl={4}
                         sm={4}
                     >
                         <FontAwesomeIcon size="3x" color="#16DBCC" icon={faBox} />
@@ -170,6 +176,7 @@ function Home(props) {
                         scale : 1.1
                     }}                
                     lg={4} 
+                    xl={4}
                     sm={4}
                     boxShadow={2} 
                     className={classes.boxOverview}           
@@ -177,6 +184,7 @@ function Home(props) {
                     <Grid
                         item
                         lg={4}
+                        xl={4}
                         sm={4}
                     >
                         <h2 style={{margin: "0px",textAlign : "left"}}>
@@ -187,6 +195,7 @@ function Home(props) {
                     <Grid
                         item
                         lg={4}
+                        xl={4}
                         sm={4}
                     >
                         <FontAwesomeIcon size="3x" color="#396AFF" icon={faBox} />
@@ -194,10 +203,10 @@ function Home(props) {
                 </Box>
             </Grid>
             <Grid container spacing={4}>
-                <Grid item sm={4} lg={4}>
+                <Grid item sm={4} lg={4} xl={4}>
                     <h3>Income</h3>
                     <Grid container spacing={3}>
-                        <Grid item sm={12} lg={12}>
+                        <Grid item sm={12} lg={12} xl={12}>
                             <Box                                                                
                                 container
                                 component={motion.div}
@@ -207,21 +216,22 @@ function Home(props) {
                                     scale : .9
                                 }}                       
                             >                                
-                                <Grid item lg={4} sm={4}>
+                                <Grid item lg={4} xl={4} sm={4}>
                                     <h4
                                         style={{margin: "0px"}}
                                     >{formatter.format(filterTotalMonthlySales(transactions))}</h4>
                                     <p style={{margin: "0px"}}>Earnings this month</p>
                                 </Grid>
-                                <Grid item lg={4} sm={4} style={{ marginTop : "40px" }}>
+                                <Grid item lg={4} xl={4} sm={4} style={{ marginTop : "40px" }}>
                                     <FontAwesomeIcon size="3x" color="#EC861C" icon={faDollarSign} />
                                 </Grid> 
                             </Box>
                         </Grid>
-                        <Grid item sm={12} lg={12}>                            
+                        <Grid item sm={12} lg={12} xl={12}>                            
                             <Box
                                 component={motion.div}          
                                 lg={4} 
+                                xl={4}
                                 sm={4}
                                 boxShadow={2}     
                                 className={classes.boxCurrentBal}    
@@ -229,41 +239,42 @@ function Home(props) {
                                     scale : .9
                                 }}                            
                             >
-                                <Grid item lg={4} sm={4}>
+                                <Grid item lg={4} xl={4} sm={4}>
                                     <p style={{margin: "0px"}}>Transactions this month</p>
                                     <h2
                                         style={{margin: "0px"}}
                                     >{filterTransactionCount(transactions)}</h2>                                    
                                 </Grid>
-                                <Grid item lg={4} sm={4} style={{ marginTop : "25px" }}>
+                                <Grid item lg={4} xl={4} sm={4} style={{ marginTop : "25px" }}>
                                     <FontAwesomeIcon size="3x" color="#663394" icon={faReceipt} />
                                 </Grid> 
                             </Box>
                         </Grid>
                     </Grid>
                 </Grid>         
-                <Grid item sm={8} lg={8}>
+                <Grid item sm={8} lg={8} xl={8}>
                     <h3>Monthly Sales Summary</h3>
                     <Grid container>
-                        <Grid item sm={12} lg={12}>
+                        <Grid item sm={12} lg={12} xl={12}>
                             <Box
                                 component={motion.div}        
                                 lg={12} 
+                                xl={12}
                                 sm={12}
                                 boxShadow={2}      
                                 className={classes.boxSummary}                
                             >
                                 <Grid container spacing={1}>
-                                    <Grid item lg={12} sm={12}>
+                                    <Grid item lg={12} xl={12} sm={12}>
                                         <ChartHome />
                                     </Grid>
-                                    <Grid item lg={4} sm={4} >
+                                    <Grid item lg={4} xl={4} sm={4} >
                                         <WeeklyChart />
                                     </Grid>
-                                    <Grid item lg={4} sm={4} >
+                                    <Grid item lg={4} xl={4} sm={4} >
                                         <WeeklyChart />
                                     </Grid>
-                                    <Grid item lg={4} sm={4} >
+                                    <Grid item lg={4} xl={4} sm={4} >
                                         <WeeklyChart />
                                     </Grid>
                                 </Grid>

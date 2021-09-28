@@ -52,10 +52,12 @@ module.exports = {
     productSearch : async (req,res,next)=>{
         try{
             const {
-                search
-            } = req.params;
+                query
+            } = req.query;
 
-            const resProduct = await ProductModel.find({ $or : [{item_name : { $regex : search + '+', $options : 'gi' }},{ item_code : { $regex : search + '+', $options : 'gi' } }]});
+            console.log(query);
+
+            const resProduct = await ProductModel.find({ $or : [{item_name : { $regex : query + '+', $options : 'gi' }},{ item_code : { $regex : query + '+', $options : 'gi' } }]});
 
             res.status(200).json( resProduct );
 
@@ -64,6 +66,15 @@ module.exports = {
             next( createHttpError.Unauthorized({
                 message : err.message
             }) );
+        }
+    },
+    productMultipleCreate : async(req,res,next)=>{
+        try{
+            const resCreate = await ProductModel.insertMany(req.body);
+        }catch(err){
+            return next(createHttpError.InternalServerError({
+                message : err.message
+            }));
         }
     },
     productCreate : async (req,res,next)=>{
@@ -81,7 +92,10 @@ module.exports = {
             }) );
 
             await SupplierModel.findById(item_supplier).then(async (supp)=>{                
-                const newProduct = new ProductModel(req.body);
+                const newProduct = new ProductModel({
+                    ...req.body,
+                    item_price : parseFloat(req.body.item_price)
+                });
                 newProduct.suppliers.push(supp._id);                
                 const product = await newProduct.save().then((createdProd)=>{
                     supp.products.push(createdProd);
@@ -217,6 +231,7 @@ module.exports = {
                                 'id' : '$products._id',
                                 'item' : '$products.item_name',
                                 'unit_price' : '$products.item_price',
+                                'unit_price_srp' : '$products.item_srp',
                                 'purchased_qty' : '$qty',
                                 'inventory_qty' : '$products.item_qty',
                                 'discount' : '$discount',
@@ -228,7 +243,9 @@ module.exports = {
                         'payment_type' : { '$first' : '$transact_payment_type' },
                         'cash_amount' : { '$first' : '$cash_amount' },
                         'total_price' : { '$first' : '$total_amount' },
+                        'total_price_srp' : { '$first' : '$total_amount_srp' },
                         'change_amount' : { '$first' : '$change_amount' },
+                        'change_amount_srp' : { '$first' : '$change_amount_srp' },
                         'payments' : { '$first' : '$partial_payments' }
                     }  
                 },
@@ -304,17 +321,21 @@ module.exports = {
                                 'id' : '$products._id',
                                 'item' : '$products.item_name',
                                 'unit_price' : '$products.item_price',
+                                'unit_price_srp' : '$products.item_srp',
                                 'purchased_qty' : '$qty',
                                 'inventory_qty' : '$products.item_qty',
                                 'discount' : '$discount',
+                                'item_unit' : '$products.item_unit',
                                 'supplier' : '$suppliers.supplier_name'
                             }
-                        },                        
+                        },                                                
                         'transaction_date' : { '$first' : '$createdAt' },
                         'payment_type' : { '$first' : '$transact_payment_type' },
                         'cash_amount' : { '$first' : '$cash_amount' },
                         'total_price' : { '$first' : '$total_amount' },
+                        'total_price_srp' : { '$first' : '$total_amount_srp' },
                         'change_amount' : { '$first' : '$change_amount' },
+                        'change_amount_srp' : { '$first' : '$change_amount_srp' },
                         'payments' : { '$first' : '$partial_payments' }
                     }  
                 },
@@ -369,17 +390,21 @@ module.exports = {
                                 'id' : '$products._id',
                                 'item' : '$products.item_name',
                                 'unit_price' : '$products.item_price',
+                                'unit_price_srp' : '$products.item_srp',
                                 'purchased_qty' : '$qty',
                                 'inventory_qty' : '$products.item_qty',
                                 'discount' : '$discount',
+                                'item_unit' : '$products.item_unit',
                                 'supplier' : '$suppliers.supplier_name'
                             }
-                        },                        
+                        },                                                
                         'transaction_date' : { '$first' : '$createdAt' },
                         'payment_type' : { '$first' : '$transact_payment_type' },
                         'cash_amount' : { '$first' : '$cash_amount' },
                         'total_price' : { '$first' : '$total_amount' },
+                        'total_price_srp' : { '$first' : '$total_amount_srp' },
                         'change_amount' : { '$first' : '$change_amount' },
+                        'change_amount_srp' : { '$first' : '$change_amount_srp' },
                         'payments' : { '$first' : '$partial_payments' }
                     }  
                 },
@@ -401,7 +426,7 @@ module.exports = {
 
             const transact_id = uuidV4();
 
-            const TransactionRes = await TransactionModel.insertMany(req.body.map((order,index)=>{
+            await TransactionModel.insertMany(req.body.map((order,index)=>{
                 let obj_id = Types.ObjectId();
 
                 ProductModel.findById(order._id).then(res=>{
@@ -421,7 +446,7 @@ module.exports = {
                     ...order,
                     _id : obj_id,
                     product : order._id,
-                    item_current_price : order.item_price, 
+                    item_current_price : order.item_srp, 
                     transact_id,
                     partial_payments : order.transact_payment_type == 'full' ? [] : [order.cash_amount]
                 }
@@ -456,11 +481,12 @@ module.exports = {
             searchResult.map(transaction=>{                
                 const sum = transaction.partial_payments.reduce((a,b)=>a+b,0);
                 sum < transaction.total_amount ? transaction.partial_payments.push(partial_payments) : null;
-                console.log(sum);
+                
                 transaction.transact_payment_type = (transaction.cash_amount + partial_payments) >= transaction.total_amount ? 'full' : 'partial'
                 transaction.transact_status = (transaction.cash_amount + partial_payments) >= transaction.total_amount ? true : false;
                 transaction.cash_amount = transaction.cash_amount + partial_payments;     
-                transaction.change_amount = transaction.change_amount + partial_payments;           
+                transaction.change_amount = transaction.change_amount + partial_payments;
+                transaction.change_amount_srp = transaction.change_amount_srp + partial_payments; 
                 transaction.save();
             });
 
@@ -500,17 +526,21 @@ module.exports = {
                                 'id' : '$products._id',
                                 'item' : '$products.item_name',
                                 'unit_price' : '$products.item_price',
+                                'unit_price_srp' : '$products.item_srp',
                                 'purchased_qty' : '$qty',
                                 'inventory_qty' : '$products.item_qty',
                                 'discount' : '$discount',
+                                'item_unit' : '$products.item_unit',
                                 'supplier' : '$suppliers.supplier_name'
                             }
-                        },                        
+                        },                                                
                         'transaction_date' : { '$first' : '$createdAt' },
                         'payment_type' : { '$first' : '$transact_payment_type' },
                         'cash_amount' : { '$first' : '$cash_amount' },
                         'total_price' : { '$first' : '$total_amount' },
+                        'total_price_srp' : { '$first' : '$total_amount_srp' },
                         'change_amount' : { '$first' : '$change_amount' },
+                        'change_amount_srp' : { '$first' : '$change_amount_srp' },
                         'payments' : { '$first' : '$partial_payments' }
                     }  
                 },
@@ -567,17 +597,22 @@ module.exports = {
                                 'id' : '$products._id',
                                 'item' : '$products.item_name',
                                 'unit_price' : '$products.item_price',
+                                'unit_price_srp' : '$products.item_srp',
                                 'purchased_qty' : '$qty',
                                 'inventory_qty' : '$products.item_qty',
                                 'discount' : '$discount',
+                                'item_unit' : '$products.item_unit',
                                 'supplier' : '$suppliers.supplier_name'
                             }
-                        },                        
+                        },                                                
                         'transaction_date' : { '$first' : '$createdAt' },
                         'payment_type' : { '$first' : '$transact_payment_type' },
                         'cash_amount' : { '$first' : '$cash_amount' },
                         'total_price' : { '$first' : '$total_amount' },
-                        'change_amount' : { '$first' : '$change_amount' }
+                        'total_price_srp' : { '$first' : '$total_amount_srp' },
+                        'change_amount' : { '$first' : '$change_amount' },
+                        'change_amount_srp' : { '$first' : '$change_amount_srp' },
+                        'payments' : { '$first' : '$partial_payments' }
                     }  
                 },
                 { "$sort" : 
@@ -855,7 +890,9 @@ module.exports = {
                     delivery_id,
                     delivery_status : false,
                     suppliers : [item.supplier],
-                    products : [item._id]
+                    products : [item._id],
+                    sold_to : item.sold_to,
+                    address : item.address
                 }
             }));
             

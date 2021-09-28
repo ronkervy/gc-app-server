@@ -23,24 +23,14 @@ const useStyles = {
         position : "relative",
         minHeight : "490px",
         marginTop : "10px",
-        '& tr td' : {
-            '& :hover' : {
-                
-            }
-        },
         '& th' : {
             fontWeight : "70",
-        }
+        } 
     },
     ProductModal : {
-        display : "flex",
-        justifyContent : "center",
-        alignItems : "center",
         background : "#ffffff",
-        position : "absolute",
         flexDirection : "column",
-        padding : "50px",
-        marginTop : "50px"
+        padding : "50px"
     },
     DeleteModal : {        
         display : "flex",

@@ -42,7 +42,8 @@ const useStyles = makeStyles((theme)=>({
     TranSingleModalContent : {
         background : "#ffffff",    
         width : "560px",
-        padding : "50px"
+        padding : "50px",
+        outline : "none"
     }
 }));
 
@@ -127,7 +128,7 @@ function TransactionSingle() {
                 <div>
                 {transactions.map(transaction=>(
                     <Grid spacing={2} key={transaction._id} container className={TranSingleModalContent}>
-                        <Grid item lg={12} sm={12}>
+                        <Grid item lg={12} xl={12} sm={12}>
                             <TextField 
                                 variant="outlined"
                                 size="small"
@@ -144,7 +145,7 @@ function TransactionSingle() {
                                 }}
                             />
                         </Grid>
-                        <Grid item lg={8} sm={8}>
+                        <Grid item lg={8} xl={8} sm={8}>
                             <TextField 
                                 variant="outlined"
                                 size="small"
@@ -161,7 +162,7 @@ function TransactionSingle() {
                                 }}
                             />
                         </Grid>
-                        <Grid item lg={4} sm={4}>
+                        <Grid item lg={4} xl={4} sm={4}>
                             <TextField 
                                 variant="outlined"
                                 size="small"
@@ -179,7 +180,7 @@ function TransactionSingle() {
                                 }}
                             />
                         </Grid>
-                        <Grid item lg={4} sm={4}>
+                        <Grid item lg={4} xl={4} sm={4}>
                             <NumberFormat                  
                                 disabled={transaction.payment_type === 'full' ? true : false}               
                                 value={transaction.payment_type === 'full' ? transaction.total_price : transaction.change_amount}
@@ -204,7 +205,7 @@ function TransactionSingle() {
                                 }}
                             />
                         </Grid>
-                        <Grid item lg={4} sm={4}>
+                        <Grid item lg={4} xl={4} sm={4}>
                             <NumberFormat 
                                 disabled={transaction.payment_type === 'full' ? true : false}
                                 value={payment.partial_payments}
@@ -217,7 +218,7 @@ function TransactionSingle() {
                                 fullWidth
                                 size="small"
                                 variant="outlined"
-                                label="Payment Amount"
+                                label="Amount"
                                 InputProps={{
                                     startAdornment : (
                                         <InputAdornment position="start">
@@ -237,7 +238,7 @@ function TransactionSingle() {
                                 }}
                             />
                         </Grid>
-                        <Grid item lg={4} sm={4}>
+                        <Grid item lg={4} xl={4} sm={4}>
                             <Button                               
                                 disabled={transaction.payment_type === 'full' ? true : false}
                                 fullWidth
@@ -268,7 +269,7 @@ function TransactionSingle() {
                                 }}
                             >Update</Button>
                         </Grid>
-                        <Grid item lg={12} sm={12}>
+                        <Grid item lg={12} xl={12} sm={12}>
                             <TableContainer component={Paper} elevation={3}>
                                 <Table size="small" stickyHeader>
                                     <TableHead>
@@ -284,7 +285,7 @@ function TransactionSingle() {
                                         ))}
                                         <TableRow>
                                             <TablePagination
-                                                rowsPerPageOptions={[3, 6, 180]}
+                                                rowsPerPageOptions={[3]}
                                                 count={transaction.payments.length}
                                                 rowsPerPage={rowsPerPage}
                                                 page={page}
@@ -296,7 +297,7 @@ function TransactionSingle() {
                                 </Table>
                             </TableContainer>
                         </Grid>
-                        <Grid item lg={12} sm={12}>
+                        <Grid item lg={12} xl={12} sm={12}>
                             <ButtonGroup>
                                 <Button
                                     size="small"
@@ -365,7 +366,7 @@ function TransactionSingle() {
                                             }));
                                         }
                                     }}
-                                >View Transaction</Button>
+                                >View</Button>
                                 <Button
                                     size="small"
                                     variant="contained"

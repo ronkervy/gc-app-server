@@ -171,7 +171,7 @@ export default (docs,logoURL)=>{
                                             fontSize : 15
                                         }, 
                                         { 
-                                            text : `Change : ${change_amount}`,
+                                            text : `${change_amount <= -1 ? 'Balance : ' + formatter.format(change_amount * -1) : 'Change : ' + formatter.format(change_amount)}`,
                                             style : {
                                                 font : 'Times',
                                                 fontSize : 15

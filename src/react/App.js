@@ -79,10 +79,10 @@ function App(props) {
           <MainBar />  
           <Nav />
           <Grid container className="content">
-            <Grid disabled item sm={12} lg={12} style={{height: "50px"}}>
+            <Grid disabled item sm={12} lg={12} xl={12} style={{height: "50px"}}>
               <SearchHeader searchRef={searchRef} />
             </Grid>   
-            <Grid item sm={12} lg={12}>
+            <Grid item sm={12} lg={12} xl={12}>
               <Switch>
                   <Route exact path="/">
                       <Home />
@@ -96,7 +96,7 @@ function App(props) {
                   <Route exact path="/products/del/:id" >
                         <ProdDeleteModal />
                   </Route>
-                  <Route exact path="/products/search/:search" >
+                  <Route exact path="/search/products" >
                         <SearchResDialog />
                   </Route>
                   <Route exact path="/lowcount">

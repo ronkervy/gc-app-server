@@ -3,7 +3,7 @@ const useStyles = {
         display : "flex",
         alignItems : "center",
         justifyContent : "space-between",
-        '@media only screen and (min-width : 1300px)' : {
+        '@media only screen and (max-width : 1300px)' : {
             justifyContent : "center"
         },
         '@media only screen and (max-width : 1024px)' : {
@@ -21,15 +21,8 @@ const useStyles = {
         background : "#FFFFFF",
         borderRadius : "10px",
         cursor : "pointer",
-        '@media only screen and (min-width : 1300px)' : {
-            flexBasis: "200px !important",
-            
-        },
-        '@media only screen and (max-width : 1024px)' : {
-            flexBasis: "160px !important"
-        },
-        headTitle : {
-            
+        '@media only screen and (max-width : 1366px)' : {
+            flexBasis: "190px !important",
         }
     },
     boxCurrentBal : {
@@ -45,7 +38,7 @@ const useStyles = {
         flexDirection : "column",
         justifyContent : "space-between",
         alignItems : "center",
-        height : "330px",
+        height : "auto",
         borderRadius : "10px",
         padding: "25px"
     },

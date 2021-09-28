@@ -19,7 +19,7 @@ export default (docs,logoURL,prods)=>{
 
     return {
         pageSize : 'A4',
-        pageMargins: [ 40, 80, 40, 60 ],
+        pageMargins: [ 40, 60, 40, 45 ],
         header : (currentPage)=>{
             if( currentPage === 1 ){
                 return [
@@ -67,21 +67,12 @@ export default (docs,logoURL,prods)=>{
             }
         },
         footer : ( currentPage, pageCount )=>{
-            if( currentPage === pageCount ){
-                return {
-                    columns : [
-                        {
-                            text : "************** Nothing Follows **************",                            
-                            style : {
-                                alignment : 'center',
-                                italics : true,
-                                color : "maroon",
-                                fontSize : 10
-                            }
-                        }
-                    ]
-                }
-            }
+            return {
+                text : 'Page ' + currentPage.toString() + ' of ' + pageCount,
+                alignment : "right",
+                fontSize : 10,
+                margin : [0,20,40,0]
+            };
         },
         content: [
             {
@@ -95,11 +86,10 @@ export default (docs,logoURL,prods)=>{
                         }
                     },
                 ], 
-                margin : [0,0,0,20]
+                margin : [0,0,0,10]
             },
             {
                 table : {
-                    dontBreakRows : false,
                     headerRows : 1,
                     widths : ['*','*','*'],
                     body : [
@@ -137,7 +127,7 @@ export default (docs,logoURL,prods)=>{
                             table: {
                                 // headers are automatically repeated if the table spans over multiple pages
                                 // you can declare how many rows should be treated as headers
-                                dontBreakRows : true,
+                                dontBreakRows : false,
                                 headerRows: 1,
                                 widths: [ 120, '*', '*', '*','*','*'],
                                 body: [                        

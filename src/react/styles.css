@@ -29,10 +29,8 @@ body, html {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center;
-  background-color: #EBEBF7;
   position: relative;
-  height: auto;
-  min-height: 100%;
+  height: 100%;
   overflow: hidden;
 }
 
@@ -40,12 +38,12 @@ body, html {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  width: 90vw;
-  min-height: 80vh;
+  width: 85vw;
   padding: 30px;
   margin-bottom: 30px;
+  font-size: 14px;
   position: relative;
-  margin-top: 80px;
+  margin-top: 70px;
   background-color: #FBFCFE;
   -webkit-box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
           box-shadow: rgba(0, 0, 0, 0.2) 0px 3px 1px -2px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 1px 5px 0px;
@@ -64,17 +62,5 @@ body, html {
       align-content: flex-start;
   padding: 10px 20px;
   position: relative;
-}
-
-@media only screen and (min-width: 1300px) {
-  .App {
-    width: 60vw !important;
-  }
-}
-
-@media only screen and (max-width: 768px) {
-  .App {
-    width: 90vw !important;
-  }
 }
 /*# sourceMappingURL=styles.css.map */

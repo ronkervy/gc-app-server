@@ -25,7 +25,7 @@ function TransactionItems(props) {
                     `Receipt# : ${data._id}\nTransaction Type : ${data.payment_type}\nCart Count : ${data.cart.length}\nPayments : ${data.payments.length > 0 ? data.payments.map(payment=>formatter.format(payment)) : 'Paid'}\nBalance : ${data.payment_type === 'full' ? 0.00 : formatter.format(data.change_amount * -1)}`
                 }
                 >
-                <TableCell style={{ textAlign : "left" }}><FontAwesomeIcon icon={faUser} />&nbsp;&nbsp;{data.customer_name}</TableCell>
+                <TableCell style={{ textAlign : "left" }}><FontAwesomeIcon icon={faUser} />&nbsp;&nbsp;{data.customer_name.substring(0,15) + '...'}</TableCell>
                 <TableCell style={{ textAlign : "center" }}>
                     {data.transaction_date.split('T')[0]}
                 </TableCell>

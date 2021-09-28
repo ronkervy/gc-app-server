@@ -23,25 +23,26 @@ const useStyles = {
         alignItems : "center",
         justifyContent : "center",
         outline : "none",
-        padding : "40px"
+        padding : "40px",
+        backgroundColor : "#EBEBF7"
     },
     Table : {
-        minHeight : "490px",
+        position : "relative",
         '& table' : {
             '& tr td' : {
                 fontSize : "1em"
             },
         },
         '& tr td' : {
-            fontSize : ".8em",
-            '& :hover' : {
-                
-            }
+            fontSize : "1em",
         },
         '& th' : {
             fontWeight : "70",
-            fontSize : ".8em"
-        }        
+            fontSize : "1em"
+        },
+        '@media only screen and (max-width : 1366px)' : {
+            height : "auto"
+        },     
     }
 }
 

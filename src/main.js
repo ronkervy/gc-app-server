@@ -1,8 +1,9 @@
-const { app,BrowserWindow,ipcMain } = require('electron');
+const { app,BrowserWindow,ipcMain,screen } = require('electron');
 const { exec } = require('child_process');
 const { networkInterfaces } = require('os');
 const net_interface = networkInterfaces();
 require('./app/index');
+const path = require('path');
 const axios = require('axios');
 
 if (require('electron-squirrel-startup')){
@@ -52,29 +53,24 @@ const setPrinters = async(printerList)=>{
 
 const createWindow = ()=>{
 
+    const factor = screen.getPrimaryDisplay().scaleFactor;
+
     win = new BrowserWindow({
-        width : 1024,
-        height : 800,        
+        width : 1024 / factor,
+        height : 720 / factor,
+        backgroundColor : '#fff',
         webPreferences : {
-            nodeIntegration : true,
+            zoomFactor : 0.9,
+            nodeIntegration : true,            
             contextIsolation : false,
+            devTools : true
         },
-        autoHideMenuBar : true,
         resizable : false,
         frame : false,
         center : true,
-        show : false
+        show : false,
+        icon : path.resolve(__dirname,'../renderer/main_window/','public/img/logo.ico')
     });  
-    
-    loader = new BrowserWindow({
-        width : 450,
-        height : 350,
-        frame : false,
-        resizable : false,
-        transparent : true,
-        alwaysOnTop : true,
-        show : false
-    });
 
     win.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
@@ -87,7 +83,6 @@ const createWindow = ()=>{
 
     win.webContents.once('dom-ready',()=>{
         let printers = win.webContents.getPrinters();
-        console.log(printers);
         const printerArr = [];
         
         printers.map((printer,i)=>{
@@ -95,15 +90,13 @@ const createWindow = ()=>{
         });
         
         setPrinters(printerArr);
-    });
+    });            
 
-    win.once('ready-to-show',()=>{  
+    win.once('ready-to-show',()=>{
+        win.webContents.setZoomFactor(0.9);
+        win.minimize();
         win.show();
-    });
-
-    loader.on('closed',()=>{
-        loader = null;
-    });
+    });        
 
     win.on('show',()=>{
         win.minimize();

@@ -14,12 +14,13 @@
         "Microsoft Print to PDF",
         "HP Deskjet 2510 series",
         "Fax",
-        "EPSON LX-310 ESC/P"
+        "EPSON LX-310 ESC/P",
+        "Adobe PDF"
       ],
       "options": {
         "silent": false,
-        "printTo" : "",
-        "monochrome" : true,
+        "printTo": "",
+        "monochrome": true,
         "scale": "noscale",
         "orientation": "portrait",
         "printingMode": "",

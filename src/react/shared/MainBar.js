@@ -56,6 +56,7 @@ function MainBar(props) {
                     <Grid 
                         item xs={8} 
                         lg={8} 
+                        xl={8}
                         className={classes.titleHead}
                     >
                         <img height="24" width="24" src={logo} />&nbsp;&nbsp;<h5>GC Application</h5>
@@ -66,7 +67,7 @@ function MainBar(props) {
                         <Divider style={{ margin : "0px 10px", alignSelf : "center", height: "25px"}} variant="fullWidth" orientation="vertical" flexItem />
                         &nbsp;<h5 style={ ip !== '' ? { color : 'green' } : { color : 'red' } }>{ip !== '' ? 'Server Broadcasting' : 'Server not initiated'}</h5>                        
                     </Grid>                    
-                    <Grid item sm={4} lg={4} className={classes.MainBarRightBtns}>
+                    <Grid item sm={4} lg={4} xl={4} className={classes.MainBarRightBtns}>
                         <IconButton
                             size="small"
                             component={motion.button}

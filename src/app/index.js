@@ -18,11 +18,11 @@ const { CmdQueue } = require('cmd-printer');
 const axios = require('axios');
 
 app.use(helmet());
-app.use(cors('*'));
+app.use(cors());
 app.use('/static',express.static(path.join(__dirname,'../renderer/main_window/public')));
 app.use(express.static(path.join(__dirname,'..','/renderer/main_window/public')));
-app.use(express.json());
-app.use(express.urlencoded({ extended : false }));
+app.use(express.json({ limit : '200mb' }));
+app.use(express.urlencoded({ extended : false,limit : '200mb' }));
 
 app.use('/api/v1',apiRoutes);
 
@@ -75,10 +75,15 @@ http.listen(PORT,()=>{
                     ...settings.printer.options
                 });
 
-                socket.to(sid).emit("print-status","printing");       
+                io.emit("print-status",{
+                    printStatus : true
+                });       
 
                 await fs.writeFileSync(pdfFile, data, {encoding: 'base64'});     
                 await cmd.print([pdfFile]);
+                io.emit("print-status",{
+                    printStatus : false
+                });
             }catch(err){
                 console.log(err);
             }
@@ -108,17 +113,12 @@ http.listen(PORT,()=>{
                 socket.local.emit("created_product");
             },2000);
         });
-    
-        socket.on("created_product",res=>{
-           setTimeout(()=>{
-                socket.local.emit("created_product");
-           },2000);
-        });
-    
-        socket.on("updated_product",res=>{
+
+        socket.on("deleted_product",res=>{
             setTimeout(()=>{
-                socket.local.emit("updated_product");
+                socket.local.emit("deleted_product");
             },2000);
         });
+        
     });
 });

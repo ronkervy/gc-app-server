@@ -7,6 +7,7 @@ const {
     productUpdate,
     productDelete,
     productSearch,
+    productMultipleCreate,
     transactionList,
     transactionSingle,
     transactionSearch,
@@ -44,8 +45,9 @@ const {
 //PRODUCTS ROUTES
 router.get('/products',productList);
 router.get('/products/:id',productSingle);
-router.get('/products/search/:search',productSearch);
+router.get('/search/products',productSearch);
 router.post('/products',productCreate);
+router.post('/multiple/products',productMultipleCreate);
 router.patch('/products/:id',productUpdate);
 router.delete('/products/:id',productDelete);
 

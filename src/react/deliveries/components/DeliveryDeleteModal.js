@@ -51,10 +51,10 @@ function DeliveryDeleteModal(props) {
                 in={open}
             >
                 <Grid container spacing={2} className={classes.DeleteModalContent}>
-                    <Grid item lg={12} sm={12}>
+                    <Grid item lg={12} xl={12} sm={12}>
                         <h3 style={{ textAlign : "center" }}>Delete this item?</h3>
                     </Grid>
-                    <Grid item lg={4} sm={4}>
+                    <Grid item lg={4} xl={4} sm={4}>
                         <Button
                             fullWidth
                             color="secondary"
@@ -64,7 +64,7 @@ function DeliveryDeleteModal(props) {
                             }}
                         >Yes</Button>
                     </Grid>
-                    <Grid item lg={4} sm={4}>
+                    <Grid item lg={4} xl={4} sm={4}>
                         <Button
                             fullWidth
                             variant="contained"

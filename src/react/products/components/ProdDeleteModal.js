@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Backdrop, Button, Fade, Grid, Modal,withStyles } from '@material-ui/core';
 import Styles from './Styles';
-import { faTrashAlt } from '@fortawesome/free-regular-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useHistory, useParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import { deleteProduct } from '../store/ProdServices';
 import Loader from '../../shared/Loader';
 import { OpenNotification } from '../../shared/store/NotificationSlice';
-
+import { io } from 'socket.io-client';
+ 
 function ProdDeleteModal(props) {
     
     const { classes } = props;
@@ -50,12 +49,13 @@ function ProdDeleteModal(props) {
                 in={open}
             >                
                 <Grid container spacing={2} className={classes.DeleteModalContent}>                        
-                        <Grid item lg={12} sm={12}>
+                        <Grid item lg={12} xl={12} sm={12}>
                             <h4>Delete this item?</h4>
                         </Grid>
                         <Grid
                             item 
                             lg={4} 
+                            xl={4}
                             sm={4}                            
                         >
                             <Button    
@@ -69,7 +69,11 @@ function ProdDeleteModal(props) {
                                         }
                                     }));
 
-                                    if( deleteProduct.fulfilled.match(resDelete) ){
+                                    if( deleteProduct.fulfilled.match(resDelete) ){       
+                                        const socket = io('http://localhost:8081/');
+                                        socket.emit('deleted_product',{
+                                            message : "item deleted"
+                                        });                                 
                                         dispatch(OpenNotification({
                                             message : "Item has been deleted.",
                                             severity : "success"
@@ -85,7 +89,7 @@ function ProdDeleteModal(props) {
                                 }}
                             >Yes</Button>                                                
                         </Grid>                   
-                        <Grid item lg={4} sm={4}>
+                        <Grid item lg={4} xl={4} sm={4}>
                             <Button
                                 color="primary"
                                 fullWidth
