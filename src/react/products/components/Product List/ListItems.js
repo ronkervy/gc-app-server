@@ -43,6 +43,16 @@ function ListItems({item,index}) {
                     fixedDecimalScale={true}
                 />                
             </TableCell>
+            <TableCell style={{ fontSize : "12px" }}>
+                <NumberFormat 
+                    displayType="text" 
+                    value={item.item_srp} 
+                    thousandSeparator={true} 
+                    decimalScale={2} 
+                    decimalSeparator={'.'}
+                    fixedDecimalScale={true}
+                />                
+            </TableCell>
             <TableCell style={{ fontSize : "14px", textTransform : "uppercase" }}>
                 {item.item_unit}                 
             </TableCell>

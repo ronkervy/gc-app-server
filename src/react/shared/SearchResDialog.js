@@ -60,7 +60,6 @@ function SearchResDialog(props) {
                 timeout : 500
             }}
         >            
-            {console.log(model)}
             <AppBar color="inherit" style={{position : "relative"}}>
                 <Toolbar variant="dense">
                     <Grid container spacing={2}>

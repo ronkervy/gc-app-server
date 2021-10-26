@@ -184,6 +184,7 @@ function ListProd(props) {
                         <TableCell>Name</TableCell>
                         <TableCell>QTY</TableCell>
                         <TableCell>Price</TableCell>
+                        <TableCell>SRP</TableCell>
                         <TableCell>Unit</TableCell>
                         <TableCell style={{ textAlign : "center" }}>Actions</TableCell>
                     </TableRow>

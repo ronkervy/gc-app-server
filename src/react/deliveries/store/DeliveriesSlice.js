@@ -28,7 +28,7 @@ export const DeliveriesSlice = createSlice({
                 item_price,
                 item_qty,
                 item_supplier,
-                soldTo,
+                sold_to,
                 address
             } = payload;
             
@@ -44,7 +44,7 @@ export const DeliveriesSlice = createSlice({
                     item_discount : discount,
                     inventory_qty : item_qty,
                     supplier : item_supplier,
-                    soldTo,
+                    sold_to,
                     address
                 });
             }else{

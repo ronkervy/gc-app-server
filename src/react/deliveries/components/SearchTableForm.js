@@ -36,7 +36,7 @@ import { getProducts } from '../../products/store/ProdServices';
 function SearchTable(props) {
     
     const [search, setSearch] = useState('');
-    const { address,soldTo } = props.infoField;
+    const { address,sold_to } = props.infoField;
     const dispatch = useDispatch();
     const [supp,setSupp] = useState({});
     const { entities : products, loading : prodLoading } = useSelector( state=>state.products );
@@ -263,7 +263,7 @@ function SearchTable(props) {
                                                     dispatch( AddToCart({
                                                         ...product,
                                                         address,
-                                                        soldTo
+                                                        sold_to
                                                     }) );
                                                 }}
                                             >Add</Button>

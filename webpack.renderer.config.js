@@ -38,6 +38,10 @@ module.exports = {
             to : path.resolve(__dirname,'src','native_modules')
           },
           {
+            from : path.resolve(__dirname,'src','native_modules/PDFtoPrinter.exe'),
+            to : path.resolve(__dirname,'.webpack/renderer/main_window','native_modules')
+          },
+          {
             from : path.resolve(__dirname,'src','public'),
             to : path.resolve(__dirname,'.webpack/renderer/main_window','public')
           },

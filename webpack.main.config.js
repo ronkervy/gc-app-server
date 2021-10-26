@@ -69,6 +69,7 @@ module.exports = {
         alias: {
           'unicode-properties': 'unicode-properties/unicode-properties.cjs.js',
           'pdfmake': 'pdfmake/build/pdfmake.js',
+          'cmd-printer' : 'cmd-printer/dist/'
         }
   },
   plugins : [new StringReplacePlugin()],

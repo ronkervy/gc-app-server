@@ -32,7 +32,8 @@ const EditForm = ({product})=>{
     const dispatch = useDispatch();
     const history = useHistory();
     const { entities : suppliers, loading } = useSelector(state=>state.suppliers);
-    const socket = io('http://localhost:8081/');
+    
+    
     const validate = (values)=>{
         const errors = {};
 
@@ -72,6 +73,7 @@ const EditForm = ({product})=>{
             }) );
 
             if( updateProduct.fulfilled.match(resUpdate) ){
+                const socket = io('http://localhost:8081/');
                 socket.emit("updated_product",resUpdate.payload);                
                 dispatch( OpenNotification({
                     message : 'Product has been updated.',

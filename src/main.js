@@ -63,7 +63,7 @@ const createWindow = ()=>{
             zoomFactor : 0.9,
             nodeIntegration : true,            
             contextIsolation : false,
-            devTools : true
+            devTools : process.env.NODE_ENV === "development" ? true : false
         },
         resizable : false,
         frame : false,
@@ -88,7 +88,7 @@ const createWindow = ()=>{
         printers.map((printer,i)=>{
             printerArr.push(printers[i].name);
         });
-        
+
         setPrinters(printerArr);
     });            
 
@@ -131,7 +131,6 @@ ipcMain.handle('changeDefaultPrinter',(e,args)=>{
 });
 
 ipcMain.handle('get-ip',()=>{
-
     return ipaddr;
 });
 

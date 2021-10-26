@@ -1,3 +1,4 @@
+import { config } from 'node-ipc';
 import pdfmake from 'pdfmake/build/pdfmake';
 const formatter = new Intl.NumberFormat('en-PH',{
     style : 'currency',
@@ -67,7 +68,7 @@ export default (docs,logoURL)=>{
         _id
     ;
 
-    docs.map(doc=>{
+    docs.map((doc,i)=>{     
         let less = ( doc[4].discount * doc[4].price);
         customer_name = doc[4].customer_name;
         transaction_date = new Date(doc[4].date).toLocaleDateString();
@@ -80,147 +81,58 @@ export default (docs,logoURL)=>{
         discountArr.push(less);
     });
 
-    let discount = discountArr.reduce((a,b)=>a+b,0);    
+    let discount = discountArr.reduce((a,b)=>a+b,0);
 
-    return {
+    const alterConfig = (configs,cb)=>{
+        const newConfig = {
+            ...configs
+        };
+
+        return newConfig;
+    }
+
+    const configs = {
         pageSize : {
-            width : 120 * 9.5,
-            height : 120 * 5.5
+            width : 100 * 9,
+            height : 100 * 5
         },
-        pageMargins: [ 20, 80, 20, 120 ],
-        compress : false,
-        header : (currentPage)=>{
-            if( currentPage === 1 ){
-                return {
-                    columns : [
-                        {
-                            image : `data:image/png;base64,${logoURL}`,
-                            width : 60,
-                            height : 60,
-                            margin : [2,5,0,0]
-                        },
-                        {
-                            stack : [
-                                {
-                                    text : 'Smart/Tnt:0963-644-8252\nGlobe/tm:0926-775-3578',
-                                    //color : "#808080"
-                                    style : 'subheader'
-                                }
-                            ],
-                            alignment : 'right',
-                            margin : [2,12]      
-                        }   
-                    ],
-                    margin : [20,8],
-                    width : '*',
-                }
-            }
-        },
+        header : {},
         footer : (currentPage,pageCount)=>{
-            if( currentPage === pageCount ){
+            if( currentPage == pageCount ){
                 return {
-                    stack : [
-                        {
-                            table : {
-                                widths : ['*',190,250],
-                                headerRows : 1,
-                                body : [
-                                    [
-                                        {
-                                            text : "Prepared by : ",
-                                            style : {
-                                                fontSize : 15
-                                            },
-                                            bold : true
-                                        },
-                                        {
-                                            text : `Discount : ${formatter.format(discount)}`,
-                                            style : {
-                                                fontSize : 15,
-                                                font : 'Times'
-                                            },
-                                            bold : true
-                                        },
-                                        {
-                                            text : `Amount to pay : ${formatter.format(total_amount)}`,
-                                            style : {
-                                                fontSize : 15,
-                                                font : 'Times'
-                                            },
-                                            bold : true
-                                        }
-                                    ],
-                                    [ 
-                                        { 
-                                            text : "", 
-                                            border : [false,false,false,false],
-                                        },
-                                        {
-                                            text : [
-                                                `Cash : `,
-                                                { 
-                                                    text : `${cash_amount}`,
-                                                    style : { 
-                                                        alignment : "center", 
-                                                        font : "Times",
-                                                        fontSize : 15
-                                                    } 
-                                                }
-                                            ],
-                                            bold : true,
-                                            fontSize : 15
-                                        }, 
-                                        { 
-                                            text : `${change_amount <= -1 ? 'Balance : ' + formatter.format(change_amount * -1) : 'Change : ' + formatter.format(change_amount)}`,
-                                            style : {
-                                                font : 'Times',
-                                                fontSize : 15
-                                            },
-                                            bold : true
-                                        } 
-                                    ]
-                                ]                        
-                            }
-                        },
-                        {
-                            text : "**** Nothing Follows ****",                            
-                            style : {
-                                fontSize : 12,        
-                                //color : "#808080"                     
-                            },
-                            bold : true,
-                            alignment : "center",
-                            margin : [0,7,0,0]
-                        },
-                        {
-                            text : "Received goods in order and prestine condition\n\nby:__________________________________",                            
-                            style : {
-                                fontSize : 12,                         
-                            },
-                            alignment : "right",
-                            bold : true,
-                            margin : [0,3,0,0]
-                        }
-                    ],                    
-                    margin : [20,0]                 
+                    id : 'footer',                                 
+                    text : "Received goods in order and prestine condition\nBy:__________________________________",                            
+                    style : {
+                        fontSize : 14,                         
+                    },
+                    alignment : "right",
+                    bold : false,     
+                    margin : [10,0]                 
                 }
             }
         },
+        pageMargins : [10,10,10,100],
+        compress : false,        
         content : [
             {
                 columns : [
                     { 
-                        text : "ORDER SLIP", 
+                        text : [
+                            "ORDER SLIP\n",
+                            {
+                                text : `Smart/Tnt : 0963-644-8252\nGlobe : 0926-775-3578`,
+                                alignment : "center",
+                                style : 'subheader'
+                            }
+                        ], 
                         bold : true,
-                        style : 
-                        { 
-                            fontSize : 22,
-                            //color : "#808080",
-                            font : "Times"                            
-                        } 
+                        fontSize : 25,
+                        //color : "#808080",
+                        font : "Times"  
                     }
                 ],
-                alignment : "center"
+                alignment : "center",
+                margin : [0,0,0,10]
             },
             {                
                 stack : [
@@ -232,11 +144,11 @@ export default (docs,logoURL)=>{
                                     {
                                         text : `${customer_name}`,
                                         italics : false,
-                                        bold : true
+                                        bold : false
                                     }
                                 ],       
                                 bold : true,                         
-                                fontSize : 15,
+                                fontSize : 16,
                                 margin : [0,5,0,0]
                             },
                             {
@@ -245,11 +157,11 @@ export default (docs,logoURL)=>{
                                     {
                                         text : `${transaction_date}`,
                                         italics : false,
-                                        bold : true
+                                        bold : false
                                     }
                                 ],
                                 bold : true,
-                                fontSize : 15,
+                                fontSize : 16,
                                 margin : [0,5,0,0]
                             },
                         ],
@@ -258,9 +170,15 @@ export default (docs,logoURL)=>{
                     {
                         columns : [                            
                             {
-                                text : `Address : ${customer_address}`,
+                                text : [
+                                    `Address : `,
+                                    {
+                                        text : `${customer_address}`,
+                                        bold : false
+                                    }
+                                ],
                                 bold : true,
-                                fontSize : 15,
+                                fontSize : 16,
                                 margin : [0,5,0,10]
                             },
                             {
@@ -268,19 +186,20 @@ export default (docs,logoURL)=>{
                                     'Receipt# : ',
                                     {
                                         text : `${_id}`,
-                                        fontSize : 15
+                                        fontSize : 16,
+                                        bold : false
                                     }
                                 ],                         
                                 bold : true,
-                                fontSize : 15,
+                                fontSize : 16,
                                 margin : [0,5,0,10]
-                            }
+                            },
                         ]
                     },
                     {
-                        table : {
-                            dontBreakRows : true,
-                            headerRows: 1,
+                        id : 'table-headers',
+                        table : {              
+                            headerRows : 1,  
                             widths: [ 60,60,'*', 120,80],
                             body: [
                                 [                                     
@@ -313,7 +232,8 @@ export default (docs,logoURL)=>{
                             ]
                         }
                     },
-                    {
+                    {   
+                        id : 'table-items',
                         layout : {
                             hLineWidth : (i,node)=>{
                                 return (i === 0 || i === node.table.body.length) ? 1 : 0;
@@ -321,34 +241,111 @@ export default (docs,logoURL)=>{
                             hLineHeight : (i,node)=>{
                                 return (i === 1) ? 0 : 1;
                             },
-                            paddingBottom: (i, node, colIndex) => {                                
-                                const DEFAULT_PADDING = 2;
-                                // Calculate padding for the last element of the table.
-                                if (i === node.table.body.length - 1 && node.positions[node.positions.length - 1] !== undefined) {
-                                    const currentPosition = node.positions[node.positions.length - 1];                                    
-                                    const totalPageHeight = currentPosition.pageInnerHeight;
-                                    const currentHeight = currentPosition.top;
-                                    const paddingBottom = totalPageHeight - currentHeight;                                    
-                                    
-                                    if( paddingBottom < 0 ){
-                                        return DEFAULT_PADDING;
-                                    }else{
-                                        return paddingBottom;
-                                    }                                    
-                                } else {
-                                    return DEFAULT_PADDING;
-                                }
-                            }
+                            // paddingBottom: (i, node) => {                      
+                            //     if( node.positions[node.positions.length - 1] === undefined ) return;
+                            //     if( node.table.body.length - 1 === NaN ) return;
+                            //     const DEFAULT_PADDING = 2;
+                            //     // Calculate padding for the last element of the table.
+                            //     const currentPosition = node.positions[node.positions.length - 1];                                    
+                            //     const totalPageHeight = currentPosition.pageInnerHeight;
+                            //     const currentHeight = currentPosition.top;
+                            //     const paddingBottom = totalPageHeight - currentHeight;  
+
+                            //     if( (node.table.body.length - 1) >= 5 ){
+                            //         if (i === node.table.body.length - 1 ) {                                            
+                            //             return paddingBottom;                                                                                                    
+                            //         }else{
+                            //             return DEFAULT_PADDING;
+                            //         }
+                            //     }else{
+                            //         return DEFAULT_PADDING;
+                            //     }
+
+                            // }
                         },
-                        table : {
-                            dontBreakRows : true,
-                            headerRows: 1,
+                        table : {    
+                            dontBreakRows: false,
                             widths: [ 60,60,'*', 120,80],
-                            body: [                                   
-                                ...docs                                                      
-                            ]
-                        }
-                    }                    
+                            body : [...docs]                 
+                        }                        
+                    },                    
+                    {
+                        stack : [
+                            {
+                                table : {
+                                    widths : ['*',190,250],
+                                    headerRows : 1,
+                                    body : [
+                                        [
+                                            {
+                                                text : "Prepared by : ",
+                                                style : {
+                                                    fontSize : 14
+                                                },
+                                                bold : true
+                                            },
+                                            {
+                                                text : `Discount : ${formatter.format(discount)}`,
+                                                style : {
+                                                    fontSize : 14,
+                                                    font : 'Times'
+                                                },
+                                                bold : false
+                                            },
+                                            {
+                                                text : `Amount to pay : ${formatter.format(total_amount)}`,
+                                                style : {
+                                                    fontSize : 14,
+                                                    font : 'Times'
+                                                },
+                                                bold : false
+                                            }
+                                        ],
+                                        [ 
+                                            { 
+                                                text : "", 
+                                                border : [false,false,false,false],
+                                            },
+                                            {
+                                                text : [
+                                                    `Cash : `,
+                                                    { 
+                                                        text : `${cash_amount}`,
+                                                        style : { 
+                                                            alignment : "center", 
+                                                            font : "Times",
+                                                            fontSize : 14
+                                                        } 
+                                                    }
+                                                ],
+                                                bold : false,
+                                                fontSize : 14
+                                            }, 
+                                            { 
+                                                text : `${change_amount <= -1 ? 'Balance : ' + formatter.format(change_amount * -1) : 'Change : ' + formatter.format(change_amount)}`,
+                                                style : {
+                                                    font : 'Times',
+                                                    fontSize : 14
+                                                },
+                                                bold : false
+                                            }
+                                        ]
+                                    ]                        
+                                },
+                                margin: [0,5,0,0]
+                            },
+                            {
+                                text : "**** Nothing Follows ****",                            
+                                style : {
+                                    fontSize : 14,        
+                                    //color : "#808080"                     
+                                },
+                                bold : false,
+                                alignment : "center",
+                                margin : [0,7,0,0]
+                            }
+                        ]                        
+                    }                
                 ],                
                 margin : [0,10,0,0]
             }
@@ -357,12 +354,12 @@ export default (docs,logoURL)=>{
             header : {
                 // bold : true,
                 //color : "#808080"
-                fontSize : 12,
+                fontSize : 16,
                 font : "Times",
                 bold : true
             },
             subheader : {
-                fontSize : 12,
+                fontSize : 13,
                 // bold : true,
                 font : "Times",
                 bold : true
@@ -376,22 +373,29 @@ export default (docs,logoURL)=>{
             },
             tableItems : {
                 alignment : 'center',
-                margin : [0,2],
-                fontSize : 13,
+                margin : [0,3],
+                fontSize : 14,
                 //color : "#808080"
             },
             tableItemsAmount : {
                 alignment : 'center',
                 margin : [0,2],
-                fontSize : 13,
+                fontSize : 14,
                 font : "Times",
             }
         },
         defaultStyle : {
             font : 'Times',
             columnGap : 5,
-            //color : "#808080",
-            fontSize : 12
+            fontSize : 14,
+            color : [70,50,30,100]
         }
     }
+
+    return alterConfig(configs,(currentPage,newConfig)=>{
+        if( currentPage > 1 ){
+            return newConfig.pageMargins[3] = 40;
+        }      
+        console.log(newConfig.pageMargins);
+    });
 }

@@ -298,8 +298,7 @@ const  AddProd = (props)=> {
                         </Grid>
                         <Grid item sm={4} lg={4} xl={4}>
                             <NumberFormat
-                                customInput={TextField} 
-                                thousandSeparator={true}
+                                customInput={TextField}                                 
                                 decimalScale={2}
                                 decimalSeparator={'.'}
                                 fixedDecimalScale={true}
@@ -317,8 +316,7 @@ const  AddProd = (props)=> {
                         </Grid>   
                         <Grid item sm={4} lg={4} xl={4}>
                             <NumberFormat
-                                customInput={TextField} 
-                                thousandSeparator={true}
+                                customInput={TextField}                                 
                                 decimalScale={2}
                                 decimalSeparator={'.'}
                                 fixedDecimalScale={true}

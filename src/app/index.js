@@ -16,6 +16,7 @@ const PORT = process.env.PORT || 8081;
 const fs = require('fs');
 const { CmdQueue } = require('cmd-printer');
 const axios = require('axios');
+const NodePdfPrinter = require('node-pdf-printer');
 
 app.use(helmet());
 app.use(cors());
@@ -48,77 +49,75 @@ app.use((err,req,res,next)=>{
     });
 });
 
-http.listen(PORT,()=>{
-    io.on("connection",(socket)=>{
-        const addr = socket.request.connection.remoteAddress;
-        const settingsServices = axios.create({
-            baseURL : "http://localhost:8081/api/v1/settings"
+io.on("connection",(socket)=>{
+    const addr = socket.request.connection.remoteAddress;
+    const settingsServices = axios.create({
+        baseURL : "http://localhost:8081/api/v1/settings"
+    });
+    
+    socket.on('default-printer',(printer)=>{
+        socket.broadcast.emit('server-printer',printer);
+    });
+
+    socket.on('printcmd', async(args)=>{
+        try{
+            const resSettings = await settingsServices({
+                method : "GET"
+            });
+
+            const { settings } = resSettings.data;
+
+            const { data,id,sid } = args;
+            const filePath = process.env.NODE_ENV === 'development' ? path.join(__dirname,'..','/renderer/main_window/public/pdfs/') : path.join(__dirname,'../','../','src/pdfs/').replace('app.asar','app.asar.unpacked');    
+            const pdf2printer = process.env.NODE_ENV === 'development' ? path.join(__dirname,'..','/renderer/main_window/native_modules/') : path.join(__dirname,'../','../','src/native_modules/').replace('app.asar','app.asar.unpacked');        
+            const pdfFile = filePath + `${id}.pdf`;
+            const opts = {
+                ...settings.printer.options
+            }
+
+            let cmd = new CmdQueue(opts);
+
+            io.to(sid).emit("print-status",{
+                printStatus : true,
+            });       
+
+            await fs.writeFileSync(pdfFile, data, {encoding: 'base64'});     
+            await cmd.print([pdfFile]);            
+            // NodePdfPrinter.printFiles([pdfFile],"",pdf2printer);
+            io.emit("print-status",{
+                printStatus : false
+            });
+        }catch(err){
+            console.log(err);
+        }
+    });
+
+    socket.on("client",client=>{
+        
+        console.log({
+            ...client,
+            address : addr,
+            id : socket.id
         });
         
-        socket.on('default-printer',(printer)=>{
-            socket.broadcast.emit('server-printer',printer);
-        });
-
-        socket.on('printcmd', async(args)=>{
-            try{
-                const resSettings = await settingsServices({
-                    method : "GET"
-                });
-
-                const { settings } = resSettings.data;
-
-                const { data,id,sid } = args;
-                const filePath = process.env.NODE_ENV === 'development' ? path.join(__dirname,'..','/renderer/main_window/public/pdfs/') : path.join(__dirname,'../','../','src/pdfs/').replace('app.asar','app.asar.unpacked');            
-                const pdfFile = filePath + `${id}.pdf`;
-
-                let cmd = new CmdQueue({
-                    ...settings.printer.options
-                });
-
-                io.emit("print-status",{
-                    printStatus : true
-                });       
-
-                await fs.writeFileSync(pdfFile, data, {encoding: 'base64'});     
-                await cmd.print([pdfFile]);
-                io.emit("print-status",{
-                    printStatus : false
-                });
-            }catch(err){
-                console.log(err);
-            }
-        });
-    
-        socket.on("client",client=>{
-            console.log({
-                ...client,
-                address : addr,
-                id : socket.id
-            });
-            setTimeout(()=>{
-                socket.emit('client_connected',{
-                    status : true
-                });
-            },3000);
-        });
-
-        socket.on("updated_product",res=>{
-            setTimeout(()=>{
-                socket.local.emit("updated_product");
-            },2000);
-        });
-
-        socket.on("created_product",res=>{
-            setTimeout(()=>{
-                socket.local.emit("created_product");
-            },2000);
-        });
-
-        socket.on("deleted_product",res=>{
-            setTimeout(()=>{
-                socket.local.emit("deleted_product");
-            },2000);
+        socket.emit('client_connected',{
+            status : true
         });
         
     });
+
+    socket.on("updated_product",res=>{
+        socket.local.emit("updated_product");
+    });
+
+    socket.on("created_product",res=>{
+        socket.local.emit("created_product");
+    });
+
+    socket.on("deleted_product",res=>{
+        socket.local.emit("deleted_product");
+    });
+    
 });
+
+http.listen(PORT);

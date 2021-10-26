@@ -24,7 +24,7 @@ function AddDeliveries(props) {
     const dispatch = useDispatch();
     const [openDialog,setOpenDialog] = useState(false);
     const [createdOrder,setCreatedOrder] = useState({});
-    const [soldTo,setSoldTo] = useState('Gloriocity Construction Supply');
+    const [sold_to,setSoldTo] = useState('Gloriocity Construction Supply');
     const [address,setAddress] = useState('');
 
     const { cart, loading : deliveriesLoading } = useSelector(state=>state.deliveries);
@@ -158,7 +158,7 @@ function AddDeliveries(props) {
                             variant="outlined"
                             size="small"
                             label="Sold to"
-                            value={soldTo}
+                            value={sold_to}
                             onChange={handleChangeSold}
                         />
                     </Grid>
@@ -229,7 +229,7 @@ function AddDeliveries(props) {
                         >Clear</Button>
                     </Grid>
                 </Grid>
-                <SearchTableForm infoField={ { address,soldTo } } {...props} />                
+                <SearchTableForm infoField={ { address,sold_to } } {...props} />                
             </Grid>
         </Dialog>
     )

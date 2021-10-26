@@ -30,15 +30,15 @@ const useStyles = {
         position : "relative",
         '& table' : {
             '& tr td' : {
-                fontSize : "1em"
+                fontSize : ".9rem"
             },
         },
         '& tr td' : {
-            fontSize : "1em",
+            fontSize : ".9rem",
         },
         '& th' : {
             fontWeight : "70",
-            fontSize : "1em"
+            fontSize : ".9rem"
         },
         '@media only screen and (max-width : 1366px)' : {
             height : "auto"

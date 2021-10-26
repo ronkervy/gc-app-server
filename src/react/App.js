@@ -8,7 +8,7 @@ import Home from "./components/Home";
 import MainBar from "./shared/MainBar";
 import ListDeliveries from "./deliveries/components/ListDeliveries";
 import ListProd from "./products/components/Product List/ListProd";
-import React,{ useEffect, useRef } from "react";
+import React,{ useEffect, useRef,useCallback } from "react";
 import { io } from 'socket.io-client';
 import SearchResDialog from "./shared/SearchResDialog";
 import SuppliersList from "./suppliers/components/SuppliersList";
@@ -27,8 +27,6 @@ import TransactionsFilterModal from "./reports/components/filters/TransactionsFi
 import DeliveriesFilterModal from "./reports/components/filters/DeliveriesFilterModal";
 import ProductsFilterModal from "./reports/components/filters/ProductsFilterModal";
 import TransactionList from "./transactions/components/TransactionList";
-import { getProducts } from "./products/store/ProdServices";
-import Loader from "./shared/Loader";
 import DeleteSupplier from "./suppliers/components/DeleteSupplier";
 import TransactionSingle from "./transactions/components/TransactionSingle";
 import TransactionDeleteModal from "./transactions/components/TransactionDeleteModal";
@@ -50,27 +48,27 @@ function App(props) {
   const handleCloseToast = ()=>{
       dispatch( CloseNotification() );
   }
+
+  const handleSearchEvent = useCallback((e)=>{
+      if( (e.ctrlKey && e.key === 'Enter') || (e.ctrlKey && e.code === 'KeyF') || (e.ctrlKey && e.key === 'f') ){
+            focusSearch();
+      }
+  },[]);
+
+  useEffect(()=>{
+      document.addEventListener('keypress',handleSearchEvent);
+
+      return ()=>{
+        document.removeEventListener('keypress',handleSearchEvent);
+      };
+  },[handleSearchEvent]);
   
   useEffect(()=>{
       const socket = io("http://localhost:8081");
 
       socket.emit('client',{
           hostName : "GC-SERVER",          
-      });
-      
-      document.addEventListener('keydown',(e)=>{
-          if( (e.ctrlKey && e.key === 'Enter') || (e.ctrlKey && e.key === 'f') ){
-              focusSearch();
-          }
-      });
-
-      return ()=>{
-        document.removeEventListener('keydown',(e)=>{          
-            if( e.ctrlKey && e.key === 'Enter'  ){
-                focusSearch();
-            }
-        });
-      };      
+      });    
   
   },[]);
 

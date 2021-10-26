@@ -220,7 +220,7 @@ module.exports = {
                         as : 'suppliers'
                     }
                 },
-                {'$unwind' : '$suppliers'},
+                {'$unwind' : '$suppliers'},                
                 { "$group" :
                     {
                         '_id' : '$transact_id',
@@ -239,7 +239,7 @@ module.exports = {
                                 'supplier' : '$suppliers.supplier_name'
                             }
                         },                                                
-                        'transaction_date' : { '$first' : '$createdAt' },
+                        'transaction_date' : { '$first' : '$updatedAt' },                                  
                         'payment_type' : { '$first' : '$transact_payment_type' },
                         'cash_amount' : { '$first' : '$cash_amount' },
                         'total_price' : { '$first' : '$total_amount' },
@@ -248,7 +248,7 @@ module.exports = {
                         'change_amount_srp' : { '$first' : '$change_amount_srp' },
                         'payments' : { '$first' : '$partial_payments' }
                     }  
-                },
+                },                
                 { "$sort" : 
                     {
                         'transaction_date' : -1
@@ -805,7 +805,9 @@ module.exports = {
                         },
                         'date' : { '$first' : '$createdAt' },
                         'total' : { '$sum' : '$total_item_price' },
-                        'status' : { '$first' : '$delivery_status' }
+                        'status' : { '$first' : '$delivery_status' },
+                        'sold_to' : { '$first' : '$sold_to' },
+                        'address' : { '$first' : '$address' }
                     }
                 },
                 {'$sort' : 
@@ -892,7 +894,7 @@ module.exports = {
                     suppliers : [item.supplier],
                     products : [item._id],
                     sold_to : item.sold_to,
-                    address : item.address
+                    delivery_address : item.address
                 }
             }));
             

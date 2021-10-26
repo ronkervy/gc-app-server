@@ -134,7 +134,7 @@ function TransactionList(props) {
                                     <TableCell style={{ textAlign : "center" }}>Payment Type</TableCell>
                                     <TableCell style={{ textAlign : "center" }}>Cash Amount</TableCell>
                                     <TableCell style={{ textAlign : "center" }}>Total</TableCell>
-                                    <TableCell style={{ textAlign : "center" }}>Change</TableCell>
+                                    <TableCell style={{ textAlign : "center" }}>Total SRP</TableCell>
                                     <TableCell style={{ textAlign : "center" }}>Action</TableCell>
                                 </TableRow>
                             </TableHead>

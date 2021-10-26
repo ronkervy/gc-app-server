@@ -107,7 +107,7 @@ function ListTableRow(props) {
                         {open === index ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
                     </IconButton>
                 </TableCell>
-                <TableCell style={{color : "green"}}>{delivery._id.substring(0,23) + '...'}</TableCell>                
+                <TableCell style={{color : "green"}}>{delivery._id.substring(0,8) + '...'}</TableCell>                
                 <TableCell style={{textAlign : "center"}}>{delivery.count}</TableCell>
                 <TableCell>{dnow}</TableCell>
                 <TableCell>
@@ -118,7 +118,6 @@ function ListTableRow(props) {
                         decimalSeparator={'.'}
                         fixedDecimalScale={true}
                         value={delivery.total}
-                        prefix="Php "
                     />
                 </TableCell>
                 <TableCell>   
@@ -204,7 +203,7 @@ function ListTableRow(props) {
                                             key={i}
                                             title={`Name : ${val.item}\nSupplier : ${val.supplier}`}
                                         >
-                                            <TableCell colSpan={2}>{val.item.substring(0,13) + '...'}</TableCell>
+                                            <TableCell colSpan={2}>{val.item}</TableCell>
                                             <TableCell style={{
                                                 textAlign : "center"
                                             }}>{val.qty}</TableCell>
@@ -233,7 +232,7 @@ function ListTableRow(props) {
                                         </TableRow>
                                     ))}
                                     <TableRow>
-                                        <TablePagination
+                                        <TablePagination                                            
                                             component={TableCell}
                                             rowsPerPageOptions={[8]}
                                             count={delivery.products.length}

@@ -22,7 +22,7 @@ function TransactionItems(props) {
                     history.push(`/transactions/${data._id}`);
                 }}
                 title={
-                    `Receipt# : ${data._id}\nTransaction Type : ${data.payment_type}\nCart Count : ${data.cart.length}\nPayments : ${data.payments.length > 0 ? data.payments.map(payment=>formatter.format(payment)) : 'Paid'}\nBalance : ${data.payment_type === 'full' ? 0.00 : formatter.format(data.change_amount * -1)}`
+                    `Receipt# : ${data._id}\nTransaction Type : ${data.payment_type}\nCart Count : ${data.cart.length}\nPayments : ${data.payments.length > 0 ? data.payments.map(payment=>formatter.format(payment)) : 'Paid'}\nBalance : ${data.payment_type === 'full' ? 0.00 : formatter.format(data.change_amount * -1)}\nTransaction Date : ${data.transaction_date}`
                 }
                 >
                 <TableCell style={{ textAlign : "left" }}><FontAwesomeIcon icon={faUser} />&nbsp;&nbsp;{data.customer_name.substring(0,15) + '...'}</TableCell>
@@ -56,6 +56,17 @@ function TransactionItems(props) {
                     <NumberFormat 
                         thousandSeparator={true} 
                         prefix={'Php '} 
+                        decimalScale={2} 
+                        decimalSeparator={'.'}
+                        displayType="text"
+                        fixedDecimalScale={true}
+                        value={data.total_price_srp}
+                    />
+                </TableCell>
+                {/* <TableCell style={{ textAlign : "center" }}>
+                    <NumberFormat 
+                        thousandSeparator={true} 
+                        prefix={'Php '} 
                         allowNegative={false}
                         decimalScale={2} 
                         decimalSeparator={'.'}
@@ -63,7 +74,7 @@ function TransactionItems(props) {
                         fixedDecimalScale={true}
                         value={data.change_amount}
                     />
-                </TableCell>
+                </TableCell> */}
                 <TableCell>
                     <IconButton
                         size="medium"    

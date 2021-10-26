@@ -62,6 +62,7 @@ function ListDeliveries(props) {
             initial={{x : -10,opacity : 0}}
             animate={{x : 0,opacity : 1}}
             component={motion.div}
+            style={{ height : "auto" }}
         >
             <Grid item lg={12} xl={12} sm={12} style={{
                 marginTop : "10px"
@@ -70,7 +71,7 @@ function ListDeliveries(props) {
                     height : "auto",
                     minHeight : "490px"
                 }}>
-                    <Table size="medium" stickyHeader >
+                    <Table size="small" stickyHeader >
                         <TableHead>
                             <TableRow>               
                                 <TableCell />                 
@@ -88,7 +89,7 @@ function ListDeliveries(props) {
                             {deliveries.slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage).map((delivery,index)=>(
                                 <ListTableRow key={index} delivery={delivery} index={index} />
                             ))}                                                       
-                            <TableRow style={{ bottom : 0, right : 0, position : "absolute" }}>
+                            <TableRow style={{ bottom : 0, right : 0, position : "absolute", marginTop : "10px" }}>
                                 <TablePagination
                                     rowsPerPageOptions={[8]}
                                     count={deliveries.length}

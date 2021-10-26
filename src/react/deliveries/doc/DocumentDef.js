@@ -50,11 +50,15 @@ pdfmake.fonts = {
 }
 
 export default (docs,logoURL)=>{
+    
     let arrTotal = [];
-    let date;
+    let date,sold_to,address,status;
 
     docs.map((doc,i)=>{
         date = doc[5].date.split('T')[0];
+        sold_to = doc[5].sold_to;
+        address = doc[5].address;
+        status = doc[5].status
         arrTotal.push(doc[5].total);
     });
 

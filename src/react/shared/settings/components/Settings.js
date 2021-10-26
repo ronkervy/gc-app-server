@@ -22,6 +22,8 @@ const useStyles = makeStyles((theme)=>({
     }
 }));
 
+const socket = io('http://localhost:8081');
+
 function Settings() {
 
     const { ipcRenderer } = window.require('electron');
@@ -36,18 +38,14 @@ function Settings() {
             list : [],
             options : {
                 silent: false,
-                printTo : "",
                 monochrome : true,
-                scale: "noscale",
-                orientation : "portrait",
-                printingMode : "",
-                pages : []
+                scale: "fit",
+                orientation : "portrait"
             }
         }
     });
     
-    const [ipAddress,setIPAddress] = useState('');
-    const socket = io('http://localhost:8081');
+    const [ipAddress,setIPAddress] = useState('');    
     
     const handleClose = ()=>{
         history.goBack();
@@ -117,7 +115,6 @@ function Settings() {
 
         if( getSettings.fulfilled.match(res) ){
            const { settings } = res.payload;
-           console.log(settings);
            setDefaultPrinter(state=>{
                return {
                    ...settings,
@@ -133,7 +130,7 @@ function Settings() {
     useEffect(()=>{
         ipcRenderer.invoke('get-ip').then(args=>{
             setIPAddress(args);
-        });       
+        });               
         loadDefaultPrinter();
         setOpen(true);
     },[]);
@@ -213,7 +210,7 @@ function Settings() {
                             <MenuItem value="shrink">Shrink</MenuItem>
                             <MenuItem value="fit">Fit to page</MenuItem>
                         </TextField>
-                    </Grid>                                    
+                    </Grid>                                   
                     <Grid item lg={8} xl={8} sm={8}>
                         <TextField 
                             select
@@ -221,7 +218,7 @@ function Settings() {
                             size="small"
                             variant="outlined"
                             label="Default Printer"
-                            value={defaultPrinter.printer === undefined ? '' : defaultPrinter.printer.default}  
+                            value={defaultPrinter.printer.default}  
                             onChange={handleChange}                       
                         >
                             {defaultPrinter.printer.list.map((printer,i)=>(

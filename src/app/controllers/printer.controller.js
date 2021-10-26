@@ -41,7 +41,11 @@ module.exports = {
                             text : formatter.format(delivery.total_item_price),
                             style : 'tableItemsAmount',
                             total : delivery.total_item_price,
-                            date : delivery.createdAt
+                            date : delivery.createdAt,
+                            sold_to : delivery.sold_to,
+                            address : delivery.delivery_address,
+                            status : delivery.delivery_status,
+                            total_item_price : delivery.total_item_price
                         }                  
                     );
                 });

@@ -6,8 +6,8 @@ body, html {
 #root::before {
   content: "";
   background-image: url("../public/img/Doubs.svg");
-  background-size: cover;
-  position: absolute;
+  background-size: auto;
+  position: fixed;
   top: 0px;
   right: 0px;
   bottom: 0px;
@@ -31,7 +31,8 @@ body, html {
           justify-content: center;
   position: relative;
   height: 100%;
-  overflow: hidden;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
 #root .App {
