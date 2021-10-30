@@ -93,8 +93,8 @@ export default (docs,logoURL)=>{
 
     const configs = {
         pageSize : {
-            width : 100 * 9,
-            height : 100 * 5
+            width : 100 * 8,
+            height : 100 * 5.5
         },
         header : {},
         footer : (currentPage,pageCount)=>{
@@ -103,7 +103,7 @@ export default (docs,logoURL)=>{
                     id : 'footer',                                 
                     text : "Received goods in order and prestine condition\nBy:__________________________________",                            
                     style : {
-                        fontSize : 14,                         
+                        fontSize : 12,                         
                     },
                     alignment : "right",
                     bold : false,     
@@ -111,7 +111,7 @@ export default (docs,logoURL)=>{
                 }
             }
         },
-        pageMargins : [10,10,10,100],
+        pageMargins : [10,30,10,60],
         compress : false,        
         content : [
             {
@@ -354,7 +354,7 @@ export default (docs,logoURL)=>{
             header : {
                 // bold : true,
                 //color : "#808080"
-                fontSize : 16,
+                fontSize : 15,
                 font : "Times",
                 bold : true
             },
@@ -365,7 +365,7 @@ export default (docs,logoURL)=>{
                 bold : true
             },
             tableHeader : {
-                fontSize : 16,
+                fontSize : 15,
                 alignment : 'center',
                 margin : [0,3],  
                 bold : true,

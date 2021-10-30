@@ -11,7 +11,7 @@
       "options": {
         "silent": false,
         "monochrome": true,
-        "scale": "noscale",
+        "scale": "none",
         "orientation": "landscape"
       },
       "default": ""

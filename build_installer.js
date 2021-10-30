@@ -8,7 +8,7 @@ const msiCreator = new MSICreator({
   exe: 'gc-app-server',
   name: 'GC SERVER APP',
   manufacturer: 'KVM Tech',
-  version: '1.2.11',
+  version: '1.3.4',
   appIconPath : path.resolve(__dirname,'./src/app/logo.ico'),
   outputDirectory: path.resolve(__dirname,'./msi'),
   features : {

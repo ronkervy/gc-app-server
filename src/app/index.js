@@ -71,11 +71,11 @@ io.on("connection",(socket)=>{
             const filePath = process.env.NODE_ENV === 'development' ? path.join(__dirname,'..','/renderer/main_window/public/pdfs/') : path.join(__dirname,'../','../','src/pdfs/').replace('app.asar','app.asar.unpacked');    
             const pdf2printer = process.env.NODE_ENV === 'development' ? path.join(__dirname,'..','/renderer/main_window/native_modules/') : path.join(__dirname,'../','../','src/native_modules/').replace('app.asar','app.asar.unpacked');        
             const pdfFile = filePath + `${id}.pdf`;
-            const opts = {
-                ...settings.printer.options
-            }
 
-            let cmd = new CmdQueue(opts);
+            let cmd = new CmdQueue({
+                ...settings.printer.options,
+                paperSize : "Receipt"                
+            });
 
             io.to(sid).emit("print-status",{
                 printStatus : true,

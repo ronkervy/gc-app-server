@@ -39,7 +39,7 @@ function Settings() {
             options : {
                 silent: false,
                 monochrome : true,
-                scale: "fit",
+                scale: "none",
                 orientation : "portrait"
             }
         }
@@ -206,7 +206,7 @@ function Settings() {
                             value={defaultPrinter.printer.options.scale}
                             onChange={handleScaleChange}
                         >
-                            <MenuItem value="noscale">No Scale</MenuItem>
+                            <MenuItem value="none">No Scale</MenuItem>
                             <MenuItem value="shrink">Shrink</MenuItem>
                             <MenuItem value="fit">Fit to page</MenuItem>
                         </TextField>
