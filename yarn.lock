@@ -10269,6 +10269,11 @@ node-abi@^2.19.2, node-abi@^2.21.0:
   dependencies:
     semver "^5.4.1"
 
+node-addon-api@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/node-addon-api/-/node-addon-api-3.0.2.tgz#04bc7b83fd845ba785bb6eae25bc857e1ef75681"
+  integrity sha512-+D4s2HCnxPd5PjjI0STKwncjXTUKKqm74MDMz9OPXavjsGmjkvwgLtA5yoxJUdmpj52+2u+RrXgPipahKczMKg==
+
 node-addon-api@^1.6.0:
   version "1.7.2"
   resolved "https://registry.npmjs.org/node-addon-api/-/node-addon-api-1.7.2.tgz"
@@ -10373,6 +10378,14 @@ node-pdf-printer@^1.1.7:
   integrity sha512-MthV3Os0SM9AnSL+wG15gGmFMfnZHeGBZbVuWTg39I7plcJv7Ku7WxMZsa/HGb57RYJu9+mfPcYsrBBbILzsqg==
   dependencies:
     iconv-lite "^0.4.24"
+
+node-pdfium@^2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/node-pdfium/-/node-pdfium-2.1.2.tgz#846a9d399f50ec116a738c000a51d4874a5a423d"
+  integrity sha512-p0GlQCrbi9/OzW+wIdEYr4bbu/6fIhUKpilcOMcMa8zSN+KCo2yBwF+qvaYLpvGMat4c6+fI78I+C6w6sJ34vw==
+  dependencies:
+    bindings "^1.5.0"
+    node-addon-api "3.0.2"
 
 node-pre-gyp@^0.11.0:
   version "0.11.0"

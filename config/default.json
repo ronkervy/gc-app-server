@@ -11,10 +11,11 @@
       "options": {
         "silent": false,
         "monochrome": true,
-        "scale": "none",
+        "scale": "fit",
         "orientation": "landscape"
       },
-      "default": ""
+      "default": "",
+      "dpi" : 100
     }
   }
 }

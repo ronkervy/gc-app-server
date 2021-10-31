@@ -39,9 +39,10 @@ function Settings() {
             options : {
                 silent: false,
                 monochrome : true,
-                scale: "none",
+                scale: "fit",
                 orientation : "portrait"
-            }
+            },
+            dpi : 100
         }
     });
     
@@ -105,6 +106,18 @@ function Settings() {
                         ...state.printer.options,
                         scale : e.target.value
                     }
+                }
+            }
+        });
+    }
+
+    const handleChangeDpi = (e)=>{
+        setDefaultPrinter(state=>{
+            return {
+                ...state,
+                printer : {
+                    ...state.printer,
+                    dpi : e.target.value
                 }
             }
         });
@@ -196,7 +209,7 @@ function Settings() {
                             <MenuItem value="portrait">Protrait</MenuItem>
                         </TextField>
                     </Grid>
-                    <Grid item lg={12} xl={12} sm={12}>
+                    <Grid item lg={6} xl={6} sm={6}>
                         <TextField 
                             fullWidth
                             select
@@ -205,11 +218,22 @@ function Settings() {
                             label="Scale"
                             value={defaultPrinter.printer.options.scale}
                             onChange={handleScaleChange}
+                            disabled
                         >
-                            <MenuItem value="none">No Scale</MenuItem>
+                            <MenuItem value="noscale">No Scale</MenuItem>
                             <MenuItem value="shrink">Shrink</MenuItem>
                             <MenuItem value="fit">Fit to page</MenuItem>
                         </TextField>
+                    </Grid>
+                    <Grid item lg={6} xl={6} sm={6}>
+                        <TextField 
+                            fullWidth
+                            size="small"
+                            variant="outlined"
+                            label="DPI"
+                            value={defaultPrinter.printer.dpi}
+                            onChange={handleChangeDpi}                            
+                        />
                     </Grid>                                   
                     <Grid item lg={8} xl={8} sm={8}>
                         <TextField 

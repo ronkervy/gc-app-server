@@ -29,7 +29,7 @@
         "prune": true,
         "asar": {
           "unpack": "**/app/config/default.json",
-          "unpackDir": "{**/src/pdfs,**/src/native_modules}"
+          "unpackDir": "{**/src/pdfs,**/src/native_modules,**/node_modules/node-pdfium/**/*}"
         },
         "icon": "./src/app/logo.png"
       },
@@ -139,6 +139,7 @@
     "mongoose": "^5.13.0",
     "node-ipc": "^9.1.4",
     "node-pdf-printer": "^1.1.7",
+    "node-pdfium": "^2.1.2",
     "pdfmake": "^0.1.71",
     "react": "^17.0.2",
     "react-chartjs-2": "^3.0.4",

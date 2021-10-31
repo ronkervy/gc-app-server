@@ -1,4 +1,3 @@
-import { config } from 'node-ipc';
 import pdfmake from 'pdfmake/build/pdfmake';
 const formatter = new Intl.NumberFormat('en-PH',{
     style : 'currency',

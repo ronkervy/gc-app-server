@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 8081;
 const fs = require('fs');
 const { CmdQueue } = require('cmd-printer');
 const axios = require('axios');
-const NodePdfPrinter = require('node-pdf-printer');
+const pdfium = require('node-pdfium');
 
 app.use(helmet());
 app.use(cors());
@@ -81,14 +81,21 @@ io.on("connection",(socket)=>{
                 printStatus : true,
             });       
 
-            await fs.writeFileSync(pdfFile, data, {encoding: 'base64'});     
-            await cmd.print([pdfFile]);            
-            // NodePdfPrinter.printFiles([pdfFile],"",pdf2printer);
+            await fs.writeFileSync(pdfFile, data, {encoding: 'base64'});   
+            pdfium.printPDF({
+                printerName : `${settings.printer.default}`,
+                filePath : pdfFile,
+                dpi : settings.printer.dpi
+            });
+            // await cmd.print([pdfFile]);            
+            // NodePdfPrinter.printFiles([pdfFile],"",pdf2printer);            
             io.emit("print-status",{
                 printStatus : false
             });
         }catch(err){
-            console.log(err);
+            return createHttpError.InternalServerError({
+                message : err
+            })
         }
     });
 

@@ -39,6 +39,7 @@ module.exports = {
             const { printer } = req.body;
             
             settingsJSON.settings.printer.default = printer.default !== '' || printer.default !== undefined ? printer.default : settingsJSON.settings.printer.default;
+            settingsJSON.settings.printer.dpi = printer.dpi !== '' || printer.dpi !== undefined ? parseInt(printer.dpi) : parseInt(settingsJSON.settings.printer.dpi);
             settingsJSON.settings.printer.options = printer.options;
             
             settingsJSON.settings.printer.list = [...printer.list]                   
