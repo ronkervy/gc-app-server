@@ -1,6 +1,7 @@
 const { Schema,Types } = require('mongoose');
 const db = require('../config/db.config');
 const moment = require('moment-timezone');
+moment.tz.setDefault("Asia/Manila");
 const phTime = moment.tz(Date.now(),"Asia/Manila");
 
 const TransactionSchema = new Schema({

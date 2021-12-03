@@ -36,11 +36,15 @@ module.exports = {
             const filePath = process.env.NODE_ENV === 'development' ? path.join(__dirname,'../renderer/main_window','/config/default.json') : path.join(__dirname,'../../','/config/default.json').replace('app.asar','app.asar.unpacked');
             const rawFile = await fs.promises.readFile(filePath);
             const settingsJSON = JSON.parse(rawFile);                  
-            const { printer } = req.body;
-            
+            const { printer,number } = req.body;
+
             settingsJSON.settings.printer.default = printer.default !== '' || printer.default !== undefined ? printer.default : settingsJSON.settings.printer.default;
             settingsJSON.settings.printer.dpi = printer.dpi !== '' || printer.dpi !== undefined ? parseInt(printer.dpi) : parseInt(settingsJSON.settings.printer.dpi);
+            settingsJSON.settings.printer.width = printer.width !== '' || printer.width !== undefined ? parseFloat(printer.width) : parseFloat(settingsJSON.settings.printer.width);
+            settingsJSON.settings.printer.height = printer.height !== '' || printer.height !== undefined ? parseFloat(printer.height) : parseFloat(settingsJSON.settings.printer.height);
             settingsJSON.settings.printer.options = printer.options;
+            settingsJSON.settings.number = number !== '' || number !== undefined ? number : "";
+            
             
             settingsJSON.settings.printer.list = [...printer.list]                   
             

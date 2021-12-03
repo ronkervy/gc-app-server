@@ -42,8 +42,11 @@ function Settings() {
                 scale: "fit",
                 orientation : "portrait"
             },
-            dpi : 100
-        }
+            dpi : 100,
+            width : 9.5,
+            height : 5.5
+        },
+        number : ""
     });
     
     const [ipAddress,setIPAddress] = useState('');    
@@ -123,6 +126,39 @@ function Settings() {
         });
     }
 
+    const handleWidth = (e)=>{
+        setDefaultPrinter(state=>{
+            return {
+                ...state,
+                printer : {
+                    ...state.printer,
+                    width : e.target.value
+                }
+            }
+        });
+    }
+
+    const handleHeight = (e)=>{
+        setDefaultPrinter(state=>{
+            return {
+                ...state,
+                printer : {
+                    ...state.printer,
+                    height : e.target.value
+                }
+            }
+        });
+    }
+
+    const handleNumberChange = (e)=>{
+        setDefaultPrinter(state=>{
+            return {
+                ...state,
+                number : e.target.value
+            }
+        });
+    }
+
     const loadDefaultPrinter = async()=>{
         const res = await dispatch( getSettings() );
 
@@ -134,7 +170,8 @@ function Settings() {
                    printer : {
                        ...settings.printer,
                        default : settings.printer.default
-                   }
+                   },
+                   number : settings.number
                }
            });
         }
@@ -170,12 +207,25 @@ function Settings() {
             >
                 <Grid container className={ModalContent} spacing={2}>
                     <Grid item lg={12} xl={12} sm={12}>
+                        <Typography variant="h6">Options</Typography>
+                    </Grid>
+                    <Grid item lg={12} xl={12} sm={12}>
                         <TextField 
                             fullWidth
                             size="small"
                             variant="outlined"
                             value={ipAddress}
                             label="IP Address"
+                        />
+                    </Grid>
+                    <Grid item lg={12} xl={12} sm={12}>
+                        <TextField 
+                            fullWidth
+                            size="small"
+                            variant="outlined"
+                            value={defaultPrinter.number}
+                            label="Mobile/Phone"
+                            onChange={handleNumberChange}
                         />
                     </Grid>
                     <Grid item lg={12} xl={12} sm={12}>
@@ -234,7 +284,27 @@ function Settings() {
                             value={defaultPrinter.printer.dpi}
                             onChange={handleChangeDpi}                            
                         />
-                    </Grid>                                   
+                    </Grid> 
+                    <Grid item lg={6} xl={6} sm={6}>
+                        <TextField 
+                            fullWidth
+                            size="small"
+                            variant="outlined"
+                            label="Width"
+                            value={defaultPrinter.printer.width}
+                            onChange={handleWidth}                            
+                        />
+                    </Grid>
+                    <Grid item lg={6} xl={6} sm={6}>
+                        <TextField 
+                            fullWidth
+                            size="small"
+                            variant="outlined"
+                            label="Height"
+                            value={defaultPrinter.printer.height}
+                            onChange={handleHeight}                            
+                        />
+                    </Grid>                                  
                     <Grid item lg={8} xl={8} sm={8}>
                         <TextField 
                             select

@@ -5,6 +5,7 @@ import { Delete } from '@material-ui/icons';
 import React from 'react';
 import NumberFormat from 'react-number-format';
 import { useHistory } from 'react-router-dom';
+import moment from 'moment';
 
 function TransactionItems(props) {
     const {data} = props;
@@ -27,7 +28,7 @@ function TransactionItems(props) {
                 >
                 <TableCell style={{ textAlign : "left" }}><FontAwesomeIcon icon={faUser} />&nbsp;&nbsp;{data.customer_name.substring(0,15) + '...'}</TableCell>
                 <TableCell style={{ textAlign : "center" }}>
-                    {data.transaction_date.split('T')[0]}
+                    {moment(data.transaction_date).format("YYYY-MM-DD")}
                 </TableCell>
                 <TableCell style={{ textAlign : "center" }}>{data.payment_type}</TableCell>
                 <TableCell style={{ textAlign : "center" }}>

@@ -16,7 +16,6 @@ import {
     Table,
     TableCell,
     TableBody,
-    Typography,
     Paper,
     TablePagination,
 } from '@material-ui/core'
@@ -32,6 +31,8 @@ import { OpenNotification } from '../../shared/store/NotificationSlice';
 import pdfmakeFonts from 'pdfmake/build/vfs_fonts';
 import NumberFormat from 'react-number-format';
 import { io } from 'socket.io-client';
+import { getSettings } from '../../shared/settings/store/SettingsService';
+
 const useStyles = makeStyles((theme)=>({
     TranSingleModal : {
         display : "flex",
@@ -56,6 +57,7 @@ function TransactionSingle() {
     const { loading,entities : transactions } = useSelector(state=>state.transactions);
     const { settings } = useSelector(state=>state.settings.entities);
     const {TranSingleModal,TranSingleModalContent} = useStyles();
+    const [phoneNum,setPhoneNum] = useState("");
     const [payment,setPayment] = useState({
         partial_payments : 0
     }); 
@@ -102,6 +104,16 @@ function TransactionSingle() {
 
     useEffect(()=>{
 
+        const loadSettings = async ()=>{
+            const resSettings = await dispatch( getSettings());
+            if( getSettings.fulfilled.match(resSettings) ){
+                const { settings } = resSettings.payload;
+                setPhoneNum(settings.number);
+            }
+        }
+
+        loadSettings();
+        
         fetchTransaction();
         setOpen(true);
     },[]);
@@ -305,15 +317,16 @@ function TransactionSingle() {
                                     color="primary"
                                     startIcon={<FontAwesomeIcon icon={faPrint} />}
                                     onClick={async()=>{
-                                        const resTransactionRep = await dispatch(createTransactionReport(`/transactions/${transaction._id}`));
-                                        if( createTransactionReport.fulfilled.match(resTransactionRep) ){
-                                            
+                                        const resTransactionRep = await dispatch(createTransactionReport(`/transactions/${transaction._id}`));                                        
+                                        
+                                        if( createTransactionReport.fulfilled.match(resTransactionRep) ){                                                                                                                            
+                                           
                                             const { doc,logo } = resTransactionRep.payload;
                                             let pdf = JSON.parse(doc);
                                                                                       
                                             if( pdf.length > 0 ){                                                
                                                 pdfmake.vfs = pdfmakeFonts.pdfMake.vfs;
-                                                const docDef = TransactionDoc(pdf,logo);
+                                                const docDef = TransactionDoc(pdf,phoneNum);
                                                 const docGenerator = pdfmake.createPdf(docDef);
 
                                                 docGenerator.getBase64(data=>{
@@ -351,7 +364,7 @@ function TransactionSingle() {
                                                                                       
                                             if( pdf.length > 0 ){                                                
                                                 pdfmake.vfs = pdfmakeFonts.pdfMake.vfs;
-                                                const docDef = TransactionDoc(pdf,logo);
+                                                const docDef = TransactionDoc(pdf,phoneNum);
                                                 const docGenerator = pdfmake.createPdf(docDef);
                                                 
                                                 docGenerator.getBlob(blob=>{

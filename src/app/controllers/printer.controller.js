@@ -100,9 +100,10 @@ module.exports = {
                             transact_type : transaction.transact_payment_type,
                             cash_amount : formatter.format(transaction.cash_amount),
                             total_amount : transaction.total_amount_srp,
+                            total_amount_default : transaction.total_amount,
                             change_amount : transaction.change_amount_srp,
                             discount : transaction.discount,
-                            customer_address : transaction.customer_address
+                            customer_address : transaction.customer_address                
                         }                        
                     );
                 });
@@ -313,6 +314,7 @@ module.exports = {
                             'payment_type' : { '$first' : '$transact_payment_type' },
                             'cash_amount' : { '$first' : '$cash_amount' },
                             'total_amount' : { '$first' : '$total_amount_srp' },
+                            'total_amount_default' : { '$first' : '$total_amount' },
                             'change_amount' : { '$first' : '$change_amount_srp' },
                             'balance' : { "$first" : "$partial_payments" }
                         }  
@@ -345,6 +347,7 @@ module.exports = {
                             text : formatter.format(transaction.total_amount),
                             style : 'tableItems',
                             price : transaction.total_amount,
+                            total_amount_default : transaction.total_amount_default,
                             from,
                             to
                         }

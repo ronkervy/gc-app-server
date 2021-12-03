@@ -13,7 +13,10 @@ import {
     TableRow, 
     Toolbar,
     TablePagination,
-    makeStyles
+    makeStyles,
+    Button,
+    MenuItem,
+    TextField
 } from '@material-ui/core'
 import { ArrowBack, Close } from '@material-ui/icons';
 import React, { forwardRef, useEffect, useState } from 'react'
@@ -22,6 +25,13 @@ import { useHistory } from 'react-router-dom';
 import Loader from '../../shared/Loader';
 import { findTransaction, getAllTransaction } from '../store/TransactionServices';
 import TransactionItems from './TransactionItems';
+import 'date-fns';
+import DateFnsUtils from '@date-io/date-fns';
+import {
+    MuiPickersUtilsProvider,
+    KeyboardDatePicker
+} from '@material-ui/pickers';
+import moment from 'moment';
 
 const TransComp = forwardRef((props,ref)=>{
     return <Slide direction="down" {...props} ref={ref} />
@@ -29,7 +39,7 @@ const TransComp = forwardRef((props,ref)=>{
 
 const useStyles = makeStyles((theme)=>({
     TransDialog : {
-        padding : "30px",
+        padding : "30px 30px 30px 30px",
         height : "100%"
     },
     TransDialogContent : {
@@ -40,6 +50,48 @@ const useStyles = makeStyles((theme)=>({
         position : "relative"
     }
 }));
+
+function FilterDate(props){
+
+    return(
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+            <Grid 
+                container 
+                style={{ 
+                    paddingLeft : "30px", 
+                    display : "flex",
+                    alignItems : "center",
+                    WebkitAppRegion : "no-drag"
+                }} 
+            >
+                <Grid
+                    item
+                    lg={3}
+                    sm={3}
+                >
+                    <KeyboardDatePicker 
+                        fullWidth
+                        disableToolbar
+                        variant="dialog"
+                        format="yyyy-MM-dd"
+                        margin="normal"
+                        id="date-picker-inline"
+                        label="Date Filter"
+                        KeyboardButtonProps={{
+                        'aria-label': 'change date',
+                        }}
+                        InputLabelProps={{
+                            shrink : true
+                        }}
+                        size="small"
+                        {...props}
+                    />
+                </Grid>
+                {props.children}                
+            </Grid>
+        </MuiPickersUtilsProvider>
+    )
+}
 
 function TransactionList(props) {
 
@@ -52,6 +104,15 @@ function TransactionList(props) {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(8);
     const { TransTable,TransDialog,TransDialogContent } = useStyles();
+    const [selectedDate,setSelectedDate] = useState(new Date());
+    const [filter,setFilter] = useState(false);
+    const [paymentType,setPaymentType] = useState('none');
+
+    const handleDateChange = (date)=>{
+        let resDate = transactions.filter(transaction=>moment(transaction.transaction_date).format("YYYY-MM-DD") == moment(date).format('YYYY-MM-DD'))
+        setFilter(resDate);
+        setSelectedDate(moment(date).format("YYYY-MM-DD"));
+    }
   
     const handleChangePage = (event, newPage) => {
       setPage(newPage);
@@ -65,6 +126,20 @@ function TransactionList(props) {
     const handleClose = ()=>{
         history.goBack();
         setOpen(false);
+    }
+
+    const handlePaymentType = (e)=>{
+        setPaymentType(e.target.value);
+    }
+
+    const handleBtnClear = ()=>{
+        setFilter(false);
+        setPaymentType('none');
+        dispatch( getAllTransaction({
+            opt : {
+                url : '/transactions'
+            }
+        }) );    
     }
     
     useEffect(()=>{
@@ -118,13 +193,42 @@ function TransactionList(props) {
                                 <ArrowBack />
                             </IconButton>                                                
                         </Grid>
-                        <Grid item lg={10} xl={10} sm={10}>                            
+                        <Grid item lg={10} xl={10} sm={10}>                                                      
                         </Grid>
                     </Grid>
                 </Toolbar>
             </AppBar>
-            <Grid container className={TransDialogContent}>
-                <Grid item lg={12} xl={12} sm={12} style={{ padding : "30px"}}>
+            <Grid container className={TransDialogContent}>                         
+                <FilterDate 
+                    value={selectedDate}
+                    onChange={handleDateChange}
+                >
+                    <Grid item lg={3} sm={3} style={{ marginLeft : "30px" }}>
+                        <TextField
+                            select
+                            variant="outlined"
+                            size="small"
+                            label="Payment Type"
+                            value={paymentType}
+                            onChange={handlePaymentType}
+                            fullWidth
+                            style={{ WebkitAppRegion : "no-drag" }}
+                        >
+                            <MenuItem style={{ WebkitAppRegion : "no-drag" }} key={0} value="none">None</MenuItem>
+                            <MenuItem style={{ WebkitAppRegion : "no-drag" }} key={1} value="full">Full</MenuItem>
+                            <MenuItem style={{ WebkitAppRegion : "no-drag" }} key={2} value="partial">Partial</MenuItem>
+                        </TextField>
+                    </Grid>
+                    <Grid item lg={3} sm={3} style={{ marginLeft : "30px" }}>
+                        <Button                        
+                            variant="contained"
+                            size="medium"
+                            color="primary"
+                            onClick={handleBtnClear}
+                        >Clear</Button>
+                    </Grid>                    
+                </FilterDate>         
+                <Grid item lg={12} xl={12} sm={12} style={{ padding : "10px 30px 30px 30px"}}>
                     <TableContainer component={Paper} elevation={3} className={TransTable} >
                         <Table stickyHeader size="small">
                             <TableHead>
@@ -139,7 +243,7 @@ function TransactionList(props) {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {transactions.slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage).map((transaction,i)=>(
+                                {(paymentType !== 'none' ? (filter ? filter : transactions).filter(transaction=>transaction.payment_type == paymentType) : (filter ? filter : transactions)).slice(page * rowsPerPage,page * rowsPerPage + rowsPerPage).map((transaction,i)=>(
                                     <TransactionItems data={transaction} key={i} />
                                 ))}
                                 <TableRow style={{ position : "absolute", bottom : 0 }}>

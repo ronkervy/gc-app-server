@@ -6,16 +6,18 @@ const formatter = new Intl.NumberFormat('en-PH',{
 export default (docs,logoURL)=>{
 
     let priceArr = [];
-    let from;
-    let to;
+    let default_priceArr = [];
+    let from,to;
 
     docs.map(itms=>{
         priceArr.push(itms[5].price);
+        default_priceArr.push(itms[5].total_amount_default);
         from = itms[5].from;
         to = itms[5].to;
     });    
 
     let totalPriceArr = priceArr.reduce((a,b)=>a+b,0);
+    let totalDefaultPriceArr = default_priceArr.reduce((a,b)=>a+b,0);
     let transactionCount = priceArr.length;
 
     return {
@@ -78,15 +80,23 @@ export default (docs,logoURL)=>{
         content: [
             {
                 text : [
-                    {text : 
-                        "SALES REPORT",
+                    {
+                        text : "SALES REPORT",
                         style : {
                             alignment : "center",
                             bold : true,
                             fontSize : 18
                         }
                     },
-                ], 
+                    {
+                        text : `\n ( From : ${from} To ${to} )`,
+                        style : {
+                            alignment : "center",
+                            bold : true,
+                            fontSize : 8
+                        }
+                    }                    
+                ]
             },            
             {                             
                 table : {
@@ -97,15 +107,13 @@ export default (docs,logoURL)=>{
                     body: [                         
                         [
                             { text : [
-                                    "Date Generated : ",
+                                    `Total Sales : `,
                                     {
-                                        text : `${new Date(Date.now()).toLocaleDateString()}`,
+                                        text : formatter.format(totalDefaultPriceArr),
                                         style : {
-                                            italics : true,
-                                            bold : true,
                                             alignment : "right"
-                                        } 
-                                    },
+                                        }
+                                    }
                               ],
                               style : { 
                                 bold: true, 
@@ -113,13 +121,13 @@ export default (docs,logoURL)=>{
                               } 
                             },
                             { text : [
-                                    `Total Sales : `, 
+                                    `Total Sales SRP : `, 
                                     { 
                                         text : formatter.format(totalPriceArr), 
                                         style : {
                                             alignment : "right"
                                         }
-                                    }
+                                    }                        
                               ],
                               style : { 
                                 bold: true,
@@ -129,31 +137,17 @@ export default (docs,logoURL)=>{
                         ],                 
                         [
                             { text : [
-                                "From : ",
+                                "Profit : ",
                                     {
                                         text :
-                                        `${from}`,
+                                        `${formatter.format(totalPriceArr - totalDefaultPriceArr)}`,
                                         style : {
-                                            fontSize : 8,                                            
+                                            fontSize : 10,                                            
                                             alignment : 'right',
                                             bold : true,                                            
                                         },
                                         border : [true,true,true,true],
-                                    },
-                                    {
-                                        text : [
-                                            " To : ",
-                                            {
-                                                text : `${to}`,
-                                                style : {
-                                                    fontSize : 8,                                            
-                                                    alignment : 'right',
-                                                    bold : true,                                                    
-                                                },
-                                                border : [true,true,true,true],
-                                            }
-                                        ]
-                                    }                                                             
+                                    }                                                            
                                 ],
                                 style : {
                                     fontSize : 11,

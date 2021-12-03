@@ -85,7 +85,9 @@ io.on("connection",(socket)=>{
             pdfium.printPDF({
                 printerName : `${settings.printer.default}`,
                 filePath : pdfFile,
-                dpi : settings.printer.dpi
+                dpi : settings.printer.dpi,
+                height : settings.printer.height * settings.printer.dpi,
+                width : settings.printer.width * settings.printer.dpi
             });
             // await cmd.print([pdfFile]);            
             // NodePdfPrinter.printFiles([pdfFile],"",pdf2printer);            

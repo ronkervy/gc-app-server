@@ -55,7 +55,7 @@ pdfmake.fonts = {
     }
 }
 
-export default (docs,logoURL)=>{
+export default (docs,phoneNum)=>{
     let discountArr = [];
     let customer_name,
         customer_address,
@@ -119,7 +119,7 @@ export default (docs,logoURL)=>{
                         text : [
                             "ORDER SLIP\n",
                             {
-                                text : `Smart/Tnt : 0963-644-8252\nGlobe : 0926-775-3578`,
+                                text : `${phoneNum.replace(',','\n')}`,
                                 alignment : "center",
                                 style : 'subheader'
                             }

@@ -10,6 +10,7 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import { Grid, TextField, MenuItem, Button } from '@material-ui/core';
 import MomentUtils from '@date-io/moment';
 import moment from 'moment-timezone';
+import momentDT from 'moment';
 
 
 const TransactFilter = ({setFn})=>{
@@ -89,11 +90,13 @@ const DTPicker = ({fn,model})=>{
     const [filterPayment,setFilterPayment] = useState('all');
     
     const handleFromDateChange = (dt) => {
-        setSelectedFromDate(dt._d);
+        console.log(momentDT(dt).format("YYYY-MM-DD"));
+        setSelectedFromDate(momentDT(dt).format("YYYY-MM-DD"));
     };
 
     const handleToDateChange = (dt) => {
-        setSelectedToDate(dt._i);
+        console.log(momentDT(dt).format("YYYY-MM-DD"));
+        setSelectedToDate(momentDT(dt).format("YYYY-MM-DD"));
     };
 
     useEffect(()=>{
@@ -110,7 +113,7 @@ const DTPicker = ({fn,model})=>{
                     size="small"
                     id="date-picker-dialog"
                     label="From Date"
-                    format="yyyy-MM-DD"
+                    format="YYYY-MM-DD"
                     value={selectedFromDate}
                     onChange={handleFromDateChange}
                     KeyboardButtonProps={{
@@ -124,7 +127,7 @@ const DTPicker = ({fn,model})=>{
                     margin="dense"
                     id="date-picker-dialog"
                     label="To Date"
-                    format="yyyy-MM-DD"
+                    format="YYYY-MM-DD"
                     value={selectedToDate}
                     onChange={handleToDateChange}
                     KeyboardButtonProps={{
@@ -143,15 +146,14 @@ const DTPicker = ({fn,model})=>{
                         borderColor : "white",
                         backgroundColor : "orange"            
                     }}
-                    onClick={()=>{  
-                        console.log(selectedToDate.toISOString());  
+                    onClick={()=>{    
                         fn({
-                            from : selectedFromDate.toISOString().split('T')[0],
-                            to : selectedToDate.toISOString().split('T')[0],
+                            from : momentDT(selectedFromDate).format("YYYY-MM-DD"),
+                            to : momentDT(selectedToDate).format("YYYY-MM-DD"),
                             filter : model === 'transactions' ? filterPayment : status
                         });
                     }}
-                >Generate Report</Button>    
+                >Generate Report</Button>
             </Grid>
           </Grid>
         </MuiPickersUtilsProvider>

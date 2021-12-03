@@ -30,6 +30,8 @@ export const saveSettings = createAsyncThunk(
     async(args,{rejectWithValue})=>{
         try{
             const {settings} = args;
+
+            console.log(settings);
             const res = await SettingsServices({
                 method : "POST",
                 data : settings
