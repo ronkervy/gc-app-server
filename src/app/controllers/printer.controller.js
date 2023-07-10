@@ -14,6 +14,9 @@ const fs = require('fs');
 const logoPath = path.resolve(__dirname,'../','renderer/main_window/public/img/logo.png');
 
 module.exports = {
+    logInfo: async(res, req) => {
+       console.log(res.data);
+    },
     generatePdf : async ( req,res,next )=>{
         try{
             const { id } = req.params;
