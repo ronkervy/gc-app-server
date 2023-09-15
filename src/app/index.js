@@ -9,7 +9,8 @@ const http = require('http').createServer(app);
 const io = require('socket.io')(http,{
     cors : {
         methods : ['POST','PATCH','PUT','DELETE'],
-        origin : "*"
+        origin : "*",
+        methods: [PUT,PATCH,OPTIONS]
     }
 });
 const PORT = process.env.PORT || 8081;
