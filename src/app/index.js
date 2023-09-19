@@ -68,8 +68,8 @@ io.on("connection",(socket)=>{
             const { settings } = resSettings.data;
 
             const { data,id,sid } = args;
-            const filePath = process.env.NODE_ENV === 'development' ? path.join(__dirname,'..','/renderer/main_window/public/pdfs/') : path.join(__dirname,'../','../','src/pdfs/').replace('app.asar','app.asar.unpacked');    
-            const pdf2printer = process.env.NODE_ENV === 'development' ? path.join(__dirname,'..','/renderer/main_window/native_modules/') : path.join(__dirname,'../','../','src/native_modules/').replace('app.asar','app.asar.unpacked');        
+            const filePath = process.env.NODE_ENV == 'development' ? path.join(__dirname,'..','/renderer/main_window/public/pdfs/') : path.join(__dirname,'../','../','src/pdfs/').replace('app.asar','app.asar.unpacked');    
+            const pdf2printer = process.env.NODE_ENV == 'development' ? path.join(__dirname,'..','/renderer/main_window/native_modules/') : path.join(__dirname,'../','../','src/native_modules/').replace('app.asar','app.asar.unpacked');        
             const pdfFile = filePath + `${id}.pdf`;
 
             let cmd = new CmdQueue({
