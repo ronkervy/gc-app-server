@@ -26,6 +26,7 @@ app.use(express.json({ limit : '200mb' }));
 app.use(express.urlencoded({ extended : false,limit : '500gb' }));
 
 app.use('/api/v1',apiRoutes);
+app.use('/api/v2/test',apiroutes);
 
 app.use('/loader',(req,res,next)=>{
     res.status(200).sendFile(path.resolve(__dirname,'../renderer/main_window/public/loader.html'));
